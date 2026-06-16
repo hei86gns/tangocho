@@ -2,161 +2,153 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="単語帳">
 <meta name="theme-color" content="#7c6cfc">
-<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyIiBmaWxsPSIjN2M2Y2ZjIi8+CiAgPHRleHQgeD0iNTAiIHk9IjY4IiBmb250LXNpemU9IjU1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5OWPC90ZXh0Pgo8L3N2Zz4=">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIyIiBmaWxsPSIjN2M2Y2ZjIi8+PHRleHQgeD0iNTAiIHk9IjY4IiBmb250LXNpemU9IjU1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn5OWPC90ZXh0Pjwvc3ZnPg==">
 <title>単語帳</title>
 <style>
-  :root {
-    --bg: #0f0f13;
-    --surface: #1a1a22;
-    --surface2: #22222e;
-    --border: #2e2e3e;
-    --accent: #7c6cfc;
-    --accent2: #a89cff;
-    --green: #34d399;
-    --red: #f87171;
-    --yellow: #fbbf24;
-    --text: #e8e8f0;
-    --text2: #9090a8;
-    --text3: #5a5a72;
-    --radius: 14px;
-    --radius-sm: 8px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
-  
-  /* Nav */
-  .nav { display: flex; gap: 0; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
-  .nav-btn { flex: 1; padding: 14px 4px 12px; border: none; background: none; color: var(--text2); font-size: 10px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: color .2s; }
-  .nav-btn svg { width: 22px; height: 22px; }
-  .nav-btn.active { color: var(--accent2); }
-  .nav-btn.active svg { filter: drop-shadow(0 0 6px var(--accent)); }
+:root {
+  --bg: #0f0f13;
+  --surface: #1a1a22;
+  --surface2: #26263a;
+  --border: #44445a;
+  --accent: #7c6cfc;
+  --accent2: #a89cff;
+  --green: #34d399;
+  --red: #f87171;
+  --yellow: #fbbf24;
+  --text: #e8e8f0;
+  --text2: #b0b0c8;
+  --text3: #7a7a92;
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; padding-bottom: env(safe-area-inset-bottom); }
 
-  /* Pages */
-  .page { display: none; padding: 16px; max-width: 680px; margin: 0 auto; padding-bottom: 80px; }
-  .page.active { display: block; }
+/* Nav - 下部固定 */
+.nav { display: flex; gap: 0; background: var(--surface); border-top: 1px solid var(--border); position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; padding-bottom: env(safe-area-inset-bottom); }
+.nav-btn { flex: 1; padding: 10px 4px 10px; border: none; background: none; color: var(--text2); font-size: 11px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: color .2s; }
+.nav-btn svg { width: 22px; height: 22px; }
+.nav-btn.active { color: var(--accent2); }
 
-  /* Search page */
-  .search-header { margin-bottom: 16px; }
-  .search-wrap { position: relative; }
-  .search-wrap svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text3); width: 18px; height: 18px; }
-  #search-input { width: 100%; padding: 14px 14px 14px 44px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 16px; outline: none; transition: border-color .2s; }
-  #search-input:focus { border-color: var(--accent); }
-  #search-input::placeholder { color: var(--text3); }
+/* Pages */
+.page { display: none; padding: 0 16px 100px; max-width: 680px; margin: 0 auto; }
+.page.active { display: block; }
 
-  .filter-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-  .filter-btn { padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: none; color: var(--text2); font-size: 12px; cursor: pointer; transition: all .2s; }
-  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+/* Search sticky header */
+.search-sticky { position: sticky; top: 0; z-index: 50; background: var(--bg); padding: 12px 0 8px; }
+.search-wrap { position: relative; }
+.search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text3); width: 18px; height: 18px; pointer-events: none; }
+#search-input { width: 100%; padding: 14px 46px 14px 44px; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 16px; outline: none; transition: border-color .2s; -webkit-appearance: none; }
+#search-input:focus { border-color: var(--accent); }
+#search-input::placeholder { color: var(--text3); }
+#search-clear { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: var(--text3); border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; display: none; align-items: center; justify-content: center; flex-shrink: 0; }
+#search-clear svg { width: 12px; height: 12px; }
 
-  .result-count { font-size: 12px; color: var(--text3); padding: 8px 0 4px; }
+.filter-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.filter-btn { padding: 7px 16px; border-radius: 20px; border: 1.5px solid var(--border); background: none; color: var(--text2); font-size: 13px; cursor: pointer; transition: all .2s; }
+.filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.result-count { font-size: 13px; color: var(--text3); padding: 8px 0 4px; }
 
-  /* Word card */
-  .word-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 10px; cursor: pointer; transition: border-color .2s, background .2s; }
-  .word-card:hover { border-color: var(--accent); background: var(--surface2); }
-  .word-card-header { display: flex; align-items: center; gap: 10px; }
-  .word-en { font-size: 18px; font-weight: 600; color: var(--text); flex: 1; }
-  .word-book-tag { font-size: 11px; padding: 2px 8px; border-radius: 10px; background: var(--accent)22; color: var(--accent2); border: 1px solid var(--accent)44; white-space: nowrap; }
-  .word-jp { font-size: 14px; color: var(--text2); margin-top: 6px; line-height: 1.6; }
-  .word-actions { display: flex; gap: 8px; margin-top: 12px; }
-  .btn-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: none; color: var(--text2); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; }
-  .btn-icon:hover { border-color: var(--accent); color: var(--accent2); }
-  .btn-icon svg { width: 16px; height: 16px; }
+/* Word card */
+.word-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 10px; transition: border-color .2s; }
+.word-card-header { display: flex; align-items: center; gap: 10px; }
+.word-en { font-size: 20px; font-weight: 600; color: var(--text); flex: 1; }
+.word-book-tag { font-size: 12px; padding: 2px 8px; border-radius: 10px; background: rgba(124,108,252,0.15); color: var(--accent2); border: 1px solid rgba(124,108,252,0.3); white-space: nowrap; }
+.word-jp { font-size: 15px; color: var(--text2); margin-top: 6px; line-height: 1.6; }
+.word-actions { display: flex; gap: 8px; margin-top: 12px; }
+.btn-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: none; color: var(--text2); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; text-decoration: none; flex-shrink: 0; }
+.btn-icon:hover { border-color: var(--accent); color: var(--accent2); }
+.btn-icon svg { width: 16px; height: 16px; }
 
-  /* External link card */
-  .ext-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; }
-  .ext-title { font-size: 13px; color: var(--text3); margin-bottom: 8px; }
-  .ext-links { display: flex; gap: 8px; flex-wrap: wrap; }
-  .ext-link { padding: 7px 14px; border-radius: 20px; border: 1px solid var(--border); background: none; color: var(--accent2); font-size: 13px; cursor: pointer; text-decoration: none; display: inline-block; transition: all .2s; }
-  .ext-link:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+/* External links */
+.ext-card { background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; }
+.ext-title { font-size: 13px; color: var(--text3); margin-bottom: 10px; }
+.ext-links { display: flex; gap: 8px; flex-wrap: wrap; }
+.ext-link { padding: 8px 16px; border-radius: 20px; border: 1.5px solid var(--border); background: none; color: var(--accent2); font-size: 14px; cursor: pointer; text-decoration: none; display: inline-block; transition: all .2s; }
+.ext-link:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-  /* Wordbooks page */
-  .page-title { font-size: 22px; font-weight: 700; margin-bottom: 16px; }
-  .book-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all .2s; }
-  .book-card:hover { border-color: var(--accent); }
-  .book-icon { width: 44px; height: 44px; border-radius: 10px; background: var(--accent)22; display: flex; align-items: center; justify-content: center; color: var(--accent2); font-size: 20px; flex-shrink: 0; }
-  .book-info { flex: 1; }
-  .book-name { font-size: 16px; font-weight: 600; }
-  .book-count { font-size: 13px; color: var(--text2); margin-top: 2px; }
-  .book-arrow { color: var(--text3); }
-  .book-arrow svg { width: 16px; height: 16px; }
+/* Books */
+.page-title { font-size: 22px; font-weight: 700; margin: 16px 0; }
+.book-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all .2s; }
+.book-card:hover { border-color: var(--accent); }
+.book-icon { width: 44px; height: 44px; border-radius: 10px; background: rgba(124,108,252,0.15); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.book-info { flex: 1; }
+.book-name { font-size: 16px; font-weight: 600; }
+.book-count { font-size: 13px; color: var(--text2); margin-top: 2px; }
+.book-arrow svg { width: 16px; height: 16px; color: var(--text3); }
+.btn-primary { width: 100%; padding: 14px; background: var(--accent); border: none; border-radius: var(--radius); color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity .2s; margin-bottom: 10px; }
+.btn-secondary { width: 100%; padding: 14px; background: none; border: 1.5px solid var(--border); border-radius: var(--radius); color: var(--text2); font-size: 15px; cursor: pointer; transition: all .2s; margin-bottom: 10px; }
 
-  .btn-primary { width: 100%; padding: 14px; background: var(--accent); border: none; border-radius: var(--radius); color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity .2s; margin-bottom: 10px; }
-  .btn-primary:hover { opacity: 0.85; }
-  .btn-secondary { width: 100%; padding: 14px; background: none; border: 1px solid var(--border); border-radius: var(--radius); color: var(--text2); font-size: 15px; cursor: pointer; transition: all .2s; margin-bottom: 10px; }
-  .btn-secondary:hover { border-color: var(--accent); color: var(--accent2); }
+/* Quiz/Flash setup */
+.quiz-setup { text-align: center; padding: 20px 0; }
+.quiz-setup h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.quiz-setup p { color: var(--text2); font-size: 14px; margin-bottom: 24px; }
+.setup-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.setup-opt { padding: 14px; border-radius: var(--radius); border: 2px solid var(--border); background: none; color: var(--text); cursor: pointer; transition: all .2s; font-size: 14px; }
+.setup-opt.selected { border-color: var(--accent); background: rgba(124,108,252,0.15); color: var(--accent2); }
+.section-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .08em; margin: 20px 0 10px; text-align: left; }
 
-  /* Quiz/Flash */
-  .quiz-setup { text-align: center; padding: 20px 0; }
-  .quiz-setup h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-  .quiz-setup p { color: var(--text2); font-size: 14px; margin-bottom: 24px; }
-  .setup-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-  .setup-opt { padding: 14px; border-radius: var(--radius); border: 2px solid var(--border); background: none; color: var(--text); cursor: pointer; transition: all .2s; font-size: 14px; }
-  .setup-opt.selected { border-color: var(--accent); background: var(--accent)22; color: var(--accent2); }
+/* Quiz */
+.quiz-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 24px; text-align: center; margin-bottom: 16px; }
+.quiz-progress { font-size: 13px; color: var(--text3); margin-bottom: 12px; }
+.progress-bar { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 20px; }
+.progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width .3s; }
+.quiz-word { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+.quiz-hint { font-size: 13px; color: var(--text3); margin-bottom: 24px; }
+.quiz-choices { display: grid; gap: 10px; }
+.quiz-choice { padding: 14px; border-radius: var(--radius); border: 1.5px solid var(--border); background: var(--surface2); color: var(--text); cursor: pointer; font-size: 15px; text-align: left; transition: all .2s; }
+.quiz-choice.correct { border-color: var(--green); background: rgba(52,211,153,0.15); color: var(--green); }
+.quiz-choice.wrong { border-color: var(--red); background: rgba(248,113,113,0.15); color: var(--red); }
 
-  .quiz-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; text-align: center; margin-bottom: 16px; }
-  .quiz-progress { font-size: 12px; color: var(--text3); margin-bottom: 16px; }
-  .progress-bar { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 20px; }
-  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width .3s; }
-  .quiz-word { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
-  .quiz-hint { font-size: 13px; color: var(--text3); margin-bottom: 24px; }
-  .quiz-choices { display: grid; gap: 10px; }
-  .quiz-choice { padding: 14px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface2); color: var(--text); cursor: pointer; font-size: 14px; text-align: left; transition: all .2s; }
-  .quiz-choice:hover { border-color: var(--accent); }
-  .quiz-choice.correct { border-color: var(--green); background: var(--green)22; color: var(--green); }
-  .quiz-choice.wrong { border-color: var(--red); background: var(--red)22; color: var(--red); }
+/* Flash */
+.flash-card-wrap { perspective: 1000px; margin-bottom: 20px; }
+.flash-card { width: 100%; min-height: 220px; border-radius: var(--radius); position: relative; transform-style: preserve-3d; transition: transform .5s; cursor: pointer; }
+.flash-card.flipped { transform: rotateY(180deg); }
+.flash-front, .flash-back { position: absolute; width: 100%; min-height: 220px; border-radius: var(--radius); backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
+.flash-front { background: var(--surface); border: 1.5px solid var(--border); }
+.flash-back { background: linear-gradient(135deg, rgba(124,108,252,0.2), var(--surface)); border: 1.5px solid var(--accent); transform: rotateY(180deg); }
+.flash-word { font-size: 30px; font-weight: 700; text-align: center; }
+.flash-meaning { font-size: 16px; color: var(--text2); text-align: center; line-height: 1.6; margin-top: 12px; }
+.flash-hint { font-size: 13px; color: var(--text3); margin-top: 12px; }
+.flash-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.btn-wrong { padding: 14px; border-radius: var(--radius); border: 1.5px solid rgba(248,113,113,0.4); background: rgba(248,113,113,0.1); color: var(--red); font-size: 15px; cursor: pointer; }
+.btn-correct { padding: 14px; border-radius: var(--radius); border: 1.5px solid rgba(52,211,153,0.4); background: rgba(52,211,153,0.1); color: var(--green); font-size: 15px; cursor: pointer; }
 
-  /* Flash card */
-  .flash-card-wrap { perspective: 1000px; margin-bottom: 20px; }
-  .flash-card { width: 100%; min-height: 220px; border-radius: var(--radius); position: relative; transform-style: preserve-3d; transition: transform .5s; cursor: pointer; }
-  .flash-card.flipped { transform: rotateY(180deg); }
-  .flash-front, .flash-back { position: absolute; width: 100%; min-height: 220px; border-radius: var(--radius); backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
-  .flash-front { background: var(--surface); border: 1px solid var(--border); }
-  .flash-back { background: linear-gradient(135deg, var(--accent)33, var(--surface)); border: 1px solid var(--accent); transform: rotateY(180deg); }
-  .flash-word { font-size: 30px; font-weight: 700; text-align: center; }
-  .flash-meaning { font-size: 16px; color: var(--text2); text-align: center; line-height: 1.6; }
-  .flash-hint { font-size: 12px; color: var(--text3); margin-top: 12px; }
-  .flash-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .btn-wrong { padding: 14px; border-radius: var(--radius); border: 1px solid var(--red)44; background: var(--red)11; color: var(--red); font-size: 15px; cursor: pointer; transition: all .2s; }
-  .btn-correct { padding: 14px; border-radius: var(--radius); border: 1px solid var(--green)44; background: var(--green)11; color: var(--green); font-size: 15px; cursor: pointer; transition: all .2s; }
+/* Result */
+.quiz-result { text-align: center; padding: 30px 0; }
+.result-score { font-size: 64px; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.result-label { font-size: 16px; color: var(--text2); margin-bottom: 24px; }
+.result-detail { background: var(--surface); border-radius: var(--radius); padding: 16px; margin-bottom: 20px; text-align: left; }
+.result-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+.result-row:last-child { border-bottom: none; }
 
-  /* Quiz result */
-  .quiz-result { text-align: center; padding: 30px 0; }
-  .result-score { font-size: 64px; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .result-label { font-size: 16px; color: var(--text2); margin-bottom: 24px; }
-  .result-detail { background: var(--surface); border-radius: var(--radius); padding: 16px; margin-bottom: 20px; text-align: left; }
-  .result-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
-  .result-row:last-child { border-bottom: none; }
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 200; display: none; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
+.modal-overlay.show { display: flex; }
+.modal { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 20px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; }
+.modal-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+.form-group { margin-bottom: 14px; }
+.form-label { font-size: 13px; color: var(--text2); margin-bottom: 6px; display: block; }
+.form-input { width: 100%; padding: 12px 14px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 15px; outline: none; -webkit-appearance: none; }
+.form-input:focus { border-color: var(--accent); }
+.form-textarea { width: 100%; padding: 12px 14px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 14px; outline: none; min-height: 80px; resize: vertical; font-family: inherit; -webkit-appearance: none; }
+.form-textarea:focus { border-color: var(--accent); }
+.modal-actions { display: flex; gap: 10px; margin-top: 16px; }
+.btn-cancel { flex: 1; padding: 12px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: none; color: var(--text2); cursor: pointer; font-size: 15px; }
+.btn-save { flex: 1; padding: 12px; border-radius: var(--radius-sm); border: none; background: var(--accent); color: #fff; cursor: pointer; font-size: 15px; font-weight: 600; }
 
-  /* Modal */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 200; display: none; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
-  .modal-overlay.show { display: flex; }
-  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; }
-  .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
-  .form-group { margin-bottom: 14px; }
-  .form-label { font-size: 13px; color: var(--text2); margin-bottom: 6px; display: block; }
-  .form-input { width: 100%; padding: 12px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 15px; outline: none; }
-  .form-input:focus { border-color: var(--accent); }
-  .form-textarea { width: 100%; padding: 12px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 14px; outline: none; min-height: 80px; resize: vertical; font-family: inherit; }
-  .form-textarea:focus { border-color: var(--accent); }
-  .modal-actions { display: flex; gap: 10px; margin-top: 16px; }
-  .btn-cancel { flex: 1; padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: none; color: var(--text2); cursor: pointer; font-size: 15px; }
-  .btn-save { flex: 1; padding: 12px; border-radius: var(--radius-sm); border: none; background: var(--accent); color: #fff; cursor: pointer; font-size: 15px; font-weight: 600; }
+/* Toast */
+.toast { position: fixed; bottom: calc(80px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); background: var(--surface2); border: 1.5px solid var(--border); border-radius: 20px; padding: 10px 20px; font-size: 14px; z-index: 300; opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap; }
+.toast.show { opacity: 1; }
 
-  /* Toast */
-  .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 10px 20px; font-size: 14px; z-index: 300; opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap; }
-  .toast.show { opacity: 1; }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-  .no-result { text-align: center; color: var(--text3); padding: 48px 20px; font-size: 15px; }
-  .section-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .08em; margin: 20px 0 10px; }
+.no-result { text-align: center; color: var(--text3); padding: 48px 20px; font-size: 15px; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 </style>
 </head>
 <body>
@@ -182,17 +174,20 @@
 
 <!-- Search Page -->
 <div class="page active" id="page-search">
-  <div class="search-header">
+  <div class="search-sticky">
     <div class="search-wrap">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="search" id="search-input" placeholder="英語または日本語で検索..." autocomplete="off" autocorrect="off" spellcheck="false">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search-input" placeholder="英語または日本語で検索..." autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="none" inputmode="url" lang="en">
+      <button id="search-clear" onclick="clearSearch()">
+        <svg viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
     </div>
     <div class="filter-row">
       <button class="filter-btn active" onclick="setFilter('all')" id="filter-all">すべて</button>
       <button class="filter-btn" onclick="setFilter('mywords')" id="filter-mywords">マイ単語</button>
     </div>
+    <div class="result-count" id="result-count"></div>
   </div>
-  <div class="result-count" id="result-count"></div>
   <div id="search-results"></div>
 </div>
 
@@ -201,6 +196,13 @@
   <div class="page-title">単語帳</div>
   <button class="btn-primary" onclick="showCreateBook()">＋ 新しい単語帳を作る</button>
   <div id="books-list"></div>
+  <div class="section-label">テーマカラー</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px" id="theme-btns">
+    <button class="theme-btn setup-opt" data-theme="dark" onclick="applyTheme('dark')">🌙 ダーク</button>
+    <button class="theme-btn setup-opt" data-theme="green" onclick="applyTheme('green')">🌿 グリーン</button>
+    <button class="theme-btn setup-opt" data-theme="warm" onclick="applyTheme('warm')">🍵 茶色・黄色</button>
+    <button class="theme-btn setup-opt" data-theme="blue" onclick="applyTheme('blue')">🌊 ブルー</button>
+  </div>
   <div class="section-label">データ管理</div>
   <button class="btn-secondary" onclick="exportCSV()">📥 CSVでバックアップ</button>
   <button class="btn-secondary" onclick="showAddWord()">＋ 単語を追加</button>
@@ -228,7 +230,7 @@
       <label class="form-label">日本語の意味</label>
       <textarea class="form-textarea" id="edit-meaning" placeholder="日本語の意味"></textarea>
     </div>
-    <div class="form-group" id="edit-book-group">
+    <div class="form-group" id="edit-book-group" style="display:none">
       <label class="form-label">単語帳に追加</label>
       <select class="form-input" id="edit-book-select"></select>
     </div>
@@ -253,22 +255,33 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-addbook">
+  <div class="modal">
+    <div class="modal-title" id="modal-addbook-title">単語帳に追加</div>
+    <div class="form-group">
+      <label class="form-label">単語帳を選択</label>
+      <select class="form-input" id="addbook-select"></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-addbook')">キャンセル</button>
+      <button class="btn-save" onclick="saveAddToBook()">追加</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-// ========== DATA ==========
 const BUILTIN = [{"w":"OCCUPANTS","m":"持ち主、占有者"},{"w":"autism","m":"自閉症"},{"w":"ligament","m":"靭帯"},{"w":"cartilage","m":"軟骨"},{"w":"sinew","m":"腱、体力、精力"},{"w":"pucker","m":"puck・er PAkar/ ［動］（自）しわが寄る、縮む：ひだがつく；＜唇など が＞ すぼまる（（up））. （他）・・にしわを寄せる：・・にひだをつける： ＜唇などを＞ すぼめる、く顔を＞ しかめ"},{"w":"twitch","m":"急に引く、引きつらせる"},{"w":"flexor muscle","m":"長母指屈筋"},{"w":"extensor muscle","m":"短母指伸筋（たんぼししんきん）"},{"w":"levator","m":"拳筋"},{"w":"depressor","m":"下制筋"},{"w":"abductor","m":"外転筋"},{"w":"adductor","m":"内転筋"},{"w":"sphincter","m":"回盲括約筋"},{"w":"ulnar","m":"尺骨"},{"w":"funny bone","m":"ひじ先の上腕骨の内側部分"},{"w":"evince","m":"はっきり示す、明示する"},{"w":"musculature","m":"筋肉組織"},{"w":"palmaris longus muscle","m":"長掌筋"},{"w":"graft","m":"接ぎ木"},{"w":"opposable","m":"向かい合わせにできる"},{"w":"pliant","m":"よく曲がる、柔軟な"},{"w":"resplendent","m":"きらびやかな"},{"w":"extensor pollicis brevis","m":"-短母指伸筋（たんぼししんきん）"},{"w":"flexor pollicis longus","m":"長母指屈筋"},{"w":"relegate","m":"aをbより低い地位、状態に追いやる"},{"w":"lumber","m":"ガタガタと進む"},{"w":"fuse","m":"融合させる、溶かす"},{"w":"slipped disk","m":"椎間板ヘルニア"},{"w":"synovial fluid","m":"膝関節液"},{"w":"femur","m":"大腿骨の上部と接する座骨のくぼみ"},{"w":"swivel","m":"向きを変える、回転させる"},{"w":"pestle","m":"すりこぎ"},{"w":"acetabulum","m":"大腿骨の上部と接する座骨のくぼみ"},{"w":"quip","m":"辛辣な言葉、皮肉、警句"},{"w":"shunt","m":"わきへ押しのける、そらす、回避する"},{"w":"arid","m":"湿気のない、乾ききった"},{"w":"Franco Australian","m":"<'フランス系オーストラリア人"},{"w":"make the cut","m":"=3規定の水準に達し合格する、成功する"},{"w":"sputter","m":"パチパチ音をたてる / 口から唾を飛ばす / 〈エンジン・機関銃が〉激しい発射音を / 出す"},{"w":"culminate","m":"〈法令・協定・慣習などを〉（公式に）廃止する、廃棄する / ・・・を片付ける; やめる、終わらせる"},{"w":"wither","m":"しぼむ、しおれる / あせる、衰える"},{"w":"glomerulonephritis","m":"糸球体腎炎（しきゅうたいじんえん、英語: Glomerulonephritis）は、腎疾患の一つで腎臓の炎症の一つ。"},{"w":"bane","m":"悩みのたね"},{"w":"postulate","m":"〜の存在を仮定する、主張する / 〜を要求する"},{"w":"ingest","m":"摂取する、収集する"},{"w":"if not","m":"もしそうでないなら"},{"w":"absurd","m":"ばかげた"},{"w":"sinusitis","m":"副鼻腔炎"},{"w":"spore","m":"胞子　芽胞"},{"w":"adept","m":"〈人・動物が〉（物・事に）慣れた、熟練した / 味付けした　 / 風味を加えた / 〈木材などが〉乾燥した"},{"w":"bronchus","m":"気管支　複数はbronchi"},{"w":"tubule","m":"細管"},{"w":"cilia","m":"繊毛、まつげ"},{"w":"paddle","m":"櫂、(汽船の)外輪"},{"w":"swat","m":"ピシャリと打つ"},{"w":"bolus","m":"大丸薬、柔らかな丸いかたまり"},{"w":"sternutation","m":"くしゃみ"},{"w":"jut","m":"突き出る、張り出す"},{"w":"bellow","m":"（アコーディオンの）ふいご / じゃばら"},{"w":"diaphragm","m":"隔膜、横隔膜、ペッサリー"},{"w":"pleural cabity","m":"胸膜腔"},{"w":"nifty","m":"気の利いた、かっこいい"},{"w":"kelp","m":"昆布科の大型褐藻の総称"},{"w":"formaldehyde","m":"ホルムアルデヒド"},{"w":"hypochondriacal","m":"心気症に苦しむ"},{"w":"enema","m":"浣腸"},{"w":"valerian","m":"カコノソウ、吉草根"},{"w":"atropine","m":"アトロピン：鎮痙や瞳孔拡大用"},{"w":"creosote","m":"クレイソート：保存防腐剤"},{"w":"cauterize","m":"医](感染を防ぐために)<傷口>を焼く."},{"w":"puberty","m":"成熟期、婚姻適齢期"},{"w":"mite","m":"ダニ"},{"w":"brucellosis","m":"ブルセラ症　動物の流産や人間の弛張熱の原因となる"},{"w":"epidemiology","m":"免疫学の"},{"w":"affliction","m":"苦悩、苦痛、不幸　苦痛の原因"},{"w":"acidly","m":"批判的に、どぎつい"},{"w":"imbecilical","m":"精神年齢が3歳から7歳の(having a mental age of three to seven years)"},{"w":"undercut","m":"商品の価値を下げる"},{"w":"obviate","m":"困難)などを予防する除去する、何々を不要にする"},{"w":"upshot","m":"結末、終末"},{"w":"implicate","m":"関与させる"},{"w":"spasmodic","m":"痙攣性の、激情的な、興奮した"},{"w":"larynx","m":"喉頭、発声期器官"},{"w":"oddment","m":"残り物、半端物"},{"w":"larder","m":"食料貯蔵庫"},{"w":"rigor","m":"厳しさ"},{"w":"almamater","m":"母校、出身校"},{"w":"ptomaine","m":"プトマイン、有毒物"},{"w":"contraption","m":"工夫、新案、からくり"},{"w":"urea","m":"尿素"},{"w":"exacting","m":"厳しいことを要求する"},{"w":"magnum opus","m":"大作、傑作"},{"w":"the last word","m":"最新型、最新のもの"},{"w":"teetotaler","m":"絶対禁酒主義者"},{"w":"disown","m":"-自分のものと認めない、縁を切る"},{"w":"faculties","m":"精神・身体の)機能、能力"},{"w":"sluice","m":"水門を開く、放水する / せき ; 仕切り弁"},{"w":"scurvy","m":"壊血病"},{"w":"beriberi","m":"脚気"},{"w":"figment","m":"想像の産物、作り話"},{"w":"checkered","m":"変化に富む、波乱に富んだ"},{"w":"coagulation","m":"凝固させる、硬直させる"},{"w":"permeability","m":"<浸透性、道磁性、透磁性、（ガスの）漏洩度"},{"w":"choline","m":"コリントの、贅沢な、不品行な"},{"w":"micronutrient","m":"微量栄養素"},{"w":"Brussels sprouts","m":"芽キャベツ"},{"w":"trace element","m":"微量元素"},{"w":"chromium","m":"クロム"},{"w":"rub","m":"the rubで障害、困難 / 〈人を〉苛立たせる"},{"w":"electrolyte","m":"電解質、電解液"},{"w":"rounded","m":"完成した、洗練された"},{"w":"sucutaneous","m":"皮下注射の ; 皮下の / 元気づける / 皮下注射 ; 皮下注射剤 / 皮下注射器"},{"w":"visceral","m":"内臓の / visceral fat 内臓脂肪"},{"w":"invidious","m":"ねたみを買うような、不公平な、差別的な"},{"w":"hydrogenerated fat","m":"水素添加油脂"},{"w":"diuretics","m":"排尿促進の、利尿の"},{"w":"hyponatremia","m":"低ナトリウム血症"},{"w":"paradoxical","m":"逆説的な、奇妙な"},{"w":"bear a striking resembalance","m":"すごく似ている"},{"w":"guano","m":"グアノ、鳥糞石、人工肥料"},{"w":"imprishable","m":"不朽の、不滅の"},{"w":"privation","m":"'奪うこと、剥奪、没収、欠乏"},{"w":"meager","m":"質が劣る、貧弱な / 痩せた / 精彩のない"},{"w":"myocardial infarction","m":"心筋梗塞"},{"w":"ascetic","m":"行者、修道士、禁欲主義者"},{"w":"fit as a fiddle","m":"とても元気で"},{"w":"live to a ripe old age","m":"高齢まで生きる"},{"w":"alimentary","m":"栄養作用の、扶養の"},{"w":"colon","m":"結腸直腸"},{"w":"pylorus","m":"幽門(胃の)"},{"w":"hydrochloric","m":"塩酸の"},{"w":"consistency","m":"物質の)堅さ、堅牢性、濃度、密度、粘度"},{"w":"chyme","m":"糜汁(びじゅう)胃内消化で食物が粥状になったもの"},{"w":"incidentally","m":"ついでに、付随的に"},{"w":"borborygmi","m":"腹鳴"},{"w":"E.coli","m":"大腸菌"},{"w":"decidedly","m":"'明らかに、断然、きっぱりと"},{"w":"cramp","m":"こむら返り、ひきつり"},{"w":"spawn","m":"はらご、子孫、 / 〜を引き起こす、生じる"},{"w":"culture","m":"飼育、培養、培養する"},{"w":"raft","m":"a raft of でいっぱい、多数の"},{"w":"cantaloupe","m":"マスクメロン"},{"w":"peerless","m":"比類のない、無双の"},{"w":"tart","m":"-ピリッとする、酸っぱい、辛辣な"},{"w":"jejunum","m":"空腸"},{"w":"ileum","m":"回腸、小腸"},{"w":"notional","m":"概念上の"},{"w":"projection","m":"突出、突起、出っ張り"},{"w":"villus","m":"絨毛、柔突器、腸繊毛"},{"w":"lining","m":"胃の)内壁"},{"w":"epithelium","m":"上皮(表皮、血管の内壁など)"},{"w":"gooey","m":"ねばねばした、ベタつく、感傷的な"},{"w":"mucus","m":"-粘液、鼻汁、鼻くそ、植物のやに"},{"w":"broad-gauge","m":"広軌の、心の広い"},{"w":"cecum","m":"cul-de-sac / /kʌ́ldəsæ̀k, kʊ́l-/［音声］ / [＜フランス] / 名Ｃ / 1袋小路, 行き止まり. / 2(状況の)行き詰まり, 窮地. / 3[解剖]盲嚢(もうのう), 盲腸, 盲管."},{"w":"appendectomy","m":"虫垂切除術"},{"w":"pep talk","m":"演説、激励"},{"w":"tea strainer","m":"茶漉し"},{"w":"ileocecal sphincter","m":"回盲括約筋"},{"w":"flatus","m":"鼓腸、腸内ガス、おなら"},{"w":"well-bred","m":"上品な、育ちの良い"},{"w":"hydrogen sulfude","m":"硫化水素"},{"w":"olfactory","m":"嗅覚の"},{"w":"polyp","m":"ポリープ"},{"w":"gastroenterogy","m":"胃腸病学、消化器病学"},{"w":"laparoscope","m":"腹腔鏡"},{"w":"keyhole surgery","m":"英)[医]キーホールサージャリー(ごく小さな開口部を通じファイバースコープで患部画像を見ながら行う手術)."},{"w":"insuffalate","m":"吹き込む、散布する"},{"w":"concuss","m":"〜に脳しんとうを起こさせる、〜を激しく揺さぶる"},{"w":"torpor","m":"'麻痺状態、無感覚、休眠状態"},{"w":"brigand","m":"強盗、山賊"},{"w":"nemarode","m":"線虫、回虫・十二指腸虫"},{"w":"quiescence","m":"静止状態"},{"w":"thrashing","m":"殴ること、むち打ち"},{"w":"far-fetched","m":"-こじつけの、取ってつけたような"},{"w":"heed","m":"気をつける、注意"},{"w":"ganglion","m":"神経節"},{"w":"circadian","m":"概日性の、ほぼ24時間周期で回帰する規則的な生物学的サイクル"},{"w":"ophthalmological","m":"眼科学の"},{"w":"ocular","m":"目きよる、視覚上の"},{"w":"stalk out","m":"怒って出ていく"},{"w":"pineal gland","m":"松果体"},{"w":"endocrine","m":"内分泌の内分泌線の"},{"w":"drowsiness","m":"眠気"},{"w":"trough","m":"谷、底、最低値"},{"w":"adenosine diphosphate","m":"（エーディーピー）は、英語のAdenosine diphosphateから頭文字をとった略称。日本語ではアデノシン二リン酸という名の有機化合物です。生体内では代謝にかかわる重要物質であり、よく似たATPという有機化合物とセットで語られます。"},{"w":"counteract","m":"〜に反対に作用する、対抗する、相殺する"},{"w":"perk","m":"元気を取り戻す、生き生きとする"},{"w":"apnea","m":"無呼吸、呼吸停止、仮死、窒息"},{"w":"fatal familial insomnia","m":"致死性家族性不眠症（ちしせいかぞくせいふみんしょう、Fatal Familial Insomnia:FFI）は、幻覚、重度の進行性不眠症、頻脈等の症状に続き、全身の不随意運動と認知症を主徴とする中枢神経の変性疾患。WHO国際疾病分類第10版（ICD-10）ではA810、病名交換用コードはARCH。治療法は現在のところ見つかっておらず、発症後の余命は多くの場合約2年以内。"},{"w":"narcolepsy","m":"ナルコレプシー、居眠り病"},{"w":"hypocretin","m":"オレキシン"},{"w":"wakeful","m":"眠れない"},{"w":"prasomnia","m":"睡眠中の異常行動や身体現象のこと。睡眠時随伴症とも呼ばれる。"},{"w":"groggy","m":"'足元がふらつく、グラグラの"},{"w":"harbinger","m":"先触れをする人、先駆者"},{"w":"weary","m":"あきあきしている、うんざりしている"},{"w":"banish","m":"流刑にする、払いのける"},{"w":"accretion","m":"ＣＵ付着[堆積]物; Ｕ(かたく)(付着･成長による)増大, 拡大.)増大"},{"w":"deride","m":"あざける、嘲笑う"},{"w":"lushly","m":"<草などが>青々と茂った; 草木の茂る."},{"w":"Pyrrhocoris","m":"タイリクホシカメムシ"},{"w":"mealworms","m":"コナムシ：貯蔵庫の害虫"},{"w":"contention","m":"争い、論争"},{"w":"passing","m":"時の、時間の / 世俗の / 一時の、つかの間の、はかない"},{"w":"balled-up","m":"球になった、丸められて"},{"w":"nucleus","m":"細胞核"},{"w":"gallows","m":"絞首刑台"},{"w":"clump","m":"生物)凝集する"},{"w":"cytology","m":"細胞学"},{"w":"runty","m":"<発育の止まった、いじけた、チビの、小形の"},{"w":"procreate","m":"出産する、子供を産む"},{"w":"recombine","m":"遺伝子を)組み替える"},{"w":"posterity","m":"後代"},{"w":"dork","m":"嫌なやつ、間抜け、ペニス"},{"w":"pudendum","m":"［解剖］(女性の)外陰部"},{"w":"candid","m":"正直な、あけすけな / ざっくばらん"},{"w":"cirrhosis","m":"肝硬変"},{"w":"perpendicular","m":"直立した、直角をなす"},{"w":"necessitate","m":"余儀なくさせる"},{"w":"acolyte","m":"従者"},{"w":"demise","m":"〈王位〉を譲る / 遺贈される"},{"w":"amok","m":"amok / 狂暴に暴れ回る"},{"w":"phenylpropanolamine","m":"フェニルプロパノールアミン /  / アレルギー反応または呼吸器系の感染症を緩和するのに多くの調合剤の中で使用されたアドレナリン薬品"},{"w":"appreciable","m":"はっきりと感じ取れる"},{"w":"heckle","m":"ヤジを飛ばす"},{"w":"gynecology","m":"婦人科"},{"w":"intrauterine","m":"子宮内の"},{"w":"erogenous","m":"性的満足を与える、性欲を刺激する"},{"w":"obstetrics","m":"産科学"},{"w":"flank","m":"場所・物の)側面に位置する"},{"w":"fallopian tube","m":"管（状の）、輸卵管の、卵管の、耳管の"},{"w":"oviduct","m":"管（状の）、輸卵管の、卵管の、耳管の"},{"w":"epididymis","m":"精巣状態、副睾丸"},{"w":"seminal","m":"精液の、生殖の"},{"w":"vesicle","m":"小嚢、小胞"},{"w":"perennial","m":"永続する、絶え間ない、反復する"},{"w":"trauma","m":"外傷、外傷性障害"},{"w":"to name but a few","m":"いくつか例を挙げると"},{"w":"disconcertingly","m":"困惑させるほどに"},{"w":"spurt","m":"噴出する、スパートする"},{"w":"gawky","m":"気の利かない、内気な、無様な"},{"w":"opulent","m":"豪華な、豪奢な、贅沢な"},{"w":"shatter-proof","m":"破砕［飛散］防止の"},{"w":"effusive","m":"感情をあらわにした、ほとばしり出る"},{"w":"blunder","m":"へま、うろうろする"},{"w":"fecundity","m":"多産性、多産能力"},{"w":"imponderanle","m":"計れない、評価不可能な、不確定要素"},{"w":"hardy","m":"頑丈な、強い体力を必要とする"},{"w":"ectopic","m":"転位の、偏位の"},{"w":"blastocyst","m":"胚盤胞（はいばんほう、英: blastocyst）とは、卵割腔形成後から着床前の胚形成初期に形成される構造のことである。"},{"w":"gastrulation","m":"原腸胚（げんちょうはい、英: Gastrula）は、動物の発生の段階の一つの名である。胞胚の後にあたり、脊索動物ではこれに続く段階は神経胚である。原腸が形成される段階にあたり、胚葉の分化が見られるなど、発生の上で特に重要な時期の一つである。"},{"w":"fraternal twins","m":"二卵性双生児"},{"w":"ovulation","m":"排卵する"},{"w":"hyperemesis gravidrum","m":"妊娠悪阻 （にんしんおそ）は、 妊娠 によって起こる激しい 吐き気 や 嘔吐 によって 体重が減ったり 、 脱水 症状になることである"},{"w":"bland","m":"風味の乏しい、味気ない"},{"w":"rash","m":"向こう見ずな、無分別な"},{"w":"abjure","m":"〜をきっぱりと捨てる、退ける"},{"w":"conjugal","m":"結婚上の、婚姻上の"},{"w":"oophorectomy","m":"卵巣切除術"},{"w":"puerperal","m":"産婦の、産褥婦の、出産の"},{"w":"delirious","m":"<譫妄状態の、意識混濁した、有頂天になった"},{"w":"consign","m":"追いやる / 1«施設･管理者･ごみ箱などに»<やっかいな人･物>を引き渡す, ゆだねる, 捨てる"},{"w":"despairing","m":"やけになった、絶望的な"},{"w":"rant","m":"大声を張り上げる、喚き散らす"},{"w":"carbolic acid","m":"石炭酸の"},{"w":"preeclampsia","m":"しかんぜんしょう"},{"w":"toxemia","m":"毒血症"},{"w":"head off","m":"進路を転ずる、回避する"},{"w":"amniotic","m":"羊膜の"},{"w":"exquisite","m":"見事な、精巧な、優雅な"},{"w":"prostaglandin","m":"プロスタグランジン:血管拡張、子宮筋収縮などの作用がある物質"},{"w":"cephalopelvic","m":"頭蓋骨盤の"},{"w":"contortion","m":"ねじれ、歪み"},{"w":"protract","m":"〜を延長する、長引かせる"},{"w":"trying","m":"耐え難い、辛い"},{"w":"pethidine","m":"ペチジン：鎮痛剤"},{"w":"epidural","m":"硬膜外麻酔、硬膜外の"},{"w":"microbiota","m":"微生物？"},{"w":"predisposition","m":"素因、性質"},{"w":"oligosaccharids","m":"オリゴ糖"},{"w":"bribe","m":"誘惑物、えさ"},{"w":"plastic","m":"自由な形にできる、塑像できる、可塑性の"},{"w":"recoil","m":"ひるむ、あとずさりする"},{"w":"tic douloureux","m":"疼痛性チック"},{"w":"discern","m":"見つける、認識する"},{"w":"ameliorate","m":"改善する、改良する"},{"w":"daub","m":"塗り潰す、塗る"},{"w":"nociceptor","m":"侵害受容器（ 損傷を起こすような種類・強度の刺激に反応する感覚器）"},{"w":"myelin","m":"髄鞘（ずいしょう、myelin sheath）は、神経科学において脊椎動物の多くの神経細胞（ニューロン）の軸索の周りに存在する絶縁性の脂質の層を指す。"},{"w":"stately","m":"堂々たる態度、貫禄、品格 ; 気迫 / （かぶと・帽子の）羽飾り"},{"w":"modal","m":"様式の、形式上の"},{"w":"hematology","m":"血液学者"},{"w":"reciprocal","m":"代償の、返礼の、逆の"},{"w":"innervation","m":"神経支配、神経興奮の伝播"},{"w":"proprioception","m":"固有受容性感覚"},{"w":"integrative","m":"統合的な"},{"w":"bibloiphile","m":"愛書家、蔵書家"},{"w":"peripheral","m":"周囲、周辺にある"},{"w":"sympathetic","m":"アテノロール（Atenolol、商品名：テノーミン）はβブロッカーと称される薬物の一つで、交感神経のに対する拮抗作用を示す。 主として心血管疾患の治療に用いられる"},{"w":"parasympathetic","m":"副交感神経の"},{"w":"miscellany","m":"寄せ集め、ごた混ぜ"},{"w":"neuropathy","m":"身体の 様々な 部位 に 痛み や しびれ 、 刺痛 、 腫脹 、 筋力低下 などが 起こる 神経系 の 病態。"},{"w":"apogee","m":"遠地点、頂点、絶頂"},{"w":"remedial","m":"治療上の、矯正の、改善の"},{"w":"meninges","m":"owassanウイルスは髄膜脳炎を引き起こす2つの系統から成る神経毒性フラビウイルスである"},{"w":"migraine","m":"偏頭痛"},{"w":"precipitate","m":"<〜の発生を早める、促進させる、突き落とす"},{"w":"corruption","m":"くずれ、なまった"},{"w":"indisposed","m":"-かげんが悪い、〜する気がしない"},{"w":"mutable","m":"変わりやすい、移り気の、気まぐれな"},{"w":"attenuate","m":"〜を痩せ細らせる、薄める、減じる"},{"w":"amulet","m":"お守り"},{"w":"plagiarism","m":"剽窃"},{"w":"donnerwetter","m":"ドイツ語)これは驚いた"},{"w":"aide-de-camp","m":"フランス語)補佐官、副官"},{"w":"Phlegmatical","m":"無気力な、沈着な"},{"w":"debilitate","m":"衰弱させる、弱らせる"},{"w":"syphilis","m":"梅毒"},{"w":"analgesia","m":"無痛覚(症)"},{"w":"suggestible","m":"暗記にかかりやすい、影響を受けやすい"},{"w":"flatterer","m":"おべっか使い、へつらう人"},{"w":"sycophant","m":"おべっか使い、ごますり"},{"w":"forceps","m":"鉗子、(甲殻類の)はさみ"},{"w":"potent","m":"勢力のある、有力な ; 力強い ; 強い影響力がある"},{"w":"poliomyelitis","m":"脊髄灰白質炎、脊髄性小児麻痺、ポリオ"},{"w":"wonderous","m":"文)前兆的な; (将来に対して)重大な意味を持つ; 不吉な<事･物など>. /  / 2(非難して)もったいぶった; 尊大な<話し方･態度･文体など>. /  / 3驚異的な, 驚くべき."},{"w":"out of sort","m":"元気がない、気分が悪い"},{"w":"neuromyasthenia","m":"神経筋無力症"},{"w":"commute","m":"減刑する"},{"w":"inroad","m":"参入、食い込み、進出"},{"w":"behest","m":"命令、要請"},{"w":"flit","m":">すっと動く、(せわしなく)動き回る、飛び去る"},{"w":"malady","m":"病気、病弊、悪弊、悪癖"},{"w":"sweating sickness","m":"粟粒熱（ぞくりゅうねつ、英語: Sweating sickness、military fever、ラテン語: sudor anglicus）はイングランドと後にヨーロッパ各地を襲った、重篤な疾患。1485年に登場し、1551年以降現れていない。急激に発症し、数時間のうちに死にいたる場合もあった。現在でも原因は不明である"},{"w":"preponderance","m":"かたく)重さ[数, 量, 勢力]でまさって."},{"w":"Powassan virus","m":"owassanウイルスは髄膜脳炎を引き起こす2つの系統から成る神経毒性フラビウイルスである"},{"w":"tularemia","m":"ツラレミア、野兎病(rabbit fever)"},{"w":"achy","m":"痛む、疼く"},{"w":"reticent","m":"黙りがちの、口の重い"},{"w":"Bourbon virus","m":"バーボンウイルスは、ヒトで深刻な病気を引き起こす新しく発見されたRNAウイルスです。"},{"w":"vector","m":"病原媒介昆虫 / （飛行機・ミサイルなどの）進路、起動 / 衝動"},{"w":"perversely","m":"強情に、あいにくと"},{"w":"Loprosy","m":"らい(癩)病,(道徳的)腐敗"},{"w":"islet","m":"島状のもの"},{"w":"cervical","m":"子宮頸管部の、首の"},{"w":"typhus","m":"発疹チフス"},{"w":"bacillus","m":"'バチルス、捍菌（かんきん）"},{"w":"rickettsia","m":"リケッチア、細菌に近い微生物"},{"w":"fearsome","m":"おぞましい、とてつもない"},{"w":"elude","m":"回避する、かわす"},{"w":"blinding","m":"目をくらますような、分別を失わせるような、際立った"},{"w":"pustule","m":"膿疱、吹き出物、いぼ"},{"w":"virology","m":"ウイルス学"},{"w":"viable","m":"生きていける、成長しうる"},{"w":"spes phthisica","m":"'肺結核患者に起こる陶酔状態"},{"w":"elated","m":"大得意の、意気盛んな"},{"w":"phrenic","m":"横隔膜の"},{"w":"tack","m":"方針、やり方 / 上手回し、逆風を間切ること"},{"w":"pickaxe","m":"つるはし"},{"w":"borough","m":"ニューヨークの行政区"},{"w":"formidable","m":"手に負えない、解答困難な"},{"w":"vanquish","m":"〜を征服する、を克服する"},{"w":"bubonic plague","m":"腺ペスト (センペスト、英語: bubonic plague) は、3種類あるペストの1種であり、ペスト菌によって発病する[1]。ヒトペストの80-90%を占める[5]。"},{"w":"leishmaniasis","m":"リーシュマニア症（リーシュマニアしょう、leishmaniasis）とはトリパノソーマ科の原虫リーシュマニアの感染を原因とする人獣共通感染症の総称[2]。サシチョウバエ類によって媒介される。原虫の種によって症状にかなりの差があり、ヒトでは主に内臓リーシュマニア症（カラアザール・黒熱病・ダムダム熱）と皮膚リーシュマニア症（東洋瘤腫・エスプンディア・チクレロ潰瘍）とに分類される。"},{"w":"yaws","m":"フランベジア（framboesia, 英病名：yaws）は、スピロヘータの一属であるトレポネーマ属によって発生する感染症である。トレポネーマ属による疾患には、梅毒、ピンタ、ベジェルなどがある。後記の理由により、森林梅毒や風土性トレポネーマ症とも呼ばれる[1]。梅毒の原因菌である梅毒トレポネーマ Treponema pallidum と形態学的にも血清学的にも鑑別できない[1]。"},{"w":"burrow","m":"穴を掘る、穴を掘って進む"},{"w":"parasitology","m":"寄生虫学"},{"w":"horrid","m":"忌まわしい、ひどく不快な"},{"w":"schistosomiasis","m":"住血吸虫病、bilharzia"},{"w":"bandage","m":"包帯をする"},{"w":"pupa","m":"さなぎ、(複数)pupae"},{"w":"wretched","m":"悲しむべき、悲惨な"},{"w":"ineluctable","m":"不可避の、避けられない"},{"w":"be at play","m":"効果を発揮している、影響を及ぼしている"},{"w":"determinant","m":"決定因、決定要素、行列式、決定辞"},{"w":"multiple sclerosis","m":"多発性硬化症（たはつせいこうかしょう、英: multiple sclerosis; MS）は、中枢性脱髄疾患の一つで、神経のミエリン鞘が破壊され脳、脊髄、視神経などに病変が起こり、多様な神経症状が再発と寛解を繰り返す疾患。日本では特定疾患に認定されている指定難病である。"},{"w":"indubitable","m":"疑う余地のない、確かな"},{"w":"trunk","m":"胴体"},{"w":"pycnodysostosis","m":"濃化異骨症（のうかいこつしょう）　 265800 AR　3"},{"w":"indolent","m":"痛みのない、治癒が遅い"},{"w":"overindulgent","m":"放任しすぎる、わがままさせすぎる"},{"w":"wildbeest","m":"ヌー(Gnu)"},{"w":"hemagglutinin","m":"インフルエンザウイルス、およびその他多くの細菌、ウイルスの表面上に存在する抗原性糖タンパク質である。ヘムアグルチニンとも表記される。 ウイルスはこのヘマグルチニンの働きによって細胞に感染する。"},{"w":"iteration","m":"繰り返し、反復"},{"w":"be lumped in with","m":"いっしょくたくにする、同列にみなす"},{"w":"interchangeable","m":"'交換できる、入れ替えられる"},{"w":"lockjaw","m":"破傷風などによる)開口障がい、牙関緊急(がかんきんきゅう)"},{"w":"shaffle off","m":"急いで出て行く、立ち去る"},{"w":"apotosis","m":"アポトーシス（apoptosis）とは、細胞の自然死のことを指します。"},{"w":"hemato-oncology","m":"血液腫瘍学"},{"w":"accrete","m":"'ともに大きくなる、共生する"},{"w":"willfully","m":"知っていながら"},{"w":"malevolent","m":"へそ曲がりの / 頑迷な気質 / 邪悪な、性倒錯の"},{"w":"a suit of","m":"一式の、一連の"},{"w":"carcinomas","m":"癌腫、がん"},{"w":"epithelial","m":"上皮（組織）"},{"w":"connective tissue","m":"結合組織"},{"w":"sarcomas","m":"カポジ肉腫 : エイズ患者によく見られる"},{"w":"esophagus","m":"（gullet）"},{"w":"plight","m":"ありさま、逆境、窮状"},{"w":"cataract","m":"?滝、(特に)大滝、瀑布"},{"w":"mortification","m":"屈辱、無念、禁欲、苦行、壊疽、脱疽"},{"w":"forlorn","m":"惨めな、わびしい、孤独の"},{"w":"thrust","m":"突っ込む、突き刺す"},{"w":"noisome","m":"いやな、不快な、有害な"},{"w":"fold","m":"しわ、ひだ"},{"w":"flame retardant","m":"難炎剤"},{"w":"polycyclic-hydrocarbon","m":"多環芳香族炭化水素（たかんほうこうぞくたんかすいそ、英: polycyclic aromatic hydrocarbon、PAH）は、ヘテロ原子や置換基を含まない芳香環が縮合した炭化水素の総称である[1]。縮合環式炭化水素とも呼ばれる。 多環芳香族炭化水素には100以上の化学物質がある"},{"w":"papillomavirus","m":"パピローマウィルス、乳頭腫ウィルス"},{"w":"foul","m":"悪臭のある、むかつくような、不潔な、汚い、よごれた、濁って汚い、腐った、腐敗した、悪い、しけ模様の"},{"w":"mastectomy","m":"乳房切除"},{"w":"cambric","m":"-薄地の白い高級な麻または綿織物"},{"w":"bedstead","m":"寝台[ベッド]の台"},{"w":"incision","m":"切り目、切り口、切開"},{"w":"grain","m":"（木材・石材・なめし皮などの）組織、きめ、木目、割れ目、繊維、織糸の縦糸方向"},{"w":"rackle","m":"ガタガタする"},{"w":"deft","m":"腕のいい"},{"w":"reflective","m":"反射する、思索にふける、考え込む"},{"w":"excision","m":"除去、切除、削除"},{"w":"stench","m":"死臭"},{"w":"seepage","m":"水・油などの）浸出、浸出液"},{"w":"recluse","m":"隠遁者"},{"w":"taxing","m":"負担がかかる"},{"w":"hideous","m":"忌まわしい / 恐ろしく大きい"},{"w":"growth","m":"はれ、腫瘍"},{"w":"cyclotron","m":"Ｃ[物理]サイクロトロン(荷電粒子加速器)."},{"w":"deuteron","m":"重陽子"},{"w":"remission","m":"軽減すること、緩和"},{"w":"asphyxiate","m":"かたく)[通例be ～d]窒息する, 仮死状態になる(suffocate)."},{"w":"irradiation","m":"放射線に当てること"},{"w":"prong","m":"先の尖った部分、川の支流"},{"w":"transgressor","m":"違反者、罪人"},{"w":"lymphoblastic leukemia","m":"急性リンパ性白血病"},{"w":"punishing","m":"苦痛を与える、疲労困憊させる"},{"w":"collateral","m":"-側面にある、平行した、付随する"},{"w":"Hodgkin's disease","m":"ホジキン病"},{"w":"betray","m":"暴く、暴露する、示す"},{"w":"canker","m":"害毒、病根、弊害"},{"w":"gram-negative","m":"グラム陰性の"},{"w":"armory","m":"兵器庫、造兵廠"},{"w":"by one reckoning","m":"ある計算では"},{"w":"illicit","m":"=禁制の、是認されない、無免許の"},{"w":"keel over","m":"ひっくり返る"},{"w":"whooping cough","m":"百日咳"},{"w":"scarlet fever","m":"猩紅熱"},{"w":"apportion","m":"配分する"},{"w":"cystic fibrosis","m":"嚢胞性線維症"},{"w":"angiogram","m":"血管のX線写真"},{"w":"unwieldly","m":"扱いにくい、不恰好な"},{"w":"sojourn","m":"寄留、逗留"},{"w":"urethra","m":"尿道"},{"w":"rectum","m":"結腸直腸"},{"w":"dispirit","m":"〈物を〉湿らせる / 〈活気・熱意・行動などを〉鈍らせる、くじく / 〈人を〉落胆させる / 湿る"},{"w":"incontinent","m":"失禁の"},{"w":"incidentaloma","m":"偶発腫"},{"w":"droll","m":"ひょうきんな、けっさくな"},{"w":"atenolol","m":"アテノロール（Atenolol、商品名：テノーミン）はβブロッカーと称される薬物の一つで、交感神経のに対する拮抗作用を示す。 主として心血管疾患の治療に用いられる"},{"w":"raft of","m":"うんざりするほどたくさんの、しつこく繰り返される"},{"w":"transgression","m":"違反　犯罪"},{"w":"errant","m":"正道)から逸脱した、不倫をする"},{"w":"inherently","m":"生得的に、本質的に"},{"w":"confound","m":"まごつかせる"},{"w":"intrinsic","m":"本質的な、内在の"},{"w":"senescent","m":"老境にかかった、初老の"},{"w":"biogerontology","m":"iogerontologyとはBiology(生物学)とGerontology(ジェロントロジー、老化の科学)を合わせた造語で、なぜ動物や人間は老化するのかを生物学の観点から研究する学問を指す"},{"w":"thaw","m":"解かす、解凍する"},{"w":"tally","m":"自動計算機"},{"w":"extermination","m":"駆除、根絶、皆殺し"},{"w":"languish","m":"-惨めに暮らす、捨てられて生きる"},{"w":"antioxidant","m":"〔化学〕抑制剤、防止剤 ; 酸化防止剤 / 抑制者、抑生物 / 〔遺伝〕抑制［阻害］遺伝子"},{"w":"Free radical","m":"フリーラジカルは、不対電子を一つ以上持つ原子や分子のことを指します。これらは反応性が非常に高く、そのため寿命が短いという特徴を持っています"},{"w":"wisp","m":"小さい束、断片"},{"w":"hunch","m":"直感、体を丸める"},{"w":"racket","m":"騒音、大騒ぎ"},{"w":"oversight","m":"監督、監視 / 見過ごし、不注意"},{"w":"purity","m":"純度"},{"w":"pigment","m":"絵の具、顔料"},{"w":"liver spot","m":"肝斑"},{"w":"gruff","m":"しわがれ声の、荒々しい"},{"w":"prince-nez","m":"つるがなく、ばねで鼻に固定するメガネ"},{"w":"metachromatic leukodystrophy","m":"異染性白質ジストロフィーは、アリルスルファターゼAの欠損により発症する、常染色体劣性遺伝形式を示す遺伝病である。脳白質、末梢神経、腎臓などにスルファチドが蓄積し、中枢および末梢神経障害をきたす。発症頻度は4万～16万人に1人である。"},{"w":"fibril","m":"微少繊維、糸状枝根"},{"w":"detritus","m":"岩屑、破片(の山)、廃棄物"},{"w":"wry","m":"苦々しい、苦笑いの"},{"w":"rack up","m":"積み重ねる"},{"w":"shed","m":"服を脱ぐ"},{"w":"encephalitis","m":"脳炎、嗜眠性脳炎"},{"w":"gnaw","m":"噛み切る"},{"w":"rasping","m":"きしむような、耳障りな"},{"w":"agonal breathing","m":"死戦期呼吸（しせんきこきゅう、agonal respiration）とは、心停止直後の傷病者に見られる、しゃくりあげるような呼吸。現場や救急室では「ギャスピング（gasping）」ということが多い"},{"w":"neuromuscular-blocking agent","m":"神経筋遮断薬（しんけいきんしゃだんやく、Neuromuscular blocking agents: NMBAs）は、神経筋接合部での神経伝達を遮断し、影響を受けた骨格筋の麻痺を引き起こすものである。これはシナプス後アセチルコリン受容体への作用によって達成される。神経筋遮断薬は全身麻酔時に頻用される。"},{"w":"hasten","m":"〜の発生を早める、促進させる、突き落とす"},{"w":"palliative","m":"一時的に軽くする、palliative care 緩和ケア"},{"w":"capillay","m":"毛細血管、毛管の"},{"w":"pallor","m":"顔色の悪さ"},{"w":"livor motis","m":"死斑 （しはん）とは、 人間の 死体 に 起こる 死後変化 であり 、 皮膚の 表面に 現れる 痣 状 の 変化 である。 Livor Mortisは、 cruor や 死後変化 の同義語 (異 表記)で"},{"w":"autolysis","m":"自己分解、自己消化"},{"w":"rigor motis","m":"死後硬直"},{"w":"extremity","m":"先端、末端"},{"w":"cadaverine","m":"《化学》カダベリン◆動物の組織が腐敗するときに、タンパク質の加水分解によって生成される、無色でねばねばした悪臭のするプトマイン。"},{"w":"putrescine","m":"プトレシン（英: putrescine, putrescin, putrescene）はジアミンの一種であり、腐肉の臭いの成分である。"},{"w":"peaty","m":"泥炭の"},{"w":"bog","m":"沼地、泥沼"},{"w":"mummify","m":"ミイラにする、干からびさせる"},{"w":"embalm","m":"（死体に）防腐処理をする、エンバーミングをする、をミイラにする"},{"w":"cremate","m":"火葬にする、焼却する"},{"w":"indebted","m":"恩義がある、借金がある"},{"w":"Phaethon","m":"名]《ギリシャ神話》パエトン（◇太陽神ヘリオスの息子；父の日輪の車で地球に火災を起こしかけて，ゼウスの雷に打ちのめされた）"},{"w":"relent","m":">〈人が〉優しい気持ちになる; 同情的になる。"},{"w":"sorcerer","m":"魔法使い、魔術師"},{"w":"hubris","m":"自信過剰、傲慢"},{"w":"humility","m":"謙遜、卑下、屈辱"},{"w":"predispose","m":"なりやすくする、傾向を与える"},{"w":"preordain","m":"予定する、運命をあらかじめ定める"},{"w":"encapsulate","m":"-カプセルに包む、大切に保護する"},{"w":"exterminate","m":"〜を完全に駆除する、撲滅する"},{"w":"bogus","m":"模造の、偽の、知らない、遅れている"},{"w":"tenet","m":"見解、信条"},{"w":"waft","m":"漂わせる"},{"w":"rhesus","m":"monkey、アカゲザル"},{"w":"hoard","m":"貯蔵、秘蔵、蓄え"},{"w":"spew","m":"吐く、大量に吐き出す"},{"w":"cataclysmic","m":"凄まじい、実に恐るべき"},{"w":"confragration","m":"大火、(戦争・災害などの)突発"},{"w":"gramophone","m":"蓄音機"},{"w":"cabal","m":"陰謀、秘密結社、派閥"},{"w":"wield","m":"巧みに使う"},{"w":"ploy","m":"会話・ゲームなどで)相手の出鼻をくじく策略、気晴らし、仕事、こころみ"},{"w":"parrician","m":"貴族、パトリキ / 貴族の"},{"w":"plibeian","m":"平民の、大衆の / 平民"},{"w":"serf","m":"農奴、奴隷"},{"w":"guildmaster","m":"商業組合に寄合、またはその人"},{"w":"journeyman","m":"一人前の職人"},{"w":"antagonistic","m":"反対の、対立する"},{"w":"extricate","m":"救い出す"},{"w":"empiricism","m":"経験に基づく手法、経験論"},{"w":"canonize","m":"聖職者の列に加える、〜を聖典と認める、〜を賛美する"},{"w":"collectivize","m":"<工場･農場など>を集産化する."},{"w":"deterministic","m":"決定論者の"},{"w":"modicum","m":"少量、わずかの"},{"w":"entropy","m":"無秩序, 混乱."},{"w":"thermodynamics","m":"無秩序, 混乱. /  / 2エントロピー([物理]物質の熱力学的状態を示す抽象的な量の1つ; [情報理論]情報伝達の効率を表す尺度)."},{"w":"splinter","m":"破片になる、裂ける、割れる / ・・・をばらばらにする"},{"w":"astrologer","m":"占星術師、星占い師"},{"w":"glean","m":"拾い集める、落ち葉拾いをする"},{"w":"splotch","m":"大きな斑点、汚れ、しみ"},{"w":"ambivalence","m":"相反する感情を同時に持つこと、両面価値、二重傾向"},{"w":"surreptitious","m":"秘密の、コソコソした"},{"w":"mishap","m":"不幸な出来事、事故、不運"},{"w":"diverge","m":"それる、堕落させる、正義を踏みにじる"},{"w":"incriminate","m":"をBの原因とする"},{"w":"tattered","m":"ボロボロの、荒廃した"},{"w":"falsehood","m":"'虚言、嘘をつく、欺瞞、誤り"},{"w":"adherent","m":"信奉者、追随者"},{"w":"squirm","m":"恥ずかしがる、動揺する"},{"w":"paradigmatic","m":"パラダイムの、系列的な"},{"w":"concomitant","m":"相伴う、同時に起こる、当然のこと"},{"w":"lockstep","m":"'密集行進法、完全な同一歩調"},{"w":"concoction","m":"調理、混合、仕組むこと"},{"w":"bungling","m":"へまな"},{"w":"imbecile","m":"ばか、まぬけ、知的障害の"},{"w":"chaste","m":"貞淑な、品の良い"},{"w":"decimate","m":"〜の多くを殺す"},{"w":"enmeshed","m":"困難に陥った"},{"w":"parchment","m":"羊皮紙"},{"w":"Passover","m":"過越の祭り、出エジプトを記念するユダヤ人の大祭"},{"w":"reenact","m":"〜を再演する、再制定する"},{"w":"mince","m":"細かく切る、細分化する、控えめにいう"},{"w":"sage","m":"賢明な"},{"w":"oxymoron","m":"撞着語法　意味の対立する語句を並べて新しい意味や効果を狙う修辞法　eg. an open secret"},{"w":"vehement","m":"激しい、強烈な、猛烈な"},{"w":"totem","m":"トーテム（英語: totem）とは、特定の集団や人物、「部族」や「血縁（血統）」に宗教的に結び付けられた野生の動物や植物などの象徴のこと。"},{"w":"forage","m":"馬料徴発、略奪 / 漁る"},{"w":"reciprocate","m":"〜に報いる、返礼する"},{"w":"Levant","m":"地中海東岸の地方、 / レバント地方、レバント革"},{"w":"renounce","m":"〜を断念する、捨てる"},{"w":"Reich","m":"ドイツの)帝国"},{"w":"mesmerize","m":"〜に催眠術をかける、〜を魅了する"},{"w":"centrality","m":"'求心性、集中性、中心の位置"},{"w":"unblemished","m":"傷のない、汚れのない"},{"w":"expropriation","m":"土地の)買収、収用"},{"w":"disavow","m":"〜を拒否する、知らないという"},{"w":"prowess","m":"力量、優れた能力"},{"w":"bewail","m":"悲嘆に暮れる"},{"w":"pacifism","m":"戦争反対、良心的徴兵拒否"},{"w":"pogrom","m":"組織的大虐殺:(特に帝政ロシアにおける)ユダヤ人虐殺"},{"w":"mnemonic","m":"記憶を助ける"},{"w":"cuneiform","m":"楔形、楔形文字で書かれた"},{"w":"receptacle","m":"入れ物、容器、置き場、避難所"},{"w":"dysentery","m":"赤痢、下痢"},{"w":"cesspool","m":"汚物溜め、不潔な場所"},{"w":"latrine","m":"トイレ"},{"w":"dacha","m":"ロシアの別荘"},{"w":"paragon","m":"模範、典型、逸品"},{"w":"upend","m":"直立させる、ひっくり返しておく、打ち負かす"},{"w":"satirical","m":"風刺の、皮肉な"},{"w":"slumber","m":"まどろむ、うとうとする"},{"w":"allegorical","m":"寓話の"},{"w":"sheaf","m":"'刈り取った穀物の束、束ねる"},{"w":"summons","m":"呼び出しの命令、召集、要求、勧告"},{"w":"writ","m":"（古）writeの過去・過去分詞"},{"w":"gloss","m":"上部を飾る、虚飾"},{"w":"hem","m":"囲む、裾を上げる"},{"w":"notary","m":"公証人"},{"w":"barrister","m":"法廷弁護士"},{"w":"antipathy","m":"反感、毛嫌い、嫌悪"},{"w":"inkhorn","m":"インク壺"},{"w":"ire","m":"怒り、憤怒"},{"w":"noose","m":"輪縄、投げ縄、絞首刑"},{"w":"benevolence","m":"博愛、慈善の心"},{"w":"diabolical","m":"不愉快な、ひどい"},{"w":"reccurent","m":"再発する、頻発する、回帰性の"},{"w":"delirium","m":"せん妄、熱狂、無我夢中"},{"w":"charlatan","m":"ペテン師、はったり屋"},{"w":"oracle","m":"聖書、祭司、神主"},{"w":"epistle","m":"書簡、手紙"},{"w":"once and for all","m":"今回限りで"},{"w":"canonical","m":"聖書正典の、権威有りと認められた"},{"w":"apocryphal","m":"著作者の疑わしい、本物でない"},{"w":"canon","m":"根本原理"},{"w":"Deuteronomy","m":"申命記：旧約聖書の一書"},{"w":"Septuagint","m":"セプトゥアギンタ、七十人訳ギリシャ語聖書：最古のギリシャ語訳旧約聖書"},{"w":"hairsplitting","m":"つまらないことにうるさいこと"},{"w":"Masoretic","m":"翻訳: マソリティック"},{"w":"Malachi","m":"マラキ:　紀元前5世紀の小預言者"},{"w":"Baruch","m":"バルク: 預言者Jeremiahの予言の筆者"},{"w":"Torah","m":"トーラー、モーセ五書 / ユダヤ教の全律法、旧約聖書"},{"w":"despotism","m":"専制、独裁"},{"w":"forestall","m":"'未然に防ぐ、〜を未然に防ぐ"},{"w":"lactate","m":"乳を分泌する、授乳する"},{"w":"pressing","m":"緊急の、熱心な"},{"w":"commandment","m":"〈限度・境界・範囲を〉超える、逸脱する / 〈法・命令に〉背く　 / 違反する"},{"w":"Leviticus","m":"レビ記(旧約聖書)"},{"w":"Asherah","m":"アシラ 【Asherah】"},{"w":"Baal","m":"バアル（聖書ヘブライ語: בַּעַל、フェニキア語:"},{"w":"pagan","m":"無宗教者"},{"w":"plethora","m":"大量の / 多血症、赤血球過多症"},{"w":"adjudicate","m":"判決を下す、 / 裁定する"},{"w":"parable","m":"例え話、比喩"},{"w":"theologian","m":"神学者"},{"w":"paucity","m":"少量、少数、欠乏、不足"},{"w":"Corinthian","m":"コリントの、贅沢な、不品行な"},{"w":"clement","m":"温和な、寛容な、情け深い / 気候が穏やかな"},{"w":"Didascalia","m":"キャプション、説明書き、演技指導"},{"w":"misogyny","m":"女嫌い、女性不信"},{"w":"pervert","m":"それる、堕落させる、正義を踏みにじる"},{"w":"schism","m":"分派、教会分離、離教"},{"w":"meek","m":"柔和な"},{"w":"inquisition","m":"公式の取り調べ、尋問、調査、宗教裁判"},{"w":"theology","m":"特にキリスト教の)神学、神学理論"},{"w":"heretic","m":"異端者"},{"w":"deter","m":"説得して思いとどまらせる"},{"w":"treatise","m":"専門書"},{"w":"Sermon on the Mount","m":"山上の垂訓 /  / イエスが行った最初の重要な説教（マタイ伝、5章7節、および、ルカ伝、6章20-49節）(the first major discourse delivered by Jesus (Matthew 5-7 and Luke 6:20-49))"},{"w":"fringe","m":"狂信的な、過激な / 非主流派"},{"w":"coercion","m":"圧政、専政、弾圧政治"},{"w":"letterpress","m":"凸版活字印刷"},{"w":"exposition","m":"解説、説明、描写"},{"w":"cocoon","m":"繭、保護する、守る、すっぽりとおおう"},{"w":"interpose","m":"介在させる、差し挟む、介入させる"},{"w":"delve","m":"手探りする、掘り下げて考える"},{"w":"proto-","m":"-「最初の」「原始の」「主要な」"},{"w":"hail","m":"〜に挨拶をする、・・・を歓迎する、喝采を送る"},{"w":"blight","m":"荒廃、スラム化、枯れる、しおれる"},{"w":"concoct","m":"-でっちあげる、混ぜ合わせて作る"},{"w":"malevolence","m":"悪意、憎悪"},{"w":"orgy","m":"飲めや歌えの大騒ぎ、耽溺にふけること、酒池肉林、乱交パーティー"},{"w":"inquisitor","m":"調査官、審問官"},{"w":"unhinge","m":"ちょうつがいから外す / 混乱させる、動揺させる、揺さぶる"},{"w":"rabid","m":"狂犬病にかかった"},{"w":"fixation","m":"固定した状態、病的執着、強迫観念"},{"w":"err","m":"過ちを犯す、道から外れる"},{"w":"enshrined","m":"-正式に述べてある、記されている"},{"w":"vow","m":"誓約 / 誓う"},{"w":"celibacy","m":"=Ｕ(特に宗教的な誓いによる)独身[禁欲](状態)."},{"w":"sire","m":"子を産む、〜を創始する"},{"w":"wayward","m":"不法な、理不尽な"},{"w":"bull","m":"教皇印（bulla）"},{"w":"apostolic","m":":使徒の、12使徒の;使徒伝承の"},{"w":"subjugate","m":"服従させる"},{"w":"duchy","m":"公国 / 王族公領"},{"w":"Saracen","m":"サラセン人 / アラビア人"},{"w":"servitude","m":"奴隷状態、懲役、強制労働"},{"w":"overzealous","m":"'熱心すぎる, あまりに熱心な."},{"w":"sociopath","m":"Ｃ[精神医]社会病質者(反社会的で攻撃的)."},{"w":"downright","m":"紛れもない、全くの"},{"w":"imam","m":"-（イスラム教の）イマーム、導師"},{"w":"annal","m":"年代記、年譜"},{"w":"proponent","m":"提案者、発議者"},{"w":"gulag","m":"旧ソ連の強制労働収容所"},{"w":"agronomy","m":"Ｕ作物学, 農学."},{"w":"flagellation","m":"鞭打ち"},{"w":"patent","m":"明白な、如実に現れている、拡大された"},{"w":"whittle","m":"（木などを）少しずつ削る"},{"w":"minarchy","m":"夜警国家 / Night-watchman state"},{"w":"disenfranchise","m":"<個人･団体>から公民権[選挙権]を奪う."},{"w":"mint","m":"'造幣局、鋳造する、作り出す"},{"w":"dereliction","m":"放棄,遺棄,(職務)怠慢"},{"w":"Legalist","m":"法律尊重主義者"},{"w":"nascent","m":"生まれようとしている、発生期の、初期の"},{"w":"commissar","m":"コミッサール、（旧ソ連の）人民委員"},{"w":"perenial","m":"-永続する、絶え間ない、反復する"},{"w":"cede","m":"〈権利などを〉譲渡する、譲歩する"},{"w":"clout","m":"にらみ、打つ、"},{"w":"marshal","m":"〈物を〉整理する、集める / 〈考えなどが〉まとまる"},{"w":"nomenclature","m":"用語体系、命名法、専門語"},{"w":"hamlet","m":"小村、村落"},{"w":"statute","m":"法規、制定法、定款"},{"w":"hoist","m":"-持ち上げる、巻き上げ、引き上げ"},{"w":"Horst Wessel Song","m":"『旗を高く掲げよ』（はたをたかくかかげよ、Die Fahne hoch! ディー・ファーネ・ホーホ）は、ドイツの国民社会主義ドイツ労働者党の党歌。別名『ホルスト・ヴェッセルの歌』（Horst-Wessel-Lied、ホアストヴェセルリート）"},{"w":"purview","m":"範囲、権限、視野"},{"w":"incarcerate","m":"'〜を投獄する、〜を幽閉する"},{"w":"expendable","m":"かたく)消費できる, 消耗品の; 使い捨ての; [軍]消耗的な, <兵員が>(時を稼ぐために)犠牲に供し得る."},{"w":"vagrant","m":"浮浪者、無宿者"},{"w":"taunt","m":"あざける、嘲笑う"},{"w":"denunciation","m":"弾劾、告発"},{"w":"investiture","m":"授与、任官 / 投資、出資"},{"w":"veneration","m":"尊敬、崇拝"},{"w":"idolatrous","m":"偶像崇拝の、盲信する"},{"w":"wrath","m":"主に文)<行為･感情が>復讐(ふくしゆう)の, 復讐心に燃えた, 執念深い."},{"w":"vilify","m":"〜をけなす、そしる、中傷する"},{"w":"shitty","m":"いやな、ひどい"},{"w":"intinerant","m":"遊歴する、巡回する、移動式の"},{"w":"princeling","m":"幼君、小公子、小君主"},{"w":"tripartite","m":"者間の、3者からなる"},{"w":"keep tabs on","m":"〜を監視する、〜を帳簿につけておく"},{"w":"wane","m":"衰える、 / 終わりに近づく"},{"w":"rebuke","m":"叱責する / 非難、叱責"},{"w":"saboteur","m":"破壊、妨害行為をする人"},{"w":"hamstring","m":"しっけん、腱を切って足を不自由にする"},{"w":"goad","m":"刺激する、煽り立てる"},{"w":"debacle","m":"崩壊、転覆"},{"w":"sanctum","m":"神聖な場所、聖所"},{"w":"a litany of","m":"うんざりするほどたくさんの、しつこく繰り返される"},{"w":"abysmal","m":"'救いようのない、底しれない"},{"w":"callous","m":"無神経な、冷淡な"},{"w":"decimation","m":"大量破壊"},{"w":"Reichstag","m":"（もとドイツの）国会"},{"w":"stifle","m":"〈声・感情などを〉抑える、こらえる"},{"w":"ossification","m":"骨化、化骨部分 / 硬化、定型化"},{"w":"archetypal","m":"'原型（元型）的な和、手本の"},{"w":"untenable","m":"居住できない"},{"w":"sacrosanct","m":"この上なく神聖な"},{"w":"seclerotic","m":"硬化症に冒された"},{"w":"gerontocracy","m":"長老[老人]政治[政府]."},{"w":"overlord","m":"大君主"},{"w":"musket","m":"マスケット銃"},{"w":"dud","m":"だめな人、完全な失敗、不発の"},{"w":"trove","m":"貴重な発見、貴重な収集品"},{"w":"foment","m":"?（不和・反乱などを）誘発する、〜を助長する"},{"w":"vitriol","m":"痛烈な批評、辛辣な皮肉"},{"w":"ragtag","m":"寄せ集めの、烏合の衆"},{"w":"anthropomorphize","m":"擬人化する"},{"w":"predicate","m":"〜にかかっている"},{"w":"extrapolate","m":"推論する"},{"w":"sentience","m":"'感じること、感覚のあること"},{"w":"stratagem","m":"戦略、計略、策略"},{"w":"dupe","m":"騙されやすい人、騙す"},{"w":"rabbinate","m":"ラビの職、律法学者"},{"w":"ordain","m":"任命する"},{"w":"explicit","m":"きわどい、あからさまの"},{"w":"organelle","m":"細胞器官"},{"w":"disingenuous","m":"率直でない、不誠実な"},{"w":"throttle","m":"窒息させる、流れを止める"},{"w":"nexus","m":"結合、連結、関連"},{"w":"denigrate","m":"-〜を中傷する、けなす、軽視する"},{"w":"deontology","m":"義務論"},{"w":"apparatchik","m":"共産党政治局員 / お役人 / 盲従的指導者"},{"w":"ayatollah","m":"シーア派の高僧の尊称"},{"w":"unintelligible","m":"理解できない"},{"w":"automaton","m":"機械的に行動する人、 / 自動的に動くもの　自動人形"},{"w":"Judeo-","m":"ユダヤの、ユダヤと"},{"w":"jeremiad","m":"'嘆き、悲嘆、泣き言、恨み言"},{"w":"Luddite","m":"産業革命時代に機械打ち壊し集団で行った手工業者"},{"w":"tribulation","m":"苦しい試練、苦難、辛苦"},{"w":"trample","m":"ドシンドシンと歩く、〜を踏みつける"},{"w":"furnace","m":"竈、溶鉱炉、酷く熱い場所、厳しい試練"},{"w":"unalloyed","m":"'合金でない、純粋な　完全な"},{"w":"dithering","m":"コンピュータ]ディザリング、ディザ法"},{"w":"vertebrate","m":"脊椎のある、脊椎動物"},{"w":"vaunted","m":"大いに褒め上げられた、盛んに吹聴された、もてはやされた"},{"w":"woeful","m":"悲しむべき、悲惨な"},{"w":"fiduciary","m":"受託者、信託された、fiduciary duty 忠実義務"},{"w":"uprooted","m":"根こそぎにされた"},{"w":"paliability","m":"<柔軟性、しなやかさ、従順、素直さ、順応性"},{"w":"epigenetics","m":"後成学（こうせいがく）または後成遺伝学（こうせいいでんがく）"},{"w":"write someone off","m":"だめだと決めつける"},{"w":"Weimar","m":"-ワイマール　ドイツ中東部の都市"},{"w":"supermacist","m":"特定集団至上主義者"},{"w":"sanctified","m":"清められた、聖別された、信心ぶった、殊勝げな"},{"w":"salient","m":"顕著な、目立つ / 凸角"},{"w":"sidekick","m":"親友、相棒、助手、共謀者"},{"w":"subconscious","m":"意識化の、半ば無意識の、ぼんやりと意識している"},{"w":"deliberate","m":"〜を熟考する"},{"w":"recursive","m":":繰り返し用いられる、回帰できる"},{"w":"feud","m":"確執、争い、反目"},{"w":"obscure","m":"〜を曖昧にする、わかりにくくする"},{"w":"disembodied","m":"肉体を持たない"},{"w":"omnipresent","m":"遍在する"},{"w":"prescient","m":"先見の明のある、予知する"},{"w":"advent","m":"案内役を務める / 〈季節などの〉先触れをする ; 〈事が時・時代の〉到来をしらせる"},{"w":"sizable","m":"相当な大きさの"},{"w":"pass oneself off as A","m":"になりすます"},{"w":"quash","m":"抑える、鎮圧する / 無効にする、取り消す、廃棄する、却下する"},{"w":"stoke","m":"〈感情・喧嘩などを〉あおる、かき立てる"},{"w":"fortell","m":"予言する、予告する"},{"w":"riven","m":"-分裂して、引き裂かれて、割れて"},{"w":"lax","m":"手ぬるい、ゆるんだ"},{"w":"expunge","m":"消す、削除する / 絶滅させる"},{"w":"effigy","m":"肖像、画像、偶像 / 非難する、嘲笑する"},{"w":"excrement","m":"排泄物、（特に）大便"},{"w":"despotic","m":"専制的な、独裁的な"},{"w":"grandious","m":"-雄大な、荘厳な、もったいぶった"},{"w":"outlandish","m":"異国風の、異様な、遠隔の、僻地の"},{"w":"filibuster","m":"引き伸ばし戦術 / 牛歩戦術"},{"w":"the praetorian guard","m":"ローマ史で)近衛軍"},{"w":"underling","m":"下っぱ、手下"},{"w":"ingratiating","m":"媚びる、取り入ろうとする、魅力のある、気持ちのよい"},{"w":"quandary","m":"困惑、苦境、板挟み"},{"w":"annotated","m":"注釈つきの"},{"w":"conquistador","m":"コンキスタドール、征服者"},{"w":"overt","m":"あからさまな"},{"w":"prejudicial","m":"偏見をいだかせる、不利となる、そんがいを与える、有害な"},{"w":"subservient","m":"屈従する、卑屈な、追従する / 副次的な、付随する"},{"w":"converge","m":"同時発生、収束 / 同時発生"},{"w":"corporeal","m":"身体上の、肉体上の"},{"w":"verisimilitude","m":"本当らしさ、ありそうなこと / 本当らしく見えるもの"},{"w":"evocative","m":"喚起する"},{"w":"vantage point","m":"見晴らしのきく地点、地の利 / （有利な）立場"},{"w":"purportedly","m":"真偽のほどは確かでないが)おそらく、噂によれば"},{"w":"methodical","m":"整然とした、組織的な、几帳面な"},{"w":"banal","m":"陳腐な、平凡な"},{"w":"reverend","m":"尊師 / 畏敬されて当然の、聖職の"},{"w":"succumb","m":"負ける / 死ぬ"},{"w":"disequilibria","m":"不均衡、不安定"},{"w":"interplay","m":"相互作用、相互交錯"},{"w":"voluminous","m":"服などが)ゆったりした、ダブダブの"},{"w":"counterweight","m":"平衡錘、釣り合い重り"},{"w":"fervor","m":"真剣さ"},{"w":"pronouncement","m":"意見、公告、宣言"},{"w":"diametrical","m":"正反対の、直径の"},{"w":"inegalitarian","m":"平等主義でない、反平等主義の、不平等な、不公平な"},{"w":"indispensable","m":"欠くことのできない"},{"w":"decile","m":"統計) 十分位数"},{"w":"centile","m":"百分位 [ランク付けされたスコアの分布を 100 の等しい部分に分割する 99 ポイントのそれぞれ]."},{"w":"incontrovertible","m":"'議論の余地ない、疑いのない"},{"w":"exogenous","m":"外因的な、外因性の"},{"w":"mire","m":"沼地、ぬかるみ、窮地"},{"w":"entail","m":"引き起こす、強いる"},{"w":"undue","m":"甚だしい"},{"w":"primogeniture","m":"長子の身分、長男子相続権"},{"w":"dashed","m":"落胆した、失望した。 / しゃくに触る、いまいましい"},{"w":"imtegral","m":"不可欠の、肝要な、完全な"},{"w":"buffect","m":"打撃、揉まれること / 〜を(手・拳で)打つ / 〜を打ちのめす"},{"w":"endenger","m":"生む、生じる、引き起こす"},{"w":"tautological","m":"反復の、冗長な"},{"w":"subtlety","m":"'希薄なこと、繊細さ、巧妙さ"},{"w":"tithe","m":"分の1税"},{"w":"autarky","m":"経]Ｕ経済的自給自足[自立政策]; Ｃ経済自立[自給自足]国家."},{"w":"manna","m":"思いがけない)天の助け, 恵み"},{"w":"implausible","m":"信じがたい、ありえない"},{"w":"subsistence","m":"必要最低限の暮らし / 時間を超越した存在"},{"w":"vertiginous","m":"目がまわる"},{"w":"imperceptible","m":"わずかの、微細な / 知覚できない"},{"w":"offshoot","m":"派生物、分家、分派、子孫 / 枝"},{"w":"wit large","m":"明白な、如実に現れている、拡大された"},{"w":"pronatal","m":"'出産前の、胎児の、妊娠中の"},{"w":"presumptuous","m":"遠慮な、生意気な、差し出がましい、図々しい、でしゃばりな"},{"w":"rudimentary","m":"根本の、初歩の / 未発達の"},{"w":"no mean feat","m":"並大抵の事ではない"},{"w":"aficionado","m":"熱愛者、こり屋、マニア"},{"w":"per se","m":"それ自体は"},{"w":"inextricable","m":"解決できない、込み入った"},{"w":"assignat","m":"as･sig･na･tion"},{"w":"germinal","m":"胚の、幼芽の / 発達の初期段階の、未発達の"},{"w":"Ancien Regime","m":"an･cien ré･gime"},{"w":"livre","m":"リーブル: フランスの旧貨幣単位"},{"w":"bimetallism","m":"（通例金銀の）複本位制"},{"w":"Livres tournois","m":"リヴル・トゥルノワは、中世フランスで使用された通貨単位であり、特にフランス王国において広く流通していました。この通貨は、金属の含有量によってその価値が決まっており、特に銀が基準とされました。リヴルは、他の通貨との換算も行われており、商業や貿易の際に重要な役割を果たしました。"},{"w":"guinea","m":"guin･ea †"},{"w":"certitude","m":"確実性、確信"},{"w":"inference","m":"推測、推定"},{"w":"perspicuous","m":"明快な、明確な"},{"w":"cavalierly","m":"傲慢に、無遠慮に / 騎士らしく"},{"w":"live off　A","m":"で生きていく"},{"w":"proceed","m":"売上、収益"},{"w":"homogeous","m":"同種の"},{"w":"commensurate","m":"等しい、同等の / 相応の、釣り合った"},{"w":"command","m":"〜を制する、支配する"},{"w":"rentier","m":"フランス語)）年金受給者、金利、配当、家賃等の定期収入による生活者"},{"w":"cataclysm","m":"激変、大洪水、大変革"},{"w":"laissez faire","m":"レッセフェール:経済上の自由放任主義、無干渉主義"},{"w":"durably","m":"永続的に"},{"w":"chafe","m":"=すり減らす、擦り切らす、悩ます、怒らせる"},{"w":"intermezzo","m":"幕間演芸、幕間狂言 / 間奏曲"},{"w":"coffer","m":"国庫 / 井堰"},{"w":"countenance","m":"是認、是認する"},{"w":"blast furnace","m":"高炉"},{"w":"probate","m":"検認済みの遺言書 / 検認の、検認裁判所の"},{"w":"oscillate","m":"振動する / ふらつく"},{"w":"odious","m":"'嫌悪すべき、ひどく不愉快な"},{"w":"sweeping policy","m":"抜本的な政策"},{"w":"amplitude","m":"広いこと、広さ、大きさ / 十分なこと / （知力などの）幅の広さ"},{"w":"chattel","m":"（法律）動産、所持品"},{"w":"antibellum","m":"'戦前の、（米）南北戦争前の"},{"w":"indigent","m":"貧困のために)生活必需品に事欠く;窮乏した、貧乏な"},{"w":"racketeering","m":"Ｕ違法な金もうけ; 恐喝, ゆすり, たかり."},{"w":"pervasive","m":"行き渡る、普及する、蔓延する"},{"w":"patrimony","m":"世襲財産,家督,親譲りのもの,遺伝,伝承,伝統,教会基本財産"},{"w":"bequest","m":"（動産）の遺贈 / 遺産;遺風、形見"},{"w":"malleable","m":"鍛える事ができる / 従順な"},{"w":"porous","m":"小穴の多い、多孔性の、穴だらけの"},{"w":"in passing","m":"ついでに（言う、書く）"},{"w":"paltry","m":"わずかばかりの<金額など>."},{"w":"caprice","m":"予知できない急変"},{"w":"prose","m":"平凡、単調、無味乾燥　; 退屈な話"},{"w":"assiduous","m":"絶え間ない、勤勉な"},{"w":"rapcity","m":"強欲さ"},{"w":"tutelage","m":"tu･te･lage"},{"w":"virulence","m":"毒性、発病力 / 激しい悪意"},{"w":"sterility","m":"不妊、不毛、無菌状態、無効、貧弱"},{"w":"diffuse","m":"〈演説・文章が〉締まりがない、散漫な、冗長な"},{"w":"glib","m":"ペラペラよく喋る、軽薄な"},{"w":"lurid","m":"どぎつい、きみの悪い"},{"w":"coup de grace","m":"Ｃ(かたく)[通例the ～](弱体化した組織や制度･痛みに苦しむ人や動物などへの)最後の一撃, とどめ."},{"w":"opulency","m":"裕福さ、贅沢さ;豊富"},{"w":"destitute","m":"貧困な、極貧の"},{"w":"suffrage","m":"<個人･団体>から公民権[選挙権]を奪う."},{"w":"presage","m":"前兆、〜を予覚する、予言する"},{"w":"heady","m":"酔わせる、陶然とさせる / 興奮させる、性急な、激しい"},{"w":"implacable","m":"無慈悲な"},{"w":"a priori","m":"演繹(えんえき)的な[に]; 先天[先験]的な[に](⇔ a posteriori)."},{"w":"precipitous","m":"切り立ったような,険しい,断崖絶壁の,急な,急勾配(こうばい)の,せっかちな,無謀な"},{"w":"have one's hand in the till","m":"店のお金に手を付ける"},{"w":"abject","m":"屈辱的な、惨めな / 卑しい、下劣な"},{"w":"proportionately","m":"比例して"},{"w":"annuitize","m":"年金化する"},{"w":"content to","m":"甘んじる、満足する"},{"w":"revel","m":"非常に喜ぶ"},{"w":"tarry","m":"留まる、滞在する"},{"w":"pastor","m":"主任司祭"},{"w":"minutely","m":"詳細に、厳密に / ひっきりなしに"},{"w":"stratosphere","m":"-成層圏、最終段階、トップクラス"},{"w":"follow","m":"結果として起こる"},{"w":"denote","m":"意味する、・・・を示す"},{"w":"piecemeal","m":"'漸次、断片的に、ばらばらに"},{"w":"endowment","m":"基金 / 天賦の才能"},{"w":"plow back into","m":"〜に再投資する"},{"w":"haphazard","m":"でたらめの、行き当たりばったりの"},{"w":"supple","m":"曲げやすい、柔軟な、しなやかな / 従順な、言いなりになる ; 影響されやすい"},{"w":"premptory","m":"威圧的な、おうへいな、断定的な、独断的な"},{"w":"murky","m":"怪しい"},{"w":"sumptuous","m":"<草などが>青々と茂った; 草木の茂る. /  / 2(くだけて)ぜいたくな, 豪勢な; 飾り立てた; セクシーな."},{"w":"bash","m":"強打する、うちのめす"},{"w":"perpetuate","m":"不朽にさせる"},{"w":"remunerative","m":"儲かる、報酬の / 報いるある"},{"w":"oblique","m":"間接的な、遠回しの"},{"w":"fray","m":"けんか、口論、争い / こすってすり減らす、緊張させる"},{"w":"contour","m":"概略、形勢 / 輪郭、外郭 / 音調曲線"},{"w":"deplore","m":"肖像、画像、偶像 / 非難する、嘲笑する"},{"w":"indictment","m":"欠陥を厳しく指摘するもの"},{"w":"endemic","m":"風土病 / 固有種"},{"w":"estate","m":"財産、所有財 / 遺産 / 身分、階級"},{"w":"viability","m":"生存能力、実行［成立］可能性"},{"w":"proclivity","m":"pro･cliv･i･ty"},{"w":"usury","m":"（特に法定利率以上の）高利で / 高利貸し"},{"w":"garner","m":"〜を蓄える、蓄積する / 〜を得る、手に入れる"},{"w":"readily","m":"直ちに、さっそく、快く、喜んで"},{"w":"indignant","m":"立腹した"},{"w":"accrue","m":"〈利子・利益〉が生じる"},{"w":"defunct","m":"死んだ、消滅した"},{"w":"opacity","m":"不透明 / 曖昧さ、愚鈍さ / 不伝導性"},{"w":"by the same token","m":"同様に、その上、さらに"},{"w":"sullen","m":"黙り込んだ"},{"w":"kernel","m":"（果物の）仁"},{"w":"nimble","m":"素早い、機転の効く"},{"w":"brittle","m":"〈物が〉（弾力性がなく）壊れやすい"},{"w":"desolate","m":"孤独な、さびしい、惨めな / 悲しませる、心細くさせる"},{"w":"convulsion","m":"激動、動乱"},{"w":"conceive","m":"妊娠する、思いつく / 始める"},{"w":"conflagration","m":"（戦争・災害などの）突発"},{"w":"spate","m":"大量、多数 / 洪水、氾濫"},{"w":"gut","m":"'〜を焼き尽くす、内蔵を取る"},{"w":"confabulation","m":"作話 / 談笑、おしゃべり"},{"w":"descent","m":"家系、血統"},{"w":"fitful","m":"発作的な、気まぐれな"},{"w":"lull","m":"一時的な静けさ"},{"w":"flirtation","m":"男女の戯れ"},{"w":"glum","m":"むっつりした"},{"w":"heredity","m":"性格、気性 / 世襲伝統"},{"w":"recurrent","m":"再発する、頻発する、回帰性の"},{"w":"repression","m":"抑圧 / 衝動、本能"},{"w":"lurk","m":"潜む、潜在する / うろつく"},{"w":"churn","m":"激しくかき混ぜること"},{"w":"froth","m":"まくし立てる"},{"w":"obverse","m":"対応するもの、反対物"},{"w":"hang up one's boots","m":"足を洗う、引退する"},{"w":"cumbersome","m":"ひどく不潔な、汚れた / 意地悪な、敵意のある / 扱いにくい、危険な、険悪な / 淫らな"},{"w":"intersect","m":"〜を横断する、交差させる"},{"w":"buffet","m":"打撃、もまれること / 〜を打ちのめす"},{"w":"neurotic","m":"神経症の"},{"w":"taxonomy","m":"分類法"},{"w":"bleak","m":"わびしい、木の滅入るような / 荒涼とした、寒々とした"},{"w":"sluggish","m":"緩慢な、緩やかや"},{"w":"gaunt","m":"わびしい、木の滅入るような / 荒涼とした、寒々とした"},{"w":"scoff","m":"嘲笑う、馬鹿にする"},{"w":"mystic","m":"神秘論者"},{"w":"dung","m":"肥やし / 汚らしいもの"},{"w":"taint","m":"気味、痕跡 / 汚染、腐敗、堕落"},{"w":"vicar","m":"教区主管者代理"},{"w":"transmutation","m":"変形、変質、変化 / 変成突然変異"},{"w":"unsavory","m":"評判はよろしくない"},{"w":"mechanistic","m":"機械論の / 力学的な"},{"w":"veer","m":"進行方向が急に変わる"},{"w":"injunction","m":"差し止め命令"},{"w":"disruptive","m":"破壊的な、崩壊をもたらす"},{"w":"genius","m":"非凡な才能"},{"w":"variant","m":"異なる、別の、相違する / 種々の、さまざまな"},{"w":"synthesis","m":"総合 / 合成接骨、接合"},{"w":"treacherous","m":"〈足場などが〉不安定〔危険な〕な"},{"w":"sling","m":"つるす"},{"w":"boulder","m":"巨石"},{"w":"spur","m":"刺激、激励、鼓舞"},{"w":"squeamish","m":"すぐに気分が悪くなる、臆病な / いやに上品ぶった、取り澄ました / 几帳面すぎる / 良心的すぎる"},{"w":"rifle","m":"くまなく探す"},{"w":"strew","m":"一面に散らばる"},{"w":"patrician","m":"貴族、パトリキ / 貴族の"},{"w":"lumper","m":"非細分主義者"},{"w":"plumage","m":"羽衣 / 凝った［派手な］服"},{"w":"profane","m":"冒涜的な"},{"w":"diagram","m":"'図、グラフ、ダイヤ、予定表"},{"w":"impetus","m":"機動力、弾み、刺激 / 運動力"},{"w":"guarded","m":"用心深い、慎重な / 抜け目がない"},{"w":"belligerent","m":"交戦的な"},{"w":"cull","m":"〈最上のものを〉（・・・から）選び取る、選ぶ"},{"w":"skirt","m":"・・・のへりを通る、縁取る / ・・・を回避する"},{"w":"impoverished","m":"［活気、想像力などを］失った / 〈土地などが〉やせた、不毛の"},{"w":"wintry","m":"冬のような、冷たい"},{"w":"cagey","m":"用心深い、慎重な / 抜け目がない"},{"w":"transmute","m":"性質を変える、変質する"},{"w":"testament","m":"（・・・を）証明するもの、証拠、証"},{"w":"sport","m":"［生物］突然変異を起こす"},{"w":"incessant","m":"詳細に、厳密に / ひっきりなしに"},{"w":"foliage","m":"群葉、枝葉"},{"w":"abrasive","m":"すりむく 研磨の"},{"w":"clasp","m":"絞める / 留金"},{"w":"keel","m":"竜骨 / 倒れる、転覆する"},{"w":"neuter","m":"中立の、中性の / 去勢する"},{"w":"emasculate","m":"e･mas･cu･late"},{"w":"crystalline","m":"水晶のような; 澄んだ、透明な"},{"w":"abbot","m":"大修道院長、僧院長"},{"w":"coax","m":"上手く扱って動かす / 丸め込む"},{"w":"riot","m":"-〈植物が〉はびこる、咲き乱れる"},{"w":"constancy","m":"不変性、志操堅固"},{"w":"overriding","m":"最優先の、支配的な、優越的な"},{"w":"dominant","m":"+〔遺伝〕優性遺伝子:優優性性質"},{"w":"allele","m":"〔遺伝〕対立遺伝子、対立因子"},{"w":"latent","m":"潜在性の"},{"w":"laborious","m":"困難な障害 / ・・・を邪魔する、挫折させる"},{"w":"cotyledon","m":"〔植物〕子葉"},{"w":"numerology","m":"Ｕ数秘学; 数占い."},{"w":"perceive","m":"認める、理解する"},{"w":"dreary","m":"ものうい、荒涼とした"},{"w":"de novo","m":"新たに、新規に"},{"w":"despondent","m":"落胆した、気落ちした"},{"w":"theorem","m":"定理、法則、公理、原理"},{"w":"tendril","m":"〔植物〕（ぶどうなどの）巻きひげ"},{"w":"tantalize","m":"人の期待、欲望をかきたてる、じれったい"},{"w":"desultory","m":"漠然とした、とりとめのない / 気まぐれな"},{"w":"excise","m":"削る、削除する"},{"w":"grisly","m":"恐ろしい、ぞっとするような、不気味な"},{"w":"scour","m":"走り回る、駆け巡る、探し回る"},{"w":"drudgery","m":"drudge あくせく働く人"},{"w":"wade","m":"（水の中を）歩く / やっと通る / 苦労して進む"},{"w":"tinge","m":"一抹の悔恨の情"},{"w":"thrice","m":"度、3回"},{"w":"mincingly","m":"気取って、澄まして"},{"w":"proselytize","m":"強い態度で)<人>を改宗させる; …の宗旨を変えさせる."},{"w":"prescience","m":"洞察、予知、予見"},{"w":"embellish","m":"（話を）盛る"},{"w":"eugenics","m":"優生学"},{"w":"oppotune","m":"-適切な、好都合の、タイムリーな"},{"w":"blanch","m":"熱湯を通す、・・・を湯がく /  / 漂白する"},{"w":"quadratic","m":"ニ次方程式"},{"w":"plodding","m":"とぼとぼ歩く; こつこつ働く[勉強する]; 遅々として進まない."},{"w":"savage","m":"-獰猛な、残酷な、野生の、野蛮な"},{"w":"congenital","m":"医]<病気･障害などが>生まれつきの, 先天的な"},{"w":"bolster","m":"当て物、受け台;補教材"},{"w":"hallmark","m":"特質、特徴"},{"w":"breadth","m":"横幅、大きさ、広がり"},{"w":"indifferent","m":"無頓着な、 / 冷淡な"},{"w":"repellent","m":"不快な、いやらしい、（人に）嫌悪を催させる"},{"w":"pinprick","m":"一刺し、ちくりと指すとこ / 嫌がらせ、意地悪"},{"w":"exalted","m":"地位の高い、高貴な / 有頂天の、意気揚々の"},{"w":"homunculus","m":"胎児 / 人体模型、マネキン"},{"w":"imperious","m":"横柄な、尊大な、傲慢な / 緊急の、回避できない"},{"w":"scowl","m":"顔をしかめる"},{"w":"stew","m":"?（・・・に）苦しむ、気をもむ、やきもきする"},{"w":"unfurl","m":"星形に広がる光線[爆発]."},{"w":"stumble","m":"偶然に（・・・を）見つける / 出くわす"},{"w":"christen","m":"洗礼を施す / 命名する"},{"w":"grapple","m":"つかみ合う、取っ組み合う"},{"w":"provident","m":"-先見の明がある、将来にそなえる"},{"w":"protege","m":"被保護者、被後見人"},{"w":"catatonic","m":"cat･a･ton･ic"},{"w":"effete","m":"ef･fete"},{"w":"etiolate","m":"軟弱の、青白く弱々しい"},{"w":"macabre","m":"無意味な、ぞっとする"},{"w":"entrance","m":"かたく)[通例be ～d]«…で»魅了される, うっとりする(enchant)«by, with»."},{"w":"grouse","m":"'〔鳥類〕ライチョウ ; その肉"},{"w":"spasm","m":"ひきつけ / 発作;突発;ひとしきり"},{"w":"bushel","m":"bush･el †"},{"w":"mediocrity","m":"平凡、月並み、凡庸"},{"w":"mean","m":"取るに足りない、劣った、些細な"},{"w":"topsy-turvy","m":"逆さまに、あべこべに / 混乱状態、めちゃくちゃ"},{"w":"brutish","m":"野獣のような、残忍な、凶暴な / 未開の、野蛮な"},{"w":"natsy","m":"ひどく不潔な、汚れた / 意地悪な、敵意のある / 扱いにくい、危険な、険悪な / 淫らな"},{"w":"brooding","m":"薄気味悪い、恐ろしい。"},{"w":"unwashed","m":"洗ってない、;不潔な"},{"w":"gratify","m":"満足させる"},{"w":"implicit","m":"言わず語らずの、言外に含まれた"},{"w":"contingent","m":"派遣団、代表団、分遣隊"},{"w":"cortage industry","m":"家内工業"},{"w":"feeble-minded","m":"知能の低い;愚かな"},{"w":"twilight","m":"衰退期 / 黄昏の、ぼんやりした"},{"w":"bolt","m":"\"急な飛び出し、突進;逃亡"},{"w":"vagrancy","m":"浮浪状態、放浪（生活） / （考えや話の）脱線、空想"},{"w":"windward","m":"風上へ、風に逆らって"},{"w":"spur track","m":"〔鉄道〕行き止まり線"},{"w":"douche","m":"sy･ringe † / /sɪrɪ́n(d)ʒ/［音声］ / 名Ｃ / 1注射器 / ▶a hypodermic syringe / 皮下注射器. / 2洗浄器, スポイト; 浣(かん)腸器. / 動 / 他 / 1…を注射する, <薬液など>を注ぐ. / 2…を洗浄する."},{"w":"deportment","m":"'態度、振る舞い、行儀、品行"},{"w":"gangly","m":"痩せてひょろっとした"},{"w":"rambunctious","m":"〈人・行為が〉収拾のつかない;手に負えない;荒れ狂う"},{"w":"devolve","m":"〈仕事・権利・義務などを〉(人に)譲り渡す、委ねる。"},{"w":"dimwit","m":"ばか、うすのろ、道化師"},{"w":"promiscuous","m":"〈人が〉相手の見境なく性交する、淫乱な"},{"w":"unbeknownst","m":"?(かたく)«…に»知られずに, 気づかれずに«to»."},{"w":"befoul","m":"・・・を汚す、汚くする / 〈名誉・評判を〉汚す"},{"w":"instigation","m":"そそのかし、扇動 / 刺激、誘因"},{"w":"Circuit Court","m":"巡回裁判所"},{"w":"cranky","m":"気難しい、怒りっぽい / 風変わりな / グラグラする、くねくねした"},{"w":"deliberation","m":"熟考、熟慮、思案 / 審議、協議"},{"w":"croak","m":"しわがれ声で話す"},{"w":"distaste","m":"追い払うこと / 強い不快感、嫌悪、反感 / 〔物理学〕反発力、斥力:反発作用"},{"w":"counterpoise","m":"均衡、安定 / 釣り合う、相殺する"},{"w":"bodice-ripping","m":"官能ロマンスもの"},{"w":"rectitude","m":"公正、厳正 / （判断などの）正しさ"},{"w":"tubal","m":"管（状の）、輸卵管の、卵管の、耳管の"},{"w":"infirmary","m":"病院、診療所、養護室"},{"w":"norcotize","m":"麻酔をかける、鎮静させる"},{"w":"antropine","m":"アントロピン: 鎮痙や瞳孔拡大用"},{"w":"gurney","m":"（患者搬送用の）台車付き担架"},{"w":"suture","m":"（傷口などの）縫合"},{"w":"hayride","m":"干し草ピクニック"},{"w":"pedestal","m":"=（円柱・彫刻などの）台座、柱脚"},{"w":"stork","m":"コウノトリ / ・・・を妊娠させる"},{"w":"virulent","m":"敵意に満ちた、辛辣な、意地悪な"},{"w":"convulse","m":"身悶えさせる、激しく震動させる"},{"w":"promulgate","m":"・・・を公表する、交付する / 宣伝する、広める"},{"w":"miscegenation","m":"（特に黒人と白人の）雑婚;混血;人種混交"},{"w":"tow","m":"in tow : 引かれて"},{"w":"bustling","m":":せわしなく動き回る、忙しそうな"},{"w":"water hyacinth","m":"ホテイアオイ、ホテイソウ　:浮草の一種"},{"w":"reticulated","m":"網目模様の、網状の"},{"w":"bonhomie","m":"Ｕ(文･くだけて)[集合的に]陽気な親しみ, 気さくな親切さ."},{"w":"clank","m":"［ガチャッ、カチン］（という音"},{"w":"inlet","m":"差し込まれたもの、挿入物 / ・・・をはめ込む、差し込む"},{"w":"scythe","m":"草刈り鎌、大がま / 草刈り鎌で刈る / 武力で一掃する"},{"w":"warily","m":"'慎重に、注意深く、警戒して"},{"w":"sibilant","m":"シューという / 歯擦音"},{"w":"surgical","m":"極めて正確な"},{"w":"probe","m":"触覚、触手、探り針"},{"w":"matter-of-fact","m":"-事実に即した、事務的な、淡々と"},{"w":"for days on end","m":"何日もぶっ続けで"},{"w":"stairwell","m":"階段ふき抜け"},{"w":"gullet","m":"食道、のど、咽頭"},{"w":"involute","m":"植]<葉が>内巻きの; [動]らせん[渦巻]状の."},{"w":"dilate","m":"膨張させる"},{"w":"curvature","m":"曲がる［曲げる］こと / 湾曲、屈曲 / 湾曲の程度"},{"w":"disolate","m":"〈場所・建物などが〉荒れ果てた、人気のない、さびれた"},{"w":"lexicon","m":"用語集、語彙目録 / 目録;記録"},{"w":"indivisible","m":"（これ以上）分割できない、不可分の"},{"w":"impenetrable","m":"貫くことができない、突き通せない、入り込めない"},{"w":"marvel","m":"«物･事･人のすばらしさに»驚く, 驚嘆する«at»"},{"w":"blockhead","m":"ばか、間抜け"},{"w":"dervish","m":"Ｃ(イスラム教苦行派の)修道僧, 托鉢(たくはつ)僧(激しい舞踏･旋回などで宗教的喜悦を表す)."},{"w":"embryology","m":"発生学 / 胚の構造・発達"},{"w":"anilline","m":"〔化学〕アニリン（phenylamine）"},{"w":"squiggle","m":"くねった線 / のたくる / ・・・をぞんざいに書く"},{"w":"stubby","m":"切り株のような;切り株の多い"},{"w":"fruit fly","m":"ミバエ🪰 / =vinegar fly"},{"w":"maggot","m":"気まぐれ、むら気、奇想"},{"w":"veil","m":"仕切り、垂れ幕、とばり"},{"w":"bristle","m":"<毛が>(怒り･恐怖で)逆立つ; <動物が>毛を逆立てる; <人が>«怒りなどで/非難などに»気色ばむ, 身構える«with/at»."},{"w":"oddball","m":"変わり者、つむじ曲がり / 風変わりな、つむじ曲がりの"},{"w":"tightly wound","m":"<常に緊張していて、怒りを爆発させそうな人"},{"w":"grandiose","m":"たいそうな、もったいぶった / 雄大な、荘厳な"},{"w":"promiscuity","m":"混乱状態ごたまぜ / 乱交、（相手を）選ばない事"},{"w":"jostle","m":"・・・を乱暴に突く、ひじで押す"},{"w":"vermilion","m":"朱色の / ・・・を朱で染める、朱色に塗る"},{"w":"shifty","m":"ごまかしの多い、狡猾な / 動きのす早い、捕まえにくい"},{"w":"laconic","m":"口数の少ない、ぶっきらぼうの"},{"w":"outlier","m":"戸外で寝る人、職場外居住者 / 部外者"},{"w":"ricochet","m":"跳飛する、反響する / （石などの）水切り"},{"w":"pro-natalism","m":"出生主義（出生奨励主義または英語: natalism、pronatalism、pro-birth）は、人間の生殖を促進し高い出生率を支持する政策パラダイムまたは個人的価値観である"},{"w":"ineffectual","m":"-能力にかける、効果の上がらない"},{"w":"mutinous","m":"反逆的な、不服従の"},{"w":"gall","m":"'苦々しさ、辛さ、憎悪、恨み"},{"w":"abdicate","m":"退位する"},{"w":"sheen","m":"光沢、ツヤ"},{"w":"homophilia","m":"血友病"},{"w":"czarina","m":"帝政ロシア皇后"},{"w":"czarevitch","m":"（帝政ロシアの）皇太子"},{"w":"amiss","m":"誤って;不適当に;場違いに"},{"w":"unctuous","m":"否定的に)<人が>愛想がよすぎる, 口がうまい."},{"w":"salve","m":"軟膏、膏薬 / 癒やすもの、慰め"},{"w":"batty","m":"頭の変な、いかれた / コウモリのような"},{"w":"machination","m":"（悪事を）たくらむこと、 / 策動 / 陰謀、謀略"},{"w":"disjunctuion","m":"分離、分裂 / 〔論理学〕選言（的）判断;選言記号"},{"w":"bludgeon","m":"短いこん棒 / ・・・をこん棒で打つ、打ち倒す / （人に）無理やり（・・・）させる"},{"w":"jar","m":"不快にする / 振動させる"},{"w":"exhume","m":"ex･hume"},{"w":"reconciliation","m":"調停、あきらめ、服従 / 一致させること"},{"w":"in remission","m":"小康状態"},{"w":"phenotype","m":"〔遺伝〕表現型"},{"w":"afar","m":"from afar 遠くから"},{"w":"conjecture","m":"憶測 / 推測する"},{"w":"vestigial","m":"'痕跡的な、名残の、残存的な"},{"w":"metastatic","m":"転移、転移性の"},{"w":"magisterial","m":"mag･is･te･ri･al"},{"w":"salubrious","m":"〈気候・場所・食べ物などが〉健康に良い、健康的な;健全な"},{"w":"withstand","m":"抵抗する、逆らう、持ちこたえる"},{"w":"excruciating","m":"激しい苦痛を与える"},{"w":"gamut","m":"全域、全般、範囲 / 音階、全音域、"},{"w":"a la","m":"・・・に従って、をまねて / ・・・風にした"},{"w":"speciation","m":"［生物］種形成［化］"},{"w":"strident","m":"不快な、耳障りな"},{"w":"thwart","m":"〈計画・目的などを〉挫折させる"},{"w":"deconvulting","m":"絡まりを解く / 畳み込みから元に関数を求める事"},{"w":"perverse","m":"へそ曲がりの / 頑迷な気質 / 邪悪な、性倒錯の"},{"w":"defy","m":"拒む / 平然と無視する、物ともしない"},{"w":"extrude","m":"突き出す，押し出す，追放する"},{"w":"pneumococcus","m":"肺炎球菌"},{"w":"ethereal","m":"空気のように軽やかな、 / 天空の、精神界の"},{"w":"unassuming","m":"気取らない、もったいぶらない　;でしゃばらない、謙遜な，控えめの"},{"w":"obscurity","m":"世に知られていない事 / 重要でない人 / 辺鄙な土地"},{"w":"abjectly","m":"ひれつに、惨めなほど"},{"w":"chagrin","m":"無念、残念、悔しさ、痛恨、屈辱"},{"w":"dampen","m":"〈物を〉湿らせる / 〈活気・熱意・行動などを〉鈍らせる、くじく / 〈人を〉落胆させる / 湿る"},{"w":"decelerate","m":"速度を落とす"},{"w":"in conjunction","m":"合わせて、連動して"},{"w":"conjunction","m":"結合、関連 / 接続詞"},{"w":"preoccupation","m":"先取り / 先入観，偏見"},{"w":"deviant","m":"逸脱した、異常な / 逸脱した人 / （特に性的）倒錯者"},{"w":"sinister","m":"縁起の悪い、不吉な兆候 / 運の悪い、不幸な"},{"w":"pauperism","m":"貧弱、赤貧"},{"w":"befriend","m":"友達になる / 援助する"},{"w":"subversive","m":"<空気などが>汚染された; [コンピュ]<プログラム･データが>破壊された; エラーの."},{"w":"embittered","m":"敵意［苦々しい思い］を抱いた"},{"w":"daze","m":"ぼーっとした状態"},{"w":"barbiturate","m":">〔薬学〕バルビツール塩酸 :鎮痛剤・催眠剤用"},{"w":"sheepish","m":"?きまりの悪い、恥ずかしそうな，おどおどした"},{"w":"meld","m":"併合させる、混合させる"},{"w":"inkling","m":"ほのめかし、暗示;うすうす感づくこと"},{"w":"jubilant","m":"大喜びの / 悦びに満ちた"},{"w":"purge","m":"〈人を〉油を注いで清める"},{"w":"putsch","m":"（不意をつく）反乱、（政府の）転覆、クーデター"},{"w":"transfix","m":"trans･fix"},{"w":"drum up","m":"売り込む、支持を獲得しようと努力する"},{"w":"insidious","m":"知らない間に作用する、潜行性の"},{"w":"throe","m":"Ｃ(かたく)[通例～s]激しい(断末魔の)痛み[苦しみ]; 陣痛; もがき, 悪戦苦闘."},{"w":"pack animal","m":"荷物を運ぶ動物"},{"w":"counterpose","m":"=・・・を（・・・に）対置する、"},{"w":"ode","m":"合唱歌"},{"w":"calisthenics","m":"美容健康体操、柔軟体操"},{"w":"repulsion","m":"追い払うこと / 強い不快感、嫌悪、反感 / 〔物理学〕反発力、斥力:反発作用"},{"w":"agitprop","m":"（特に共産主義の）宣伝、アジプロ（主に文学・演劇・音楽・絵画などを通じて行われる物）"},{"w":"thrum","m":"つまびく、かき鳴らす"},{"w":"conflation","m":"（異本の）合成;合成本"},{"w":"manic","m":"躁病の / 狂ったような振る舞いをする"},{"w":"manic-depressive","m":"躁鬱病の、躁鬱病患者"},{"w":"trifecta","m":"三連勝単式"},{"w":"muse","m":"沈思黙考する"},{"w":"equanimity","m":"落ち着き、冷静 / 運命に対する諦め"},{"w":"glacial","m":"〈行動・態度が〉冷ややかな、冷淡な"},{"w":"registry","m":"登録、記録、登記"},{"w":"pretext","m":"口実、名目 / ・・・を口実にする"},{"w":"garrison","m":"要塞、駐屯隊、駐留地"},{"w":"perversion","m":"（性的）倒錯 / 曲解、こじつけ、悪用、誤用 / 悪化、邪道、堕落"},{"w":"banality","m":"陳腐、陳腐な言葉、平凡"},{"w":"permeate","m":"〈物質を〉通り抜ける / 〈においなどが〉・・に充満する;〈思想・主義などが〉・・・に普及する"},{"w":"credulity","m":"すぐに信じてしまう性質、騙されやすさ"},{"w":"credo","m":"信徒信条（the Apostle’s’ Creed）"},{"w":"cadre","m":"〔軍事〕基幹人員　: 幹部団"},{"w":"gleeful","m":"大喜びの、はしゃいだ"},{"w":"regurgitate","m":"re･gur･gi･tate"},{"w":"neurosis","m":"神経症、ノイローゼ"},{"w":"psychopathic","m":"精神病の"},{"w":"epically","m":"くだけて/時におどけて)一大事件; 英雄的な[壮大な]行為[事業]."},{"w":"eclipse","m":"（星の）掩蔽（えんぺい） / （地位・名声などの）失墜、衰え"},{"w":"savagery","m":"残忍［残酷］（性）　:粗野、粗暴、無作法、蛮行荒涼たる有様"},{"w":"incarnation","m":"肉体化したもの"},{"w":"parlay","m":"〈金・才能・資産などを〉運用して（富・成功を）得る"},{"w":"prop up","m":"支える、補助する"},{"w":"ersatz","m":"［ドイツ語Ersatz（代用）］"},{"w":"bounty","m":"（穀物の）収穫 / 気前よさ、博愛、寛大 / 施し / 補助金、助成金、奨励金"},{"w":"dismenberment","m":"手足切断、国土分割"},{"w":"hoary","m":"白髪の、白い、灰色の / 古い、古めかしい、陳腐な、古くてこうごうしい"},{"w":"depose","m":"証言する / ・・・から宣誓供述を取る"},{"w":"fief","m":"sy･ringe † / /sɪrɪ́n(d)ʒ/［音声］ / 名Ｃ / 1注射器 / ▶a hypodermic syringe / 皮下注射器. / 2洗浄器, スポイト; 浣(かん)腸器. / 動 / 他 / 1…を注射する, <薬液など>を注ぐ. / 2…を洗浄する."},{"w":"unsurpassed","m":"?まさるものがない、卓絶した、無比の、無類の"},{"w":"thread","m":"（話・議論などの）筋道、脈絡 / 〔機械〕ねじ山 / 生命の糸、寿命"},{"w":"pliability","m":"柔軟性、しなやかさ / （性質などの）従順、素直さ、順応性"},{"w":"chaff","m":"つまらない物 / チャフ　電波妨害用に撒く金属泊片"},{"w":"unbraid","m":"〈編んだ髪などを〉ほどく、ほぐす"},{"w":"guffaw","m":"大声で笑う"},{"w":"inconclusive","m":"結論のでない / 尻切れとんぼの"},{"w":"dermatologist","m":"皮膚科学者、皮膚科専門医"},{"w":"vociferous","m":"'〈抗議・不平などが〉声高な"},{"w":"hemophilia","m":"血友病"},{"w":"concordance","m":"和合、調和 / 〔遺伝〕一致 ; 特定の性質が双生児の両方に表れている事"},{"w":"sheathe","m":"〈刀剣類を〉さやに収める / おおう、外装する、包み込む"},{"w":"bowlegged","m":"ガニ股の"},{"w":"trawl","m":"トロール / ・・・を求めて探す"},{"w":"yank","m":"・・・をつまんでぐいと引っ張る / 〈機械などを〉微調整する / ジリジリさせる"},{"w":"ramp","m":"スロープ / 〈道路上の〉隆起帯 / 高速道路のランプ"},{"w":"gangrenous","m":"壊疽［脱疽（だっそ）］にかかった"},{"w":"patina","m":"緑青（ろくしょう） / 使い込まれた、ツヤ、古色 / 表面を薄くおおう物"},{"w":"putrefy","m":"・・・を〔が〕腐敗させる〔する〕"},{"w":"crucible","m":"るつぼ ; 〔治金〕湯だまり"},{"w":"preeminent","m":"卓越した、抜群の"},{"w":"misconstrue","m":"・・・を（・・・と）取り違える"},{"w":"lest","m":"・・・するといけないから"},{"w":"emigre","m":"（フランス語）亡命者、移住者"},{"w":"bespectacled","m":"メガネをかけた"},{"w":"chromatin","m":"〔生物〕染色質"},{"w":"scalper","m":"ダフ屋、転売ヤー / 頭の皮を剥ぐ人"},{"w":"ablaze","m":"燃えて、燃えたって"},{"w":"flambe","m":"調理法の一種で、アルコールを加えて炎をあげる手法"},{"w":"matrix","m":"細胞間質"},{"w":"nucleic acid","m":"リボソーム : タンパク質とリボ核酸からなる微小粒子"},{"w":"ad nauseam","m":"吐き気を催すほど、または過剰な程度まで。吐き気がするほど"},{"w":"zelig","m":"<至る所に居合わせるカメレオンのような人物"},{"w":"lipid","m":"髄鞘（ずいしょう、myelin sheath）は、神経科学において脊椎動物の多くの神経細胞（ニューロン）の軸索の周りに存在する絶縁性の脂質の層を指す。"},{"w":"curdle","m":"凝固させる、硬直させる"},{"w":"fibrous","m":"繊維状の"},{"w":"primordial","m":"原初の、根源の、最初の / 原始の、初生の"},{"w":"electro phoresis","m":"電気泳動"},{"w":"disgorge","m":"・・・を吐く、吐き出す / ・・・を勢い良く排出する / 食べたものを吐く"},{"w":"crematorium","m":"Ｃ火葬場(crematory)."},{"w":"minuscule","m":"非常に小さい / 小文字の"},{"w":"remnant","m":"残り、残存者 / 断片、端切れ、残りクズ"},{"w":"subsume","m":"・・・を（原則的に）包括する"},{"w":"emaciated","m":"痩せ細った"},{"w":"phosphate","m":"リン酸塩 / 炭酸飲料"},{"w":"C-Suit","m":"-Suiteとは、CEO（最高経営責任者）やCOO（最高執行責任者）など「Chief」で始まる役職の集合を指し、現在はAIやDXを専門とする新たなポジションも増加しています"},{"w":"goodly","m":"良質の、高価な、美しい / 相当な量の"},{"w":"glamour","m":"素晴らしい刺激、 / 異常な活気"},{"w":"hide-bound","m":"偏狭な、頑固な、偏屈な ; ひどく保守的な"},{"w":"handmaid","m":"女中、こまづかい補充するもの"},{"w":"gritty","m":"ホコリ［砂］だらけの、砂が入ったような"},{"w":"element","m":"〔化学〕元素"},{"w":"elemental","m":"要素の、要素［単元］的な、単一の"},{"w":"proton","m":"陽子、プロトン"},{"w":"biophisics","m":"生物物理学"},{"w":"mishmash","m":"ごたまぜ、寄せ集め"},{"w":"physiological","m":"生理学上の、生理的な"},{"w":"assemblag","m":"（人・物の）集まり、集合 / 集める［集まる］こと"},{"w":"deus ex machina","m":"機械仕掛けの神 / （ギリシャ神話で）混乱した筋を解決するために登場する神"},{"w":"corral","m":"囲いに追い込む / ・・・を捕まえる、手に入れる"},{"w":"crystallography","m":"結晶学"},{"w":"diffraction","m":"〔物理学〕回折"},{"w":"trapezoid","m":"（米）台形 / （英）不等辺四角形 / 〔解剖〕（手首の）しょうりょうけいこつ"},{"w":"echidna","m":"ハリモグラ"},{"w":"whiz","m":"すごいもの / 〔軍事〕小型で高速度の砲弾 / 爆竹の一種"},{"w":"ingenious","m":"巧妙な、工夫に富む、 / 器用にできた"},{"w":"latice","m":"ラチス、格子、格子細工 / 〔数学〕束（そく）"},{"w":"splender","m":"豪華、華麗、壮麗 / 雄大さ、素晴らしさ、見事さ / 輝き、光彩"},{"w":"lead-lined","m":"測鉛線"},{"w":"plow","m":"こつこつやる"},{"w":"genteel","m":"上流社会の"},{"w":"glower","m":"不機嫌な顔で見る / （・・・）を睨みつける / 不機嫌な顔つき、渋い顔"},{"w":"punt","m":":パント船:竿で水底をついて動かす平底の船"},{"w":"chink","m":"チャリン / 裂け目、割れ目 / 弱点 / 塞ぐ"},{"w":"innuendo","m":"ほのめかし / 〔法律〕（名誉毀損訴訟における）真意説明条項"},{"w":"parsing","m":"〔コンピュータ〕構文解析、パーシング"},{"w":"slight","m":"軽視、冷遇、無礼、侮辱"},{"w":"trailblazer","m":"（未開地などの）新しい道の発見者"},{"w":"chapped","m":"-ひびの切れた、（皮膚の）荒れた"},{"w":"cauldron","m":"大釜 / 不安定で危険な状態"},{"w":"sludge","m":"\"ぬかるみ、軟泥、ヘドロb"},{"w":"matron","m":"品のある"},{"w":"fuzzy","m":"けばで被われた / ぼやけた、不明瞭な"},{"w":"ornithologist","m":"鳥類学者"},{"w":"assiduously","m":"間断なく;せっせと"},{"w":"the homing instinct","m":"帰巣本能"},{"w":"admiralty","m":"海軍本部"},{"w":"rafter","m":"たる木、梁"},{"w":"irreverence","m":"不敬、非礼、無礼な行為 / 軽視、不面目、不名誉"},{"w":"zany","m":"ばか、うすのろ、道化師"},{"w":"insinuate","m":"うまく取り込むそれとなく染み込ませる"},{"w":"quintwssential","m":"真髄の、典型的な"},{"w":"quadrangle","m":"四角形、四辺形 / （建物に囲まれた）方形の中庭"},{"w":"jesrer","m":"（中世の王侯・貴族がかかえた）道化師、冗談の好きな人"},{"w":"begrudge","m":"ねたむ、出し惜しむ"},{"w":"larger-than-life","m":"実際より誇張された ; 並外れた"},{"w":"bunny","m":"うさちゃん / 〈豪俗〉騙されやすい人"},{"w":"presto","m":"すぐに、早く / なんとまあ！、意外や意外"},{"w":"globular","m":"球状の、小球体からなる / 全世界の / l、世界的な規模の"},{"w":"festoon","m":"花綵（づな）、花飾り / ・・・を飾る"},{"w":"stick and stone","m":"何を言われてもへっちゃら"},{"w":"convoluted","m":"（軽蔑）複雑で理解しにくい、入り組んだ"},{"w":"capitulation","m":"（・・・への）降伏、屈服 / 要項、一覧表 / 外国人居留者または旅行者に治外法権その他のを与える条約［協定］"},{"w":"bickering","m":"（常習的な）口論、論争"},{"w":"hobble","m":"足を引きずる / ぎこちない、たどたどしい / 動物の足を縛る"},{"w":"snap","m":"（人に）かみつく"},{"w":"warring","m":"交戦中の"},{"w":"soupy","m":"〈物が〉スープのような、ドロドロした"},{"w":"innards","m":"（略式）内臓 / 内部構造"},{"w":"frivolity","m":"軽薄、軽率、不真面目、 / 軽々しい言動、くだらないこと"},{"w":"momentarily","m":"ちょっとの間 / 刻々と、絶えず、今にも / ただちに、すぐに、じきに"},{"w":"purposefully","m":"<人･行為などが>しっかりした目的のある; 固い決意を持った; 故意の."},{"w":"monumental","m":"途方もなく大きい / スケールの雄大な"},{"w":"withering","m":"wíth･er･ing"},{"w":"grande dame","m":"社会的に名声を確立した女性 / ［フランス語］"},{"w":"fiendishly","m":"悪魔のように ; ひどく"},{"w":"pincer","m":"ペンチ　 / やっとこ　; 釘抜き;毛抜き / ［エビ・カニの］ハサミ"},{"w":"misstep","m":"誤り、過失、失策、私生児を産むこと、異性との過ち"},{"w":"bulge","m":"ふくらみ、（やるなどの）胴; 太ってつく脂肪"},{"w":"enumerate","m":"一つ一つを列挙する、順に数え上げる"},{"w":"blather","m":"靴［革製品］の修繕屋 / たわごと / ワイン・果物・砂糖などで作る氷入り飲み物 / （俗）睾丸"},{"w":"bombshell","m":"爆弾 / 爆弾発言、突発事件 / 悩殺的な美女"},{"w":"sleight","m":"手練 ; 器用さ"},{"w":"blooper","m":"間違い、トチリ、NG、どじ"},{"w":"stiffly","m":"硬く、カチカチに、こわばった調子で"},{"w":"exasaperate","m":"〈人を〉ひどく怒らせる"},{"w":"commiserate","m":":・・・に同情する、　を哀れむ"},{"w":"crisp","m":"〈線・像が〉くっきりした"},{"w":"smolder","m":"くすぶる、いぶる"},{"w":"contrite","m":"〈人が〉悔い改めた / 〈言動が〉悔恨の情を示している"},{"w":"appose","m":"〈二つのものを〉並置する"},{"w":"rossette","m":"バラに似た形のもの"},{"w":"intercalate","m":"〈余分の日、月などを〉暦に挿入する、閏にする"},{"w":"feigned","m":"心にもない、見せかけの ; 偽りの、店の、でっち上げた"},{"w":"cutout","m":"cút･òut"},{"w":"let loose","m":"（言葉、騒音などを）発する、起こす"},{"w":"angstorm","m":"オングストーム : 長さの単位　1ミリの100万分の1"},{"w":"turn one's stomach","m":"吐き気をもようさせる、動揺させる"},{"w":"plump line","m":"下げ振り、垂球 / 糸に錘をぶら下げて垂直を測る道具"},{"w":"abut","m":"隣接する"},{"w":"horticulture","m":"園芸、園芸学"},{"w":"rickety","m":"〈人が〉くる病気にかかっている"},{"w":"corkscrew","m":"螺旋状の / コルク抜き"},{"w":"damn","m":"ののしる"},{"w":"pimpernel","m":"ルリハコベ"},{"w":"caudex","m":"co･dex"},{"w":"ogre","m":"o･gre"},{"w":"tantrum","m":"おんどりなどの首回りの細長い羽毛 / 逆毛 / （比喩）怒り、かんしゃく"},{"w":"by virture of","m":"・・・のおかげで、理由で"},{"w":"neurospora crassa","m":"アカパンカビ"},{"w":"scrappy","m":"けんか［議論］好きの / かけら、ガラクタの、寄せ集めの"},{"w":"myosin","m":"〔生化学〕ミオシン"},{"w":"polymerase","m":":ポリメラーゼ : DNA,RNA形成の触媒となる酵素"},{"w":"arbiter","m":"仲裁者;判定［審判］"},{"w":"ehtereal","m":"空気のような ; 軽やかな、希薄な"},{"w":"madcap","m":"'〈考えなどが〉向こうみずな"},{"w":"cramped","m":"窮屈な、狭苦しい / けいれんをおこした / 読みにくい"},{"w":"cobbler","m":"靴［革製品］の修繕屋 / たわごと / ワイン・果物・砂糖などで作る氷入り飲み物 / （俗）睾丸"},{"w":"cytoplasm","m":"細胞質"},{"w":"ribosome","m":"リボソーム : タンパク質とリボ核酸からなる微小粒子"},{"w":"daunting","m":"人の気力をくじく、怯えさせる"},{"w":"facsimile","m":"複写、転写、模写"},{"w":"transcription","m":"〔遺伝〕転写"},{"w":"cipher","m":"暗号、暗号文 / 暗号をとく鍵"},{"w":"reagent","m":"〔化学〕試薬 / 反応物"},{"w":"threonine","m":"（生化学）トレトニン、スレオニン"},{"w":"histidine","m":"ヒスチジン /  : アミノ酸の一種"},{"w":"arginine","m":"〔生化学〕アルギニン : アミノ酸の一種"},{"w":"immutable","m":"変わらない、変えられない / 不変の"},{"w":"sickle-cell anemia","m":"医]鎌状赤血球貧血."},{"w":"shrivel","m":"shriv･el †"},{"w":"permutation","m":"置換、順列 / 並べ替え、変更"},{"w":"acetic acid","m":"酢酸"},{"w":"kink","m":"（糸・綱・毛髪なとの）落ちる、ねじれ、縮れ、"},{"w":"diauxie","m":":細菌が混合物から糖を1種ずつ消費する現象"},{"w":"classic","m":"〈芸術品などが〉第一級の、最高水準の、極めて重要な"},{"w":"bewitching","m":"うっとりさせる、魅力的な"},{"w":"transcription factor","m":"転写因子"},{"w":"embryogenesis","m":"胚盤胞（はいばんほう、英: blastocyst）とは、卵割腔形成後から着床前の胚形成初期に形成される構造のことである。"},{"w":"unblinking","m":"文)まばたき1つしない; 毅然と."},{"w":"combinatorial","m":"組み合わせの"},{"w":"preparation","m":"-（薬品・食品の）調整品、調合品"},{"w":"unassailability","m":"「無敵性」とは、攻撃されることがない、または反論や批判から逃れられない特性を指します。この言葉は、特に意見や立場、または信念が非常に堅固で、他者によって簡単に反論されることがない状態を表現する際に使用されます。"},{"w":"recursion","m":"〔数学〕再帰、帰納"},{"w":"spermiogenesis","m":"精子形成"},{"w":"oogenesis","m":"卵子形成"},{"w":"play-pen","m":"'（移動式の）ベビーサークル"},{"w":"portentous","m":"前兆の;重大な、不吉な"},{"w":"mutagen","m":"突然変異原、突然変異誘導物発要因（放射線など）"},{"w":"reinvigorate","m":"<・・・を生き返らせる、再び元気を出させる"},{"w":"chaperone","m":"（社交場に出る若い未婚女性の）付き添いの女性"},{"w":"corpuscle","m":"〔解剖〕遊離細胞、（特に）血球"},{"w":"repressor","m":"〔遺伝〕リプレッサー、抑制遺伝子 : 調節遺伝子により作られ、特定遺伝子の形質発現を抑える働きを持つ制御タンパク質"},{"w":"sanguine","m":"自信たっぷりの"},{"w":"abrogate","m":"〈法令・協定・慣習などを〉（公式に）廃止する、廃棄する"},{"w":"preferential","m":"優先的な"},{"w":"fusillade","m":"一斉〔連続〕射撃 / （質問などの）連発"},{"w":"eutelic","m":"ユーテリック（eutelic）は、個体の細胞数が一定であり、成長と成熟に伴ってその細胞数が変化しない生物の特性を示す用語です。つまり、ユーテリックな生物は、成熟した個体において細胞の総数が固定されています。"},{"w":"latchkey","m":"掛け金のかぎ、 / 玄関のかぎ ; 解放の象徴"},{"w":"hermaphrodite","m":"両性動物、雌雄同体 / 両性具有者、ふたなり、半陰陽体（人の） / 二つの相反する性質を合わせ持つ人［もの］ / 同性愛者"},{"w":"menagerie","m":"〈巡回サーカスの〉動物ショー / 野獣［珍獣］たち / 雑多な集合体"},{"w":"vulva","m":"-〔解剖〕（女性の）外陰部、陰門"},{"w":"Teutonic","m":"チュートン族［人］の / ゲルマン人の"},{"w":"castaway","m":"<難船者, 漂流者"},{"w":"necrosis","m":"壊死 : 人・動物の組織［細胞］の死滅"},{"w":"gangrene","m":"〔病理学〕壊疽（えそ）、脱疽（だっそ）"},{"w":"wilt","m":"しぼむ、しおれる / あせる、衰える"},{"w":"translucence","m":"半透明"},{"w":"be implicated in","m":"生命に関わるほどに、致命的に / 極めて、絶対に"},{"w":"lymphomas","m":"リンパ腫"},{"w":"sequester","m":"〔法律〕〈財産を〉差押える / 強制保管する、供託する、接収する / 引き離す、隔離する"},{"w":"perturbation","m":"混乱、ろうばい、不安"},{"w":"ablation","m":"（手術などによる）除去、切除"},{"w":"refract","m":"屈折させる"},{"w":"fantasia","m":"幻想曲、ファンタジア / 接続曲（potpourri） : 有名なアリアを繋ぎ合わせた曲"},{"w":"Delphic","m":"elphiの ; Apolloの"},{"w":"proverbial","m":"-（・・・）でお馴染みの、評判の"},{"w":"plank","m":"支持物、よりどころ［頼み］となる物"},{"w":"inert","m":"〈人・物が〉自力で行動［運動・抵抗］できない"},{"w":"provocation","m":"挑発、刺激 / 憤慨させるもの、挑発［刺激］するもの、誘因"},{"w":"blistering","m":"水疱を思い起こさせる、 / 〈天気・太陽が〉ひどく暑い［熱い］灼熱の / 〈言葉などが〉痛烈な、辛辣な"},{"w":"slosh","m":"ぬかるみ、溶けかかった雪 / （水の）跳ね返る音 / ビール、酒"},{"w":"fiery","m":"火のような / 炎症を起こした"},{"w":"meniscus","m":"三日月、新月 / 〔物理学〕表面張力によって液体表面が凸状もしくは凹状になること"},{"w":"bile","m":"不機嫌、癇癪"},{"w":"bruising","m":"あざ / 心に痛手を与えるような"},{"w":"defile","m":"（・・・で）汚す、不潔にする / 冒とくする / 〈女性を〉暴行する"},{"w":"livid","m":"行為・言葉などに)怒った、激怒した"},{"w":"she-wolf","m":"雌オオカミ / 貪欲な女"},{"w":"mesalliance","m":"（フランス語）　身分の低いものとの結婚、不釣り合いな結婚"},{"w":"simian","m":"類人猿の ; 類人猿に特有の"},{"w":"chimera","m":"〔ギリシャ神話〕キメラ、ライオンの頭、ヤギの体、蛇の尾を持ち、火を吐く怪獣"},{"w":"unclasp","m":"・・・の留金を外す / 外れる"},{"w":"girder","m":"（鉄製の）大梁（ばり） ; けた、はり"},{"w":"ligase","m":"〔生化学〕リガーゼ"},{"w":"switchblade","m":"飛び出しナイフ"},{"w":"gash","m":"深手、大怪我 / 割れ目、裂け目"},{"w":"jugular","m":"〔解剖〕頸部の ; 頸静脈の"},{"w":"anneal","m":"焼きなます、強くする、鍛える"},{"w":"contiguous","m":"（・・・と）隣接している、近接の"},{"w":"harken","m":"（・・・を）よく聞く、傾聴する"},{"w":"Herostratus","m":"ヘロストラトス（古代ギリシャ語: Ἡρόστρατος, Herostratus）は、古代ギリシア・イオニアの人物。有名になりたいという野心から、紀元前356年7月21日頃、エフェソス（現在のトルコ領）にあった高名な神殿・アルテミス神殿に放火したことで知られる"},{"w":"precipice","m":"危機、窮地"},{"w":"cavalier","m":"騎馬武者、騎士 / 老練なボクサー"},{"w":"metaphysics","m":"形而上学、（広義の）思弁哲学 / 机上の空論、抽象論"},{"w":"requisite","m":"不可欠の、必須の"},{"w":"cutoff","m":"切断 / （米）ショートパンツ"},{"w":"owlish","m":"フクロウのような　;（眼鏡をかけて）思慮深そうな"},{"w":"Tulmud","m":"the ～]タルムード(ユダヤの法典; ユダヤ教の律法と注解の集大成)."},{"w":"providential","m":"かたく)神意による; 幸運な; 絶好の."},{"w":"knish","m":"クニッシュ（英語: knish、イディッシュ語: קניש‎）またはクヌィーシュ（ウクライナ語: Книш）は、小麦粉の生地でフィリングを包んだ東ヨーロッパの伝統的な軽食のひとつ。 ユダヤ系デリカテッセンなどで食べられる、東ヨーロッパ系ユダヤ人の軽食として有名。 オーブンで焼くタイプのピロシキに似ているが、形状が異なる。 アシュケナジムのクニッシュはパイ生地を用いる"},{"w":"pastrami","m":"<パストラミ、牛の肩肉の燻製または塩漬け肉"},{"w":"tetracycline","m":"テトラサイクリン : 抗生物質の一種"},{"w":"gumbo","m":"\"オクラ ; そのさや"},{"w":"recombinant","m":"組み替え型の、recombinant DNA 組み替えDNA"},{"w":"agar","m":"寒天 / 細胞培養基"},{"w":"inoculate","m":"予防接種する。 / (病原菌・抗原・微生物などを) (人・培養機などに)接種する、植え付ける。"},{"w":"fortuitous","m":"偶発性の / 幸運な"},{"w":"wasting","m":"=〈病気が〉体力を徐々に消耗させる"},{"w":"dissolution","m":"分解したもの / 解除、解約、解消"},{"w":"gobbledygook","m":"Ｕ(くだけて･非難して)(官庁用語などの)難しい言葉遣い, お役所言葉."},{"w":"ellipsis","m":"〔文法〕省略"},{"w":"intron","m":"（遺伝）イントロン、介在配列"},{"w":"intervening","m":"その間の"},{"w":"perturbed","m":"ろうばいした、動揺した"},{"w":"messiah","m":"救世主 / 救済者"},{"w":"hackle","m":"おんどりなどの首回りの細長い羽毛"},{"w":"jn one's own right","m":"自分自身の能力で"},{"w":"vat","m":"大タンク"},{"w":"cellular","m":"〔解剖〕〔動物〕体腔の / 体細胞の / 体の、肉体の"},{"w":"infernal","m":"ひどい、いまいましい / 地獄のような ; 極悪非道の"},{"w":"turret","m":"小塔 / 回転砲塔"},{"w":"herpes","m":"ヘルペス、疱疹"},{"w":"stay order","m":"中止命令"},{"w":"delineate","m":"・・・を正確に概説する / ・・・の輪郭を描く"},{"w":"scrub pine","m":"低木の松"},{"w":"discursive","m":"散漫な、とりとめのない"},{"w":"sepulchral","m":"陰気な、不気味な / 埋葬の / 墓の"},{"w":"hazmat","m":"防護服 / 危険物、有害物"},{"w":"swath","m":"広い道、長い列"},{"w":"cabana","m":"プールサイドの簡易着替え所 / 独立の小屋形式のホテル"},{"w":"deshalved","m":"〈髪などが〉乱れた、ボサボサの"},{"w":"bleary","m":"〈目・視力が〉かすんだ / ぼやけた / 疲れ果てた"},{"w":"vengefull","m":"主に文)<行為･感情が>復讐(ふくしゆう)の, 復讐心に燃えた, 執念深い."},{"w":"unfettered","m":"束縛を受けない、自由な"},{"w":"shroud","m":"覆う"},{"w":"rejuvenate","m":"-若返らせる、活力を取り戻させる"},{"w":"lacuna","m":"脱落、脱文、欠落、空隙"},{"w":"diva","m":"Ｃ(オペラの)プリマドンナ, 主役女性歌手; (ポップスの)歌姫."},{"w":"Puccini","m":"プッチーニ / イタリアの作曲家"},{"w":"appraisal","m":"'評価、見積もり、鑑定、評定"},{"w":"commotion","m":"（嵐・波などの）激動 ; 動揺、興奮"},{"w":"seamy","m":"道徳的に)不快な; いかがわしい"},{"w":"ravage","m":"・・・を破壊する、荒廃させる、略奪する"},{"w":"savvy","m":"（経験から得た）実際的知識 / 経験豊かな"},{"w":"broach","m":"初めて口にする、切り出す / 海面上に現れる"},{"w":"mound","m":"古墳、 / 塚、土まんじゅう"},{"w":"tectonic","m":"構造の、地質構造の"},{"w":"grimy","m":"汚れた、すすけた"},{"w":"garbo","m":"ゴミ収集人"},{"w":"throwaway","m":"つかい捨ての / さりげない"},{"w":"congeal","m":"凝固させる、硬直させる"},{"w":"treacle","m":"糖蜜"},{"w":"lunge","m":"突進する"},{"w":"creave","m":"割く、剥がす、割る"},{"w":"dyspeptic","m":"消化不良の / 憂鬱で怒りっぽい"},{"w":"trudge","m":"とぼとぼ歩く; こつこつ働く[勉強する]; 遅々として進まない."},{"w":"airlock","m":"an airtight room : 気密室"},{"w":"tawny","m":"黄褐色の / 素晴らしい"},{"w":"cleft","m":"チャリン / 裂け目、割れ目 / 弱点 / 塞ぐ"},{"w":"pigeonhole","m":"分類［整理］棚"},{"w":"ministration","m":"世話 ; 奉仕 ; 援助"},{"w":"darmatlogist","m":"皮膚科学者、皮膚科専門医"},{"w":"hives","m":"'じんましん ; （のどの）炎症"},{"w":"swelter","m":"蒸し暑さで苦しむ、汗だくになる"},{"w":"pentamidine","m":"ペンタミジン（Pentamidine）はPneumocystis jirovecii （旧学名：Pneumocystis carinii ）によるニューモシスチス肺炎（旧名：カリニ肺炎）（PCP）の治療薬である。PCPは重症間質性肺炎であり、HIV感染症の患者にしばしば見られる。ペンタミジンはステージIガンビアトリパノソーマ（西アフリカ睡眠病）の治療の主要薬剤でもある。商品名ベナンバックス。"},{"w":"pneumocrystic","m":"プネウモキスチス（ニューモシスティスとも、学名：Pneumocystis）は、ほ乳類の肺に寄生する生物。この属に分類されるイロベチイ (P. jirovecii) はニューモシスチス肺炎（旧・カリニ肺炎）の病原虫として知られる。かつては原虫と考えられていたが、近年になって極めて特異な子嚢菌類の一員であることが判明した["},{"w":"requisition","m":"要求、要請、命令"},{"w":"Kaposi's sarcoma","m":"カポジ肉腫 : エイズ患者によく見られる"},{"w":"indlent","m":"〈腫瘍などが〉全く痛みのない / 治療が遅い"},{"w":"fulminant","m":"突然爆発する ; ひらめく ; 轟く"},{"w":"predilection","m":"偏愛"},{"w":"meningitis","m":"〔病理〕髄［脳］膜炎"},{"w":"accusing","m":"責めるような"},{"w":"musing","m":"物思いにふける / 沈思、黙想、物思い"},{"w":"unweildy","m":"（大きさ、重さ、形のため）扱いにくい ; 不恰好な"},{"w":"plasmid","m":"プラスミド　：細菌などの細胞内DNA"},{"w":"tissue-culture","m":"組織培養"},{"w":"untainted","m":"汚染されていない"},{"w":"hematologist","m":"血液学者"},{"w":"virally","m":"生命に関わるほどに、致命的に / 極めて、絶対に"},{"w":"pharmacopeia","m":"phar･ma･co･p(o)e･ia"},{"w":"Wichita","m":"-ウィチタ(米国Kansas州南部の都市)."},{"w":"tinker","m":"いたずらっ子、きかんぼう / 修繕、いじくり回す事"},{"w":"chipmunk","m":"シマリス"},{"w":"dwarfism","m":"小人症"},{"w":"gesticulate","m":"身振り（手まねで）話す / ・・・を身ぶりで伝える"},{"w":"glioblastoma","m":"グリア芽細胞腫"},{"w":"gliablastoma multiforme","m":"多形神経膠芽腫,多形性神経膠芽細胞腫"},{"w":"off-kilter","m":"'均整の取れていない ; 異常な"},{"w":"lucidity","m":"明晰、明快 / 洞察力、正気"},{"w":"ebb","m":"しぼむ、しおれる / あせる、衰える"},{"w":"gait","m":"歩きぶり"},{"w":"ventricle","m":"中空の器官・部分の総称 : 心室・脳室など"},{"w":"hydrocephalus","m":"脳水腫、水頭症"},{"w":"aqueduct","m":"水路、導水路、水道橋 / 〔解剖〕導水管、水道"},{"w":"leach","m":"owassanウイルスは髄膜脳炎を引き起こす2つの系統から成る神経毒性フラビウイルスである"},{"w":"wuthering","m":"吹き荒れる、荒れ狂う"},{"w":"cornea","m":"角膜"},{"w":"jiggle","m":"揺り動かす"},{"w":"bowel obstruction","m":"腸閉塞症"},{"w":"Peutz-Jeghers syndrome","m":"ポイツ・ジェガース（Peutz-Jeghers）症候群"},{"w":"rivulet","m":"小川、細い流れ"},{"w":"Marfan syndrome","m":"〔医学〕マルファン症候群（四肢・指の異常伸長）"},{"w":"aorta","m":"〔解剖〕大動脈"},{"w":"osteogenesis imperfecta","m":"骨形成不全症（こつけいせいふぜんしょう、OI: Osteogenesis Imperfecta）は、易骨折性・進行性の骨変形などの骨脆弱性を示す病状に加え、様々な程度の結合組織の病状を示す先天性の疾患である。小児慢性特定疾患に指定されている。"},{"w":"plaster","m":"しっくい、プラスター / 粉末石膏、焼き石膏 / 絆創膏"},{"w":"chloride","m":"〔化学〕塩化物"},{"w":"webbed","m":"〈鳥などが〉水かきをつけた / 水かきのある / 蜘蛛の巣を張った、蜘蛛の巣状の"},{"w":"embolden","m":"'〈人を〉大胆にする　励ます"},{"w":"convergent","m":"一点に向かう、集中的な　; より集まる"},{"w":"nasal bridge","m":"鼻梁"},{"w":"malice","m":"敵意、恨み / 〔法律〕犯意"},{"w":"infertile","m":"（土地の）不毛 / 不妊"},{"w":"vascular","m":"〔生物〕管の、維管束の、道管の、血管の"},{"w":"aberration","m":"脱線、倒錯、奇行、非行 / 逸脱"},{"w":"prenatal","m":"出生［出産］前の"},{"w":"manifestation","m":"明示、表明 ; 顕示 ; 現れ、表現"},{"w":"tendon","m":"〔解剖〕腱 / （コンクリートに入れる）鉄筋"},{"w":"facet","m":"切子面 / （人・事の）一面"},{"w":"truism","m":"自明の理、わかりきったこと"},{"w":"imply","m":"〈物・事・言葉などが〉・・・を含む、必ず伴う、含蓄する"},{"w":"brunet","m":"（女性形）brunette / ブルネットの（人）、髪が黒い / 黒人兵士"},{"w":"incongruity","m":"〈音が〉調和しない、耳ざわりな ; 不協和音の / 不調和な"},{"w":"arachnid","m":"クモ形類動物"},{"w":"cloister","m":"<人>を(修道院に)閉じ込める; …を世間から隔離する."},{"w":"multifarious","m":"多種多様な、多彩な"},{"w":"victimizer","m":"信条･人種･性別などの理由で)…を不当に扱う人, 不当に処罰する人; 犠牲(者)にする人; …に罪を着せる(!しばしば受け身で)."},{"w":"klinefelter syndrome","m":"クラインフェルター症候群（クラインフェルターしょうこうぐん、英: Klinefelter syndrome）は、性分化疾患に分類される、男性の性染色体にX染色体が一つ以上多いことで生じる一連の症候群。1942年にアメリカのハリー・クラインフェルターによって初めて報告された。クラインフェルター博士はこれを精巣機能低下症として報告したが、その後の調べで1959年に原因が染色体異常と明らかになった。"},{"w":"in utero","m":"子宮内で"},{"w":"amniocentesis","m":"羊水穿刺"},{"w":"crisscross","m":"Ｃ十文字, ×字形; 十文字模様, 網目模様."},{"w":"trimester","m":"（米）3学期制の1学期"},{"w":"barker","m":"ほえる動物 / 怒鳴り立てる人 / 客引き、呼び込み / ピストル、大砲"},{"w":"limbo","m":"-古聖所、天国と地獄の中間の場所"},{"w":"infantile","m":"こどもじみた / 幼児の、幼児期の / 〈地勢が〉幼年期の"},{"w":"polycystic","m":"多嚢胞の"},{"w":"avatar","m":"神の化身、権化"},{"w":"champion","m":"<（人・主義・主張の）擁護者、代弁者 ; 戦士"},{"w":"menacing","m":"脅すような ; 険悪な"},{"w":"caliber","m":"能力 / （円筒・弾丸の）直径、内径 / （砲身の）口径"},{"w":"inseminate","m":"・・・に授精する"},{"w":"cryogenic","m":"極低温（貯蔵）を必要とする / 低温学"},{"w":"disband","m":"〈組織を〉解体する"},{"w":"tenable","m":"<攻撃に耐えられる、防御し得る、持続できる"},{"w":"valiantly","m":"勇敢に / try valiantly  一所懸命に試みる"},{"w":"lodestone","m":"lóde･stòne"},{"w":"perversity","m":"つむじ曲がり、強情 ; 邪悪"},{"w":"genotype","m":"遺伝子型"},{"w":"conserve","m":"節約して使う"},{"w":"bloating","m":"膨張、腫れ"},{"w":"social withdrawal","m":"社会的引きこもり"},{"w":"gamete","m":"〔生物〕配偶子"},{"w":"chance meeting","m":"偶然の出会い"},{"w":"dappled","m":"〈動物が〉まだらの"},{"w":"hemochromatosis","m":"ヘモクロマトーシスは、鉄の過剰摂取によって鉄が肝細胞に沈着・蓄積し、多臓器障害(2つ以上の臓器が障害されて機能しない状態)を引き起こす病気です。遺伝子変異によって食事から鉄が過剰に吸収される「一次性(遺伝性)ヘモクロマトーシス」と、頻回な輸血など鉄の過剰投与による「二次性ヘモクロマトーシス」の2種類に分けられます。"},{"w":"ashen","m":"灰色の ; 〈人・顔が〉ひどく青た、血の気がない"},{"w":"recessive","m":"後退する / 〔遺伝〕劣性の、劣性性質"},{"w":"loaded","m":"<〈質問などが〉わなにかけるような、ずるい"},{"w":"polymorphism","m":"〈生物〉多形性　〈鉱物〉同質異像"},{"w":"freckle","m":"そばかす、しみ、斑点"},{"w":"frantic","m":"半狂乱の"},{"w":"dysregulate","m":"調整不全: 正常な調整ができない状態。"},{"w":"writhe","m":"（・・・で）身をよじる / ・・・をひん曲げる、ゆがめる / 苦悩"},{"w":"denouement","m":"de･noue･ment, dé･-"},{"w":"passivity","m":"受動性、消極性 / 無抵抗、服従 / 〔化学〕不動態"},{"w":"slur","m":"〈音節・単語などを〉不明瞭に発音する"},{"w":"polish off","m":"'食べ物などをさっと平らげる"},{"w":"sinuous","m":"曲がりくねった、液状の ; 〈動きが〉しなやかな"},{"w":"drool","m":"よだれをたらす / ばか話をする、たわごとをいう / 大喜びする"},{"w":"barrios","m":"（大都市の）メキシコ人［プエルトリコ人］街、ヒスパニック居住地"},{"w":"ambulatory","m":"歩行の、歩きながらする、動き回る"},{"w":"stilt","m":"竹馬、高足 / on stilts ; 竹馬に乗って"},{"w":"sweltering","m":"蒸し暑さに苦しんでいる / 〈場所・天候などが〉蒸し暑い"},{"w":"choretic","m":"舞踏病様の,舞踏性の"},{"w":"vial","m":"（ガラス製の）小瓶、薬瓶、香水瓶"},{"w":"kindred","m":"一族、同族"},{"w":"definitively","m":"明確に、決定的に"},{"w":"barren","m":"〈植物が〉身を結ばない / 不妊の / 魅力のない"},{"w":"derelict","m":"見捨てられた、放棄された / 怠慢な、無責任な"},{"w":"beachhead","m":"〔軍事〕海岸堡、 / 足掛かり、出発点"},{"w":"zero in","m":"照準を合わせる"},{"w":"testicular","m":"睾丸の"},{"w":"spool","m":"かせ（糸巻きに巻き取った糸） / もつれ、混乱 / （飛んでいる野鳥の）群れ"},{"w":"penetrance","m":"浸透率、表現率"},{"w":"viscous","m":"'粘着性のある、ねばねばする"},{"w":"gob","m":"べとべとのかたまり / たくさんの"},{"w":"pericardium","m":"〔解剖〕心膜、心嚢"},{"w":"hectic","m":"大忙しの / 消耗性の ; 消耗熱の / 肺結核の"},{"w":"penitently","m":"悔い改めて"},{"w":"Ashkenazi Jew","m":"「アシュケナジー」はヘブライ語に由来し、ドイツ語の「Askenaz」（アッシェナズ）から派生した言葉です。これは、聖書の十字軍時代の言及に起源を持つ地域名で、ドイツのユダヤ人の集団を指します。"},{"w":"gaucher's disease","m":"ゴーシェ病とは？"},{"w":"aminocentesis","m":"羊水検査"},{"w":"thalassemia","m":"サラセミア、地中海貧血 : 地中海周辺に多い遺伝性貧血"},{"w":"revelatory","m":"?啓示の、（隠されたものを）浮かび上がらせる"},{"w":"posit","m":"・・・を事実と仮定する / ・・・を置く、据える"},{"w":"crrack","m":"大型武装商船"},{"w":"astrolabe","m":"<アストロラーべ : 古代ギリシャの天体観測器"},{"w":"sextant","m":"六分儀 / 円の6分の1"},{"w":"exon","m":"（英国の）衛士長 / 〔遺伝〕エクソン.➡︎INTRON"},{"w":"ophthalmologist","m":"眼科医"},{"w":"retinoblastoma","m":"網膜芽細胞腫（もうまくがさいぼうしゅ、retinoblastoma）とは眼球内に発生する悪性腫瘍である。大部分は2〜3歳ころまでに見られる小児がんであり、胎生期網膜に見られる未分化な網膜芽細胞から発生する。"},{"w":"corrupt","m":"<空気などが>汚染された; [コンピュ]<プログラム･データが>破壊された; エラーの."},{"w":"unperturbed","m":"'かき乱されていない, 平静な."},{"w":"pathway","m":"［生化学］経路、一連の酵素触媒反応"},{"w":"co-opt","m":"〈最上のものを〉（・・・から）選び取る、選ぶ / 間引く"},{"w":"slouch","m":"（だらしなく）前屈みになる［座る、立つ、歩く］"},{"w":"tipz","m":"〈物を〉傾ける、かしげる、ひっくり返す"},{"w":"penetrant","m":"-浸透性の、浸透力のある、浸透剤"},{"w":"gasp","m":"あえぎ、息切れ"},{"w":"in toto","m":"全体として、完全に"},{"w":"polygenic","m":"多遺伝子性の、多因子の"},{"w":"fan","m":"〈感情・喧嘩などを〉あおる、かき立てる"},{"w":"definitive","m":"最も信頼できる"},{"w":"incendiary","m":"扇動的な / 放火の"},{"w":"etiology","m":"病因学 ; 病因"},{"w":"deviance","m":"（一点から）分かれ出る、分岐する / 相違する、逸脱する / 〔数学〕発散の / 〔心理学〕（思考が）発散的な"},{"w":"panache","m":"堂々たる態度、貫禄、品格 ; 気迫"},{"w":"monotony","m":"単調さ"},{"w":"enterocolitis","m":"腸炎"},{"w":"endogenous","m":"〔生物〕内生の ; 内部に生じる"},{"w":"carcinogenesis","m":"'がんの発生、発がん（現象）"},{"w":"photooncogene","m":"がん原遺伝子"},{"w":"intergenic","m":"インタージェニック」とは、遺伝子間の領域や要素を指す用語で、特にDNAの一部で遺伝子が存在しない領域を表します。この領域には、遺伝子の調節に関与するエンハンサーやサイレンサーと呼ばれる要素が含まれていることがあります。インタージェニック領域は、遺伝子がどのように発現されるかに重要な役割を果たすことがあります。"},{"w":"demarcate","m":"境界線を引く / ・・・を線で画する、はっきり分ける"},{"w":"shard","m":">（ガラス、陶器、貝殻などの）破片"},{"w":"preternaural","m":"=(かたく)超自然的な, 不可思議な, 超常現象の."},{"w":"grind on","m":"長く続く、作動する / 進む"},{"w":"strata","m":"層、階層、地層"},{"w":"land grab","m":"土地の収奪"},{"w":"ascription","m":"属性主義 / （・・・に）帰属すること"},{"w":"interminable","m":"終わりのない、際限のない"},{"w":"squabble","m":"つまらない喧嘩"},{"w":"cross-eyed","m":"斜視の"},{"w":"Gothic","m":"ゴート人の / ゴシック様式の"},{"w":"preternatural","m":"超自然的はな、超常現象の"},{"w":"tumult","m":"飲めや歌えの大騒ぎ、耽溺にふけること、酒池肉林、乱交パーティー"},{"w":"post hoc","m":"事後の"},{"w":"pothole","m":"くぼみ、深い穴、洞窟"},{"w":"nematode","m":"'線虫 : 回虫・十二指腸虫など"},{"w":"starburst","m":"星形に広がる光線[爆発]."},{"w":"forge","m":"鍛造する　 / 鍛える"},{"w":"anterior","m":"前におかれた、前方にある、前部の"},{"w":"subcentimeter","m":"センチ未満の"},{"w":"emblazon","m":"«デザイン･名前などで/…に»…を(派手に)飾る«with/on, across»(!しばしば受け身で); …を称揚する."},{"w":"reverential","m":"-畏敬の念に満ちた、うやうやしい"},{"w":"sober","m":"静かな、落ち着いた"},{"w":"seasoned","m":"〈人・動物が〉（物・事に）慣れた、熟練した"},{"w":"temporal","m":"時の、時間の / 世俗の / 一時の、つかの間の、はかない"},{"w":"unfailing","m":"信頼できる、確かな ; あやまりのない"},{"w":"terse","m":"〈文章などが〉簡明な、短くきびきびした ; そっけない"},{"w":"rec room","m":"娯楽用の部屋 / レクリエーションルーム"},{"w":"caveat","m":"忠告、警告、注意書き"},{"w":"behold","m":"・・・を注視する、見守る / ・・・を眺める、見る ; 理解する / 見よ; 注意せよ"},{"w":"tortuous","m":"曲がりくねった、ねじれた / 不正な、よこしまな"},{"w":"straddle","m":"またを広げて歩く / 賛否を明らかにしない、日和見する"},{"w":"in a fit of","m":"発作、一時的な感情の爆発"},{"w":"vendetta","m":"血の復習、かたき討ち / 長年にわたる激しい確執"},{"w":"span","m":"（ある一定の）期間 ; 短い時間"},{"w":"cognizance","m":"認識　知識、知覚"},{"w":"hominid","m":"ヒト科の（動物）"},{"w":"rebuttal","m":"反駁、反論 ; 反証"},{"w":"cranium","m":"（脊椎動物の）頭骨 / 頭蓋"},{"w":"host","m":"大勢、大群、多数の / 軍、軍勢"},{"w":"ornery","m":"米･おどけて)怒りっぽい, 意地の悪い, さもしい(mean2)."},{"w":"gibbon","m":"手長ざる"},{"w":"mesaz","m":";メサ: 頂上が平らで周りに急な崖を持つ地形"},{"w":"Bantu","m":"（中央・南アフリカの）バンツ一族"},{"w":"shrill","m":"〈音・声が〉高くて鋭い、甲高い"},{"w":"apotheosis","m":"神格化、理想化、崇拝 / 典型、極致 ; 絶頂期"},{"w":"quotient","m":"〔数学〕商 ; 指数、比率"},{"w":"condify","m":"〈法律などを〉成文化する、辞書をつくる"},{"w":"exigency","m":"緊急事態 / 急務"},{"w":"anoint","m":"〈人を〉油を注いで清める"},{"w":"visuospatial","m":"視覚的空間"},{"w":"ascendant","m":"優位"},{"w":"slyly","m":"ずるく、陰険に、こっそりと、茶目に"},{"w":"bigotry","m":"偏見に根差した嫌悪、頑迷"},{"w":"ad infinitum","m":"無限に〔の〕、果てしなく〔い〕"},{"w":"repugnant","m":"嫌悪を感じさせる、とても嫌な"},{"w":"compendium","m":"com･pen･di･um"},{"w":"cogent","m":"説得力のある、適切な、的を射た"},{"w":"swaddle","m":"〈新生児を〉布でくるむ"},{"w":"suckle","m":"・・・に乳を飲ませる / ・・・を養う、育てる"},{"w":"wick","m":"（ろうそくやランプの）芯 / 〔外科〕ガーゼ芯 / get one’s wick 〈人を〉イライラさせる、かんにさわる"},{"w":"cauls","m":"大網膜 / 女性用網帽子"},{"w":"cawrie","m":"タカラガイ、コヤスガイ ; その貝殻"},{"w":"mercurial","m":"水銀の / 流動的な、ころころ変わる / マーキュリー神の、水星の"},{"w":"domineering","m":"傲慢な、暴君的な"},{"w":"heaving","m":"-〈場所が〉（人で）賑わっている"},{"w":"internecine","m":"仲間同士で争う、お互いに殺し合う"},{"w":"tiffin","m":"（インド）昼食、軽食"},{"w":"gird","m":"・・・を取り囲む / 身を引き締める / 覚悟を決める"},{"w":"vicissitude","m":"（人生・境遇などの）移り変わり、浮き沈み"},{"w":"ineffable","m":"筆舌に尽くしがたい"},{"w":"trinket","m":"-（安価な）小さな装身具、小間物"},{"w":"immersive","m":"没入型"},{"w":"derivative","m":"（数学）導関数、微分係数 / （化学）誘導体 / 誘導された、引き出された / （・・・から）引き出されたもの　（・・・の）派生物"},{"w":"dimorphism","m":"〔動物・植物〕（同種が異形質になる）ニ形性［現象］"},{"w":"scrotum","m":"陰嚢"},{"w":"memorialize","m":"過越の祭り、出エジプトを記念するユダヤ人の大祭"},{"w":"verse","m":"詩、詩歌"},{"w":"anachronistic","m":"時代錯誤の、時代遅れの"},{"w":"filament","m":"（電球の）フィラメント / 細糸、糸状のもの"},{"w":"mealwaom","m":"コナムシ：貯蔵庫の害虫"},{"w":"nub","m":"sy･ringe † / /sɪrɪ́n(d)ʒ/［音声］ / 名Ｃ / 1注射器 / ▶a hypodermic syringe / 皮下注射器. / 2洗浄器, スポイト; 浣(かん)腸器. / 動 / 他 / 1…を注射する, <薬液など>を注ぐ. / 2…を洗浄する."},{"w":"gonad","m":"性腺、生殖腺"},{"w":"pockmark","m":"póck･màrk"},{"w":"potshot","m":"pót･shòt"},{"w":"mirthless","m":"'楽しくない；〈人が〉陰気な"},{"w":"obsolescence","m":"すたれ（かかっ）ていること:〔生物〕（器官などの）廃退、萎縮、退化"},{"w":"scruffy","m":"だらしない、むさくるしい"},{"w":"taut","m":"硬く、カチカチに、こわばった調子で"},{"w":"tautology","m":"同語反復 / 同じ言葉の繰り返し;馬から落ちて落馬したなど"},{"w":"drawl","m":"（母音をひきのばして）気取ってゆっくり話す"},{"w":"testis","m":"精巣、睾丸"},{"w":"marsupial","m":"有袋類の"},{"w":"clinch","m":"決着をつける"},{"w":"pejorative","m":"軽蔑的な、非難の意味の"},{"w":"sawed","m":"酔っ払った"},{"w":"ghoulish","m":"鬼のような、;残虐な"},{"w":"circumcision","m":"切除、;割礼"},{"w":"inept","m":"技量にかける"},{"w":"mimicry","m":"まねること、 / 模倣"},{"w":"tout","m":"やっきになって宣伝する、褒めちぎる"},{"w":"discordant","m":"仲の悪い、一致しない / しっくりこない"},{"w":"tomboy","m":"おてんば娘"},{"w":"torment","m":"ひどく苦しめる"},{"w":"tormentor","m":"苦しめる人、悩ます人 / 袖幕、はりもの / 反響防止装置"},{"w":"dysphoria","m":"〔精神医学〕不快、精神不安、気分変調"},{"w":"pang","m":"心痛、悲痛、煩悶、痛恨"},{"w":"pangenesis","m":"パンゲン説、汎生説: 遺伝に関するダーウィンの仮説"},{"w":"disorientation","m":"方向感覚の喪失; 頭の混乱"},{"w":"cowhide","m":"牛皮の"},{"w":"menage a trois","m":"（フランス語）夫婦とその一方の愛人の3人の共同生活"},{"w":"mimesis","m":"模倣 : 西洋の芸術創作論の中心をなす概念"},{"w":"dichotomy","m":"（・・・の）二分、両分 / 二分法　、二項対立 / 半月、弦月"},{"w":"mark off","m":"区別する"},{"w":"phanerogam","m":"隠花植物 /  / 花をつけないで胞子で繁殖する植物。シダ類・コケ類・菌類・藻類など、種子植物以外のすべての植物。胞子植物。⇔顕花植物。"},{"w":"cryptogam","m":"隠花植物 /  / 花をつけないで胞子で繁殖する植物。シダ類・コケ類・菌類・藻類など、種子植物以外のすべての植物。胞子植物。⇔顕花植物。"},{"w":"improbability","m":"起こりそうもないこと"},{"w":"henceforth","m":"今［これ］からは、今後は"},{"w":"cleavage","m":"女性の胸の谷間"},{"w":"eggey moon cake","m":"卵の月餅"},{"w":"extrinsic","m":"〈性質・価値などが〉非本質的な ; 固有でない　；（・・・に）付帯的な"},{"w":"estuarine","m":"河口の"},{"w":"parthenogenesis","m":"処女生殖"},{"w":"reassortment","m":"遺伝子再集合(英: reassortment)とは2つの類似のウイルスが同じ細胞に感染した際に起こる遺伝物質の混合現象である。"},{"w":"sparmatozoon","m":"精子"},{"w":"misnomer","m":"間違った名称、誤称"},{"w":"crippling","m":"ひどく損傷した"},{"w":"sclerose","m":"'［医学］・・・を硬化させる"},{"w":"ensconce","m":"（・・・に落ち着く ; (・・・に）安置する"},{"w":"jumble","m":"入り乱れる"},{"w":"coyly","m":"'はにかんで、恥ずかしそうに"},{"w":"piggyback","m":"おんぶ / 肩に乗っている / 台車輸送の / 便乗する"},{"w":"stipend","m":"給料、俸給 / 奨学金、給付金"},{"w":"gratifying","m":"満足のいく、喜ばしい"},{"w":"ring off the hook","m":"電話が鳴りっぱなし"},{"w":"sissyness","m":"女々しさ / 女性であることの特性"},{"w":"buck","m":"強く反対する、抵抗する"},{"w":"unceremonious","m":"むぞうさな、ぞんざいな / 打ち解けた"},{"w":"drum out","m":"突き出す，押し出す，追放する"},{"w":"emeritus","m":"その職を退いた後に、その人の功労をたたえて贈られる称号。名誉教授など。"},{"w":"stupefy","m":"仰天させる"},{"w":"back-porch wisdom","m":"生活の知恵"},{"w":"zwillinge","m":"〈ドイツ語〉双子"},{"w":"gridlock","m":"（交差点での車の）渋滞 / （特に政治で）身動きの取れない状態"},{"w":"unabridged","m":"〈本・本文・演説などが〉省略［削除］いていない、完全な"},{"w":"battery","m":"一式、一連"},{"w":"religiosity","m":"宗教性、けいけん, / 信心深さ、熱狂的信心"},{"w":"enthrall","m":"en･thrall, (主に英)en･thral †"},{"w":"metallurgy","m":"治金学"},{"w":"auburn","m":"〈毛髪などが〉赤［金］褐色の　とび色の"},{"w":"ballroom dancing","m":"社交ダンス"},{"w":"vesectomy","m":"精管切除術 ; パイプカット"},{"w":"epaulet","m":"Ｃ(海軍将校の)正装用肩章."},{"w":"squidge","m":"押しつぶす"},{"w":"fishhook","m":"釣り針"},{"w":"kibbutz","m":"キブツ : イスラエルの農業を中心とした生活共同体"},{"w":"disperal","m":"散布、解散"},{"w":"looking-glass","m":"鏡、姿見"},{"w":"stature","m":"名声、評判 / （心・体・道徳性などの）発達（程度）、成長"},{"w":"incipient","m":"始まりの、初めての / 発端の"},{"w":"Caliban","m":"キャリバン : Shakespeare作のThe Tempest に出てくる醜悪で野蛮な奴隷"},{"w":"windup","m":"巻き上げの / わざと人を怒らせること"},{"w":"ghoul","m":"食屍鬼 / 墓場荒らし : 死体盗人 / 猟奇的な人"},{"w":"vagary","m":"予測のつかない変化 / 気まぐれな考え"},{"w":"gestation","m":"妊娠 ; 懐胎期間"},{"w":"stochastic","m":"〔統計〕確率（論）的な"},{"w":"calus","m":"〔病理〕〔生理〕1 皮膚硬結　たこ"},{"w":"crag","m":"そそり立つゴツゴツしたは、ゴツゴツした岩角"},{"w":"nook","m":"引っ込んだところ、人だと離れたところ"},{"w":"barge","m":"はしけ / 屋形船"},{"w":"graduated","m":"目盛りをつけた / 段階、等級をつけた / 〈税が〉累進的な"},{"w":"bark","m":"?2、樹脂 ; 褐色"},{"w":"osteoporosis","m":"骨粗しょう症"},{"w":"wafer","m":"ウエハース"},{"w":"travail","m":"、骨折り、労苦 ; （芸術的な）労作"},{"w":"Malthusian","m":"マルサス主義の"},{"w":"slink","m":"こそこそ歩く / 〈特に牛が〉早産する"},{"w":"elixir","m":"〔薬学〕エリキシル剤 : 芳香・甘味の内容液"},{"w":"cantankerous","m":"口論好きの、口やかましい、意地悪な、ひねくれた"},{"w":"tortoiseshell","m":"（人造）べっ甲"},{"w":"skein","m":"かせ（糸巻きに巻き取った糸） / もつれ、混乱 / （飛んでいる野鳥の）群れ"},{"w":"marginalia","m":"余白〔欄外〕の書き込み : 傍注"},{"w":"transient","m":"-一時的な、つかの間の、はかない"},{"w":"estranged","m":"別居している / 疎遠になった"},{"w":"estrangement","m":"疎遠、離反、仲違い"},{"w":"foible","m":"（性格の）些細な欠点 / 〔フェンシング〕剣の中央から切っ先までのもろい部分"},{"w":"hollow","m":"hollow out くぼみをつける、くり抜く"},{"w":"smokestack","m":"-（機関車、汽船、工場等の）煙突"},{"w":"effluent","m":"流れ出る、発散する / 流出物、; 廃液、排水、腰"},{"w":"trope","m":"言葉のあや、修辞（語句） / トゥロープス: 装飾的に付加された典礼文中の語句"},{"w":"pliable","m":"曲げやすい、柔軟な、しなやかな"},{"w":"interstice","m":"すきま、小さな間隙"},{"w":"quixotic","m":"ドン・キホーテ式の / 騎士気取りの、非現実［空想］的な"},{"w":"permissible","m":"許容される"},{"w":"chalk out","m":"概略を描く、プランを描く"},{"w":"methane","m":"メタン"},{"w":"brimstone","m":"硫黄 / 〔昆虫〕ヤマキチョウ"},{"w":"trace","m":"微量の"},{"w":"basalt","m":"玄武岩 / （玄武岩に似た）黒色無ゆう陶器"},{"w":"micelle","m":"ミセル（micelle、複:micelles）またはミセラ（micella、複:micellae）は、界面活性剤のリン脂質分子が液体中に分散した集合体（または超分子集合体）であり、コロイド懸濁液（関連コロイド系とも呼ばれる[4]）を形成する。"},{"w":"protocell","m":"phòto･eléctric"},{"w":"extrusion","m":"突き出し、押し出し ; 噴出 ; 追放 ; （流出した）溶岩、粘土"},{"w":"nucleoside","m":"〔生物学〕ヌクレオシド"},{"w":"the nùts and bólts of A","m":"くだけた話)A<物･事など>の基本; A<機械など>の可動部, 仕組み"},{"w":"unspool","m":"〈編んだ髪などを〉ほどく、ほぐす"},{"w":"liability","m":"法的責任 / （・・・の）傾向、（・・・に）なりやすい性質 / （・・・を）免れないこと"},{"w":"in time","m":"早晩,やがて(は),(…に)ちょうどよい時に,間に合って,(…と)調子が合って,…後に"},{"w":"consume","m":"圧倒する"},{"w":"histone","m":"ヒストン（英: histone）は、真核生物のクロマチン（染色体）を構成する主要なタンパク質である。"},{"w":"interlocutor","m":"（（女性形））-tress / 対話者 ; 発問者"},{"w":"stymie","m":"困難な障害 / ・・・を邪魔する、挫折させる"},{"w":"flirtatious","m":"媚態(びたい)を示す, 気を引くような."},{"w":"libido","m":"li･bi･do"},{"w":"syringe","m":"sy･ringe †"},{"w":"nodule","m":"nod･ule"},{"w":"slough","m":"抜け殻 / 壊死塊、かさぶた / 脱ぎ捨てたもの"},{"w":"bogged down","m":"とらわれる"},{"w":"opine","m":"かたく)[直接話法; ～ that節]…だと意見[見解]を述べる, 思量する(→ say他1a)."},{"w":"surmounted","m":"〈さく・障害物を〉乗り越える ;〈困難を〉克服する"},{"w":"transformative","m":"変化させる、変化力のある"},{"w":"savant","m":"<（（文））学識の深い人、大学者、大科学者"},{"w":"unmoor","m":"錨をあげる"},{"w":"ailement","m":"（軽い）病気、疾患 ; 不快"},{"w":"run-of-the-mill","m":"ありふれた、平凡な、月並みの"},{"w":"immunodeficiency","m":"免疫不全"},{"w":"retrovirus","m":"レトロウイルス科（Retroviridae）とは、RNAウイルス類の中で逆転写酵素を持つ種類の総称。プラス鎖ゲノムの一本鎖RNA（ssRNA）から成る。単にレトロウイルスと呼ばれることも多い。"},{"w":"tweak","m":"・・・をつまんでぐいと引っ張る"},{"w":"unfazed","m":"動じない、うろたえない"},{"w":"obstreperous","m":"かたく)(陽気さ･怒りなどで)騒々しい, 手に負えない."},{"w":"rack","m":"〈人を〉拷問にかける"},{"w":"revamp","m":"刷新する"},{"w":"mull","m":"・・・をめちゃめちゃにする、しくじる"},{"w":"concede","m":"…を(真実・正当であると)認める、容認する"},{"w":"vicious","m":"意地の悪い、悪意のある / 〈天候・苦痛などが〉ひどい、激しい"},{"w":"pageboy","m":"肩のあたりで内巻きにする)女性の髪型"},{"w":"outcropping","m":"Ｃ(地面から)露出している岩; それらが見られる広い地域; [地](地層などの)露出(部), 露頭."},{"w":"nauseous","m":"むかつかせる、胸くその悪い、不快な、むかつかせる、胸くその悪い、不快な、胸がむかつく、吐き気がする"},{"w":"wince","m":"'顔しかめる、表情を困らせる"},{"w":"cannulate","m":"〔～に〕カニューレを挿入する"},{"w":"incensed","m":"行為・言葉などに)怒った、激怒した"},{"w":"sham","m":"いんちき、まやかし"},{"w":"in situ","m":"（ラテン語）その場で"},{"w":"telltale","m":"téll･tàle"},{"w":"insofar","m":"～ as]…する限り(!in so farともつづる)"},{"w":"in one's face about","m":"「ざまあ見ろ」「こっちの勝ちだ」"},{"w":"dust up","m":"=Ｃ(英･くだけて･やや古)口論, けんか, 騒動."},{"w":"duffel","m":"ダッフル : 起毛した厚手のラシャ"},{"w":"sedate","m":"穏やかな、落ち着いた"},{"w":"bilirubin","m":"ビリルビン、胆赤素"},{"w":"red-eye","m":"夜間飛行便 / （鉄道の）危険信号"},{"w":"jaundice","m":"〔病理学〕黄疸 / ひがみ、偏見 / 歪める"},{"w":"overreach","m":"・・・をはみ出す、行き過ぎる / 〈人が〉実力以上のことをやろうとして失敗する、策に溺れる。 / 〈人を〉出し抜く"},{"w":"hyperbaric","m":"〈麻酔剤が〉高比重の / 高気圧での"},{"w":"damning","m":"罪を免れない : 破滅的な"},{"w":"helm","m":"（（The 〜））指導（的地位）"},{"w":"cusp","m":"先端、尖頭"},{"w":"aphorism","m":"金言、格言、警句"},{"w":"sound","m":"?〈論理・判断などが〉適切な、思慮分別のある"},{"w":"indeterminate","m":"（範囲・性質などが）確かでない、不確定な、漠然とした"},{"w":"netherworld","m":"ひどい、いまいましい / 地獄のような ; 極悪非道の"},{"w":"denova","m":"新たに、新規に"},{"w":"impairment","m":"ＵＣ損傷; 悪化, 低下; 減少"},{"w":"nagging","m":"こごということ / 悩ませる、しつこい"},{"w":"gargantuan","m":"巨大な"},{"w":"expressivity","m":"〔遺伝〕（遺伝子の）発現度 / 表現性、表現能力"},{"w":"hypomania","m":"軽躁病"},{"w":"bullheaded","m":"頑固でバカな、強情な"},{"w":"grim","m":"厳格な、厳しい"},{"w":"purpouseful","m":"目的のある、意図を持った、故意の"},{"w":"lore","m":"言い伝え / 知識、学問、博学"},{"w":"nip","m":"・・・をはさむ、つまむ / 摘み取る / くじく、阻む、そぐ"},{"w":"stifling","m":"息の詰まるような、息苦しい、窮屈な"},{"w":"moratorium","m":"承認された延期期間"},{"w":"gaiety","m":"陽気、愉快、浮かれ気分 / はで、華美"},{"w":"psycotic","m":"精神病の"},{"w":"effervescence","m":"沸騰、発泡 ; 興奮 ; 活気"},{"w":"touched","m":"感激した、心を動かされた / 少し気のふれた ; 気の倒錯した"},{"w":"withdrawn","m":"内気な、引っ込み思案の、内向的な"},{"w":"factorial","m":"〔数学〕階乗 / 代理人の ; 問屋の"},{"w":"incongruence","m":"不整合"},{"w":"superpose","m":"・・・を（・・・の上に）置く、重ねる"},{"w":"mordant","m":"mor･dant"},{"w":"enormity","m":"深刻さ"},{"w":"prophylatic","m":"（病気の）予防の、避妊の"},{"w":"bygone","m":"過去のこと"},{"w":"previvor","m":"revivor（プレバイバー）とは、遺伝的要因によって特定の病気、通常は癌を発症するリスクが高いとされる人々を指します。特に、遺伝子検査で特定のリスクを持つことが判明した場合、予防策を講じることでその病気の発症を未然に防ごうとする人々を指します。"},{"w":"probabilistic","m":"確率的な / 蓋然論の"},{"w":"salamander","m":"〔動物〕サンショウウオ / サラマンダー ;火の中に住むとかできると信じられた伝説上の動物、 / ひ日の中に住むとかできると信じられた伝説上の動物 / 火に耐えるもの"},{"w":"oocyte","m":"卵母細胞"},{"w":"cryopreserve","m":"冷凍保存する"},{"w":"in one go","m":"一回で、一気に"},{"w":"concominant","m":"（・・・と）相伴う ; 同時に起こる"},{"w":"immunological","m":"免疫学の"},{"w":"vertigo","m":"（高いところから下を見た時のような）目のくらみ、くらくらすること"},{"w":"blatantly","m":"臆面もなく、露骨に"},{"w":"sobriety","m":"酒に酔ってないこと、しらふ / 平静、穏健、合理性"},{"w":"depraved","m":"腐敗した、邪悪な"},{"w":"anthropometric","m":"人体計測の"},{"w":"transgressw","m":"〈限度・境界・範囲を〉超える、逸脱する"},{"w":"noncoercion","m":"非強制"},{"w":"clapboard","m":"下見［羽目］板、雨押さえ / カシ材の板"},{"w":"hypodermic","m":"皮下注射の ; 皮下の"},{"w":"orchid","m":"淡紫色"},{"w":"teetotum","m":"（指で回す）小さいコマ / 四角ごま ; 側面に違った文字をしるしたこま"},{"w":"inhibitor","m":"〔化学〕抑制剤、防止剤 ; 酸化防止剤"},{"w":"puckish","m":"?いたずら好きの、小悪魔のような、わんぱくの"},{"w":"chortle","m":"'（・・・を）嬉しそうに笑う"},{"w":"deleterious","m":"害のある、害毒を及ぼす"},{"w":"introspection","m":"内省、内観 / 内省的性質［傾向］"},{"w":"dissect","m":"細かく切り分けられる"},{"w":"superfluous","m":"過剰の / 不必要な、余計な; 不適切な"},{"w":"insistence","m":"無理強い、執拗さ"},{"w":"translucent","m":"?〈説明・考え方などが〉わかりやすい、明快な"},{"w":"refractive","m":"屈折の［による］、屈折力のある"},{"w":"hyponotic","m":"催眠状態の ; 催眠術の"},{"w":"ovaluate","m":"排卵する"},{"w":"recapitulate","m":"要点を振り返ってみる / （講演・討議の最後などで）・・・を要約する、概括する / 〔生物〕・・・を反復する"},{"w":"obdurate","m":"強情な、頑固な"},{"w":"qualm","m":"（・・・についての）良心の呵責"},{"w":"emancipation","m":"（奴隷の 身分・束縛、因習などからの）解放"},{"w":"potentous","m":"文)前兆的な; (将来に対して)重大な意味を持つ; 不吉な<事･物など>."},{"w":"slapdash","m":"-ぞんざいに、あわててでたらめに"},{"w":"fallibility","m":">Ｕ(かたく)誤りを犯しやすいこと, 誤る可能性."},{"w":"salvo","m":"一斉射撃 / 拍手喝采、歓呼"},{"w":"corollary","m":"直接的推論"},{"w":"blue whale","m":"シロナガスクジラクジラ"},{"w":"Humpback whale","m":"ザトウクジラ"},{"w":"narcissus","m":"〔ギリシャ神話〕ナルキッソス : 泉に映った自分の姿に恋し、スイセンの花に化したという若者"},{"w":"precept","m":">戒め ; 金言、処世訓"},{"w":"reprehensible","m":"-叱られて当然の、非難されるべき"},{"w":"circularity","m":"丸いこと、円形、環状 ; 循環性"},{"w":"dium","m":"解説、概論、概説、要約、摘要 / 明細表"},{"w":"aberrancy","m":"かたく)[通例名の前で]常軌を逸していること、異常な<行動など>(abnormal); [生物]変異, 異状"},{"w":"de-comtextualising","m":"脱文脈化"},{"w":"verve","m":"（芸術作品などに見られる）熱情、力、気迫、（一般に）活気、気力"},{"w":"aerosolize","m":"エアロゾルにして散布する"},{"w":"queasy","m":"quea･sy"},{"w":"repulsive","m":"嫌悪を感じさせる、胸の悪くなる"},{"w":"infirmity","m":"病気、（道徳的・性格的）欠陥、欠点、弱点"},{"w":"cul-de-sac","m":"sy･ringe † / /sɪrɪ́n(d)ʒ/［音声］ / 名Ｃ / 1注射器 / ▶a hypodermic syringe / 皮下注射器. / 2洗浄器, スポイト; 浣(かん)腸器. / 動 / 他 / 1…を注射する, <薬液など>を注ぐ. / 2…を洗浄する."},{"w":"colonnade","m":"〔建築〕コロネード、柱廊 / 並木、街路樹"},{"w":"vivisection","m":"生体解剖 ; （（広義に））生体実験"},{"w":"dissonannt","m":"〈音が〉調和しない、耳ざわりな ; 不協和音の"},{"w":"divergent","m":"（一点から）分かれ出る、分岐する"},{"w":"divvy","m":"（・・・を）山分けする / 山分け、分け前"},{"w":"visitation","m":"訪問、見舞い / 視察、巡視 ; （船の）臨検 / 天の恵み、天罰"},{"w":"unnerving","m":"-（気力をなくさせるほど）ひどい"},{"w":"nucleate","m":"核のある / （・・・を）核にする"},{"w":"divisibility","m":"可分性、分けられること / 〔数学〕被整除性"},{"w":"stewardship","m":"執事職"},{"w":"proteome","m":"〔遺伝〕プロテオーム : 特定の生物が作るタンパク質の全体像"},{"w":"fidelity","m":"正確、厳密"},{"w":"consanguineous","m":"血縁関係にある"},{"w":"genealogy","m":"系譜、系図 / 子孫、血統"},{"w":"anthropometry","m":"人体測定（学）"},{"w":"epileptic","m":"てんかんの / てんかん症者"},{"w":"dysgenic","m":"劣性の　➡︎EUGENIC"},{"w":"skewed","m":"偏った、歪んだ / 傾いた"},{"w":"portend","m":"・・・の前兆となる"},{"w":"epigraph","m":"（特に建物・像・墓・硬貨などの）碑銘、碑文"},{"w":"awestruck","m":"畏敬の念に打たれた"},{"w":"funerary","m":"葬式の、埋葬の"},{"w":"Anubis","m":"〔エジプト神話〕アヌビス: 死者の神 : 頭はジャッカルで体は人間の姿で表される"},{"w":"sarcophagus","m":"石棺 / 〔古代ギリシャ〕棺石"},{"w":"blissful","m":"至福の、幸せな"},{"w":"sentient","m":"<感覚［意識］のある、（・・・を）感じうる"},{"w":"multiprong","m":"複数の側面や方法を持つ - 問題やアプローチが一つではなく、複数の方法や側面から取り組まれること。"},{"w":"absecond","m":"姿をくらます / （・・・を）持ち逃げする"},{"w":"mausoleum","m":"壮大な墓、霊廟"},{"w":"terra-cotta","m":"ter･ra･cot･ta †"},{"w":"potion","m":"（薬・毒などの）一服"},{"w":"backwater","m":"báck･wàter †"},{"w":"sleepwalking","m":"夢中遊行、夢遊症の"},{"w":"impinge","m":"影響を与える、悪影響を及ぼす / 関わりを持つ"},{"w":"snake oil","m":"いかがわしい薬、ガマの油"},{"w":"mornidity","m":"mor･bíd･i･ty"},{"w":"scurupulous","m":"良心的な慎重な、節度のある / 綿密な、周到な"},{"w":"somatic","m":"〔解剖〕〔動物〕体腔の / 体細胞の / 体の、肉体の"},{"w":"cheater","m":"欺く人、詐欺師 ; 浮気者"},{"w":"polymath","m":"博識家"},{"w":"erudition","m":"深い知恵、学識、博識"},{"w":"pompous","m":"尊大な、もったいぶった"},{"w":"disposable soma hypothesis","m":"使い捨ての体理論 disposable soma theory は、細胞 を 生殖細胞 germ-line cells と 体細胞 somatic cells に分類し、それらの違いから「なぜ寿命が存在するか」を説明しようとする説である。"},{"w":"bequeath","m":"遺贈する"},{"w":"bluebell","m":"ヒヤシンス"},{"w":"yew","m":"〔植物〕イチイ : 墓場などに生える常緑樹"},{"w":"hydra","m":"-〔動物〕ヒドラ : 下等な腔腸動物"},{"w":"Turritopsis dohrnii","m":"ベニクラゲ"},{"w":"veryebrate","m":"脊椎のある : 脊椎動物亜門の"},{"w":"bowhead whale","m":"ホッキョククジラ"},{"w":"Greenland shark","m":"ニシオンデンザメ"},{"w":"revolution","m":"回転、旋回 / 公転、周転"},{"w":"tongue in cheek","m":"ふざけた、皮肉で"},{"w":"rule of thumb","m":"経験則、大まかな目安"},{"w":"befit","m":"ふさわしい、似合う / ・・・に適する"},{"w":"thorny","m":"〈問題などが〉厄介な、困難な"},{"w":"senescence","m":"老齢、老境、老衰"},{"w":"egregious","m":"とんでもないとてもひどい"},{"w":"feeble","m":"体力の弱った、虚弱な / ひ弱な"},{"w":"Beluga sturgeon","m":"オオチョウザメ（ベルーガ、大蝶鮫・大鱘魚、Huso huso、英: Beluga; Beluga sturgeon; European sturgeon）は、チョウザメ目チョウザメ科の遡河性の魚"},{"w":"baleen","m":"baleenは「ひげ板」という意味の名詞です。クジラなどのヒゲクジラ類が口の中に持つ、板状の器官で、水中のプランクトンなどを濾しとって食べるのに使われます。"},{"w":"cockatoo","m":"羽冠を動かすオーストラリア・ニューギニアのオウムの総称"},{"w":"eusocial","m":"\"Eusocial\"（英: eusocial）は社会性の非常に高い動物の行動様式を指す生物学用語で、主に次の特徴を満たすものを言います。"},{"w":"chlorination","m":"塩素処理"},{"w":"pasteurize","m":"低温殺菌（処理）する"},{"w":"nitrogen-containing","m":"\"nitrogen-containing\" は「窒素を含む」という意味です。"},{"w":"ex-cathedra","m":"エクス・カテドラ（ex cathedra）とは、ローマ・カトリック教会の用語で、ローマ教皇（教皇）が持つ権威（または職権）のうち、最高のものとされるもの。またその行使による教理宣言。聖座宣言、または教皇座宣言とも訳される。"},{"w":"Methuselah","m":"メトシェラ（メトセラ、英: Methuselah、生没年不詳）は、旧約聖書の『創世記』5章21節から27節に登場する、伝説的な人物。創世記によれば、エノクの息子で、かつノアの方舟で知られるノアの祖父にあたる。メトシェラは969歳で死んだと記述され（創世記5:27）、創世記においても、聖書全体においても、最も長寿であった人物である。"},{"w":"debunk","m":"〈偽りの意見・主張などの〉正体を暴露する、仮面を剥ぐ"},{"w":"ungracious","m":"無作法な、無礼な、粗野な / 〈仕事などが〉感謝されない、割りの悪い、報われない / 不愉快な"},{"w":"geriatric","m":"老人の / 老人学 / 老人病の"},{"w":"pestilence","m":"-致命的な伝染病、悪疫 ; 線ペスト"},{"w":"Dutch elm disease","m":"'〔動物病理〕ニレ立ち枯れ病"},{"w":"aberrant","m":"王道を踏み外した、常軌を逸した、とっぴな"},{"w":"peripatetic","m":"（仕事で）歩き回る、巡回する ; 行商の"},{"w":"ingratiate","m":"（人に）取り入る"},{"w":"incur","m":"招く、被る"},{"w":"catalyze","m":"触媒作用を及ぼす"},{"w":"a blessing in disguise","m":"一見すると不運や悪いことに見えるけれど、実は後から振り返ると良い結果をもたらした出来事を表す英語のイディオムです。日本語では「塞翁が馬」や「災い転じて福となす」のような意味合い"},{"w":"summarily","m":"あっさりと"},{"w":"bluster","m":"荒れ狂う風"},{"w":"dimer","m":"〔化学〕二量体"},{"w":"gibberish","m":"訳のわからないおしゃべり / （難しくて）ちんぷんかんぷんな話〔文章〕"},{"w":"diploid","m":"二倍性の"},{"w":"sentinel","m":"番人、見張り、歩哨、番兵"},{"w":"atherosclerosis","m":"アテローム性動脈硬化"},{"w":"unparalleled","m":"まさるものがない、卓絶した、無比の、無類の"},{"w":"inavertently","m":"不注意に ; 何の気なしに ; 思わず ; ふと"},{"w":"sneaking","m":"こそこそする、こっそりやる、卑劣な、卑しい"},{"w":"partrilineal","m":"父系の"},{"w":"ciliate","m":"目の毛を持つ小生物 - 原則として、繊毛（cilia）を持つ微生物を指します。特に、単細胞生物の一群である繊毛虫（Ciliophora）を含みます。"},{"w":"haggard","m":"苦痛・睡眠不足などで)やつれた,消失したげっそりした。"},{"w":"awry","m":"曲がって、ねじれて、斜めに / それて、不首尾で、間違って"},{"w":"hyperbolic","m":"実際より誇張された ; 並外れた"},{"w":"usher","m":"案内役を務める / 〈季節などの〉先触れをする ; 〈事が時・時代の〉到来をしらせる"},{"w":"fracas","m":"けんか騒ぎ ; 騒動"},{"w":"not above","m":"ためらわずにやる"},{"w":"detractor","m":"'中傷［誹謗］者 ; 名誉毀損者"},{"w":"shabby","m":"<〈人・行為などが〉卑しい、ケチな、卑劣な"},{"w":"scrimonious","m":"'きびしい、辛辣な、刺々しい"},{"w":"hoopla","m":"+熱狂、大騒ぎ ; 誇大宣伝"},{"w":"ravine","m":"渓谷、峡谷、谷間"},{"w":"lymphocyte","m":"リンパ細胞、リンパ球"},{"w":"totiporent","m":"全能、全能性"},{"w":"placental","m":"胎盤"},{"w":"enucleate","m":"〈できものなどを・眼球などを〉摘出する"},{"w":"leonine","m":"<ライオンの ; （髪や髭が）ライオンのような"},{"w":"dissuade","m":"説得して思いとどまらせる"},{"w":"bùshel and péck","m":"＝ neck(→ rhyming slang)."},{"w":"hfief","m":"sy･ringe † / /sɪrɪ́n(d)ʒ/［音声］ / 名Ｃ / 1注射器 / ▶a hypodermic syringe / 皮下注射器. / 2洗浄器, スポイト; 浣(かん)腸器. / 動 / 他 / 1…を注射する, <薬液など>を注ぐ. / 2…を洗浄する."},{"w":"drove2","m":"sy･ringe † / /sɪrɪ́n(d)ʒ/［音声］ / 名Ｃ / 1注射器 / ▶a hypodermic syringe / 皮下注射器. / 2洗浄器, スポイト; 浣(かん)腸器. / 動 / 他 / 1…を注射する, <薬液など>を注ぐ. / 2…を洗浄する."},{"w":"Kjówl","m":"〔…と〕ぴったり接して; 〔…と〕非常に親しくて"},{"w":"to a núb","m":"nub / /nʌb/［音声］ / 名Ｃ / 1[the ～](問題･議論などの)核心, 最重要点. / 2小塊; こぶ. / to a núb / とことんまで."},{"w":"egg2","m":"sy･ringe † / /sɪrɪ́n(d)ʒ/［音声］ / 名Ｃ / 1注射器 / ▶a hypodermic syringe / 皮下注射器. / 2洗浄器, スポイト; 浣(かん)腸器. / 動 / 他 / 1…を注射する, <薬液など>を注ぐ. / 2…を洗浄する."},{"w":"hotchpotch","m":"hotch･potch"},{"w":"jówl","m":"〔…と〕ぴったり接して; 〔…と〕非常に親しくて"},{"w":"mammary","m":"?（（限定））〔解剖〕〔動物〕乳房の ; 乳腺の"},{"w":"hematopoietic stem cell","m":"ヒト造血幹細胞"},{"w":"induced pluripotent stem cells","m":"使い捨ての体理論 disposable soma theory は、細胞 を 生殖細胞 germ-line cells と 体細胞 somatic cells に分類し、それらの違いから「なぜ寿命が存在するか」を説明しようとする説である。"},{"w":"coax into doing sth","m":"〈人を〉おだてて（・・・）させる"},{"w":"fibroblast","m":"線維母細胞、線維芽細胞"},{"w":"compaction","m":"ぎっしり詰めること ; 圧縮 ; 簡潔化"},{"w":"acetylase","m":"アセチル化酵素"},{"w":"ovum","m":"〔生物〕卵子、卵"},{"w":"impregnation","m":"受胎、受精 ; 充満 ; 注入"},{"w":"pronuclei","m":"生物学、特に発生学の用語である。受精の際に、精子由来の核と卵子由来の核が、まだ融合して一つの核になる「前」の状態を指す。これらが融合することで受精卵の核が完成する。単数形は pronucleus である。"},{"w":"deacetylases","m":"ヒストン脱アセチル化酵素（-ひすとんだつあせちるかこうそ；Histone Deacetylase（HDAC）；EC 3.5.1）とはクロマチン構造において主要な構成因子であるヒストンの脱アセチル化を行う酵素である。遺伝子の転写制御において重要な役割を果たしている。ヒトでは、現在HDAC1-11,SirT1-7の18種類が同定されている。種により同定されるHDACは異なる。"},{"w":"on the fly","m":"（ラテン語）その場で"},{"w":"foreboding","m":"（・・・についての）予言 ; 前兆"},{"w":"rail2","m":"sy･ringe † / /sɪrɪ́n(d)ʒ/［音声］ / 名Ｃ / 1注射器 / ▶a hypodermic syringe / 皮下注射器. / 2洗浄器, スポイト; 浣(かん)腸器. / 動 / 他 / 1…を注射する, <薬液など>を注ぐ. / 2…を洗浄する."}];
 
-// ========== STATE ==========
 let state = {
   query: '',
   filter: 'all',
   myWords: JSON.parse(localStorage.getItem('myWords') || '[]'),
   books: JSON.parse(localStorage.getItem('books') || '[]'),
-  editIndex: null,
-  editMode: 'edit', // 'edit' or 'add'
-  quizState: null,
-  flashState: null,
+  editMode: 'edit',
+  editWord: null,
+  addBookWord: null,
 };
 
 function save() {
@@ -276,11 +289,10 @@ function save() {
   localStorage.setItem('books', JSON.stringify(state.books));
 }
 
-// All words = builtin + myWords (myWords override builtin if same key)
 function getAllWords() {
   const map = new Map();
   BUILTIN.forEach(v => map.set(v.w.toLowerCase(), {w: v.w, m: v.m, builtin: true}));
-  state.myWords.forEach((v, i) => map.set(v.w.toLowerCase(), {w: v.w, m: v.m, builtin: false, idx: i}));
+  state.myWords.forEach(v => map.set(v.w.toLowerCase(), {w: v.w, m: v.m, builtin: false}));
   return [...map.values()];
 }
 
@@ -305,38 +317,59 @@ function setFilter(f) {
 
 document.getElementById('search-input').addEventListener('input', e => {
   state.query = e.target.value.trim();
+  const clearBtn = document.getElementById('search-clear');
+  clearBtn.style.display = state.query ? 'flex' : 'none';
   renderSearch();
 });
+
+function clearSearch() {
+  document.getElementById('search-input').value = '';
+  state.query = '';
+  document.getElementById('search-clear').style.display = 'none';
+  renderSearch();
+  document.getElementById('search-input').focus();
+}
+
+function getGoogleUrl(q) {
+  const isJP = /[\u3000-\u9fff\u30a0-\u30ff\u3040-\u309f]/.test(q);
+  if (isJP) {
+    return 'https://www.google.com/search?q=' + encodeURIComponent(q + ' English translation') + '&hl=ja';
+  } else {
+    return 'https://www.google.com/search?q=' + encodeURIComponent(q + ' 意味 日本語') + '&hl=ja';
+  }
+}
 
 function renderSearch() {
   const q = state.query.toLowerCase();
   const all = getAllWords();
-  
   let pool = state.filter === 'mywords' ? all.filter(v => !v.builtin) : all;
 
-  let results = q ? pool.filter(v =>
-    v.w.toLowerCase().includes(q) || v.m.toLowerCase().includes(q)
-  ) : pool.slice(0, 60);
-
-  const count = document.getElementById('result-count');
-  const container = document.getElementById('search-results');
-
+  let results;
   if (!q) {
-    count.textContent = `全 ${all.length.toLocaleString()} 語`;
+    results = pool.slice(0, 60);
   } else {
-    count.textContent = `${results.length} 件`;
+    // 前方一致を優先
+    const startsWith = pool.filter(v => v.w.toLowerCase().startsWith(q) || v.m.toLowerCase().startsWith(q));
+    const contains = pool.filter(v =>
+      !v.w.toLowerCase().startsWith(q) && !v.m.toLowerCase().startsWith(q) &&
+      (v.w.toLowerCase().includes(q) || v.m.toLowerCase().includes(q))
+    );
+    results = [...startsWith, ...contains];
   }
 
+  document.getElementById('result-count').textContent = q ? results.length + ' 件' : '全 ' + all.length.toLocaleString() + ' 語';
+
+  const container = document.getElementById('search-results');
+
   if (results.length === 0 && q) {
-    const isJP = /[\u3000-\u9fff\u30a0-\u30ff\u3040-\u309f]/.test(q);
     container.innerHTML = `
       <div class="no-result">「${esc(state.query)}」は見つかりませんでした</div>
       <div class="ext-card">
-        <div class="ext-title">📖 外部辞書で検索</div>
+        <div class="ext-title">📖 外部辞書・ウェブで検索</div>
         <div class="ext-links">
           <a class="ext-link" href="https://ejje.weblio.jp/content/${encodeURIComponent(state.query)}" target="_blank">Weblio</a>
           <a class="ext-link" href="https://eow.alc.co.jp/search?q=${encodeURIComponent(state.query)}" target="_blank">英辞郎</a>
-          <a class="ext-link" href="https://www.google.com/search?q=${encodeURIComponent(state.query + ' 意味')}" target="_blank">Google</a>
+          <a class="ext-link" href="${getGoogleUrl(state.query)}" target="_blank">🌐 Google</a>
         </div>
       </div>
       <button class="btn-secondary" style="margin-top:8px" onclick="showAddWordWithQuery()">＋ この単語を追加する</button>
@@ -344,7 +377,7 @@ function renderSearch() {
     return;
   }
 
-  container.innerHTML = results.slice(0, 100).map((v, i) => `
+  container.innerHTML = results.slice(0, 100).map(v => `
     <div class="word-card">
       <div class="word-card-header">
         <div class="word-en">${esc(v.w)}</div>
@@ -352,23 +385,25 @@ function renderSearch() {
       </div>
       <div class="word-jp">${esc(v.m).substring(0,120)}${v.m.length>120?'…':''}</div>
       <div class="word-actions">
-        <button class="btn-icon" onclick="speak('${esc(v.w).replace(/'/g,"\\'")}',event)" title="発音">
+        <button class="btn-icon" onclick="speak('${esc(v.w).replace(/'/g,"\\'")}')" title="発音">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
         </button>
-        <button class="btn-icon" onclick="showEditWord('${esc(v.w).replace(/'/g,"\\'")}',event)" title="編集">
+        <button class="btn-icon" onclick="showEditWord('${esc(v.w).replace(/'/g,"\\'")}')" title="編集">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
-        <button class="btn-icon" onclick="addToBook('${esc(v.w).replace(/'/g,"\\'")}',event)" title="単語帳に追加">
+        <button class="btn-icon" onclick="showAddToBook('${esc(v.w).replace(/'/g,"\\'")}')" title="単語帳に追加">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="9" x2="12" y2="15"/><line x1="9" y1="12" x2="15" y2="12"/></svg>
         </button>
+        <a class="btn-icon" href="${getGoogleUrl(v.w)}" target="_blank" title="Webで検索">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </a>
       </div>
     </div>
   `).join('') + (results.length > 100 ? `<div class="no-result">他 ${results.length-100} 件（検索で絞り込んでください）</div>` : '');
 }
 
 // ========== SPEAK ==========
-function speak(word, e) {
-  if (e) e.stopPropagation();
+function speak(word) {
   if ('speechSynthesis' in window) {
     const u = new SpeechSynthesisUtterance(word);
     u.lang = 'en-US';
@@ -378,8 +413,7 @@ function speak(word, e) {
 }
 
 // ========== EDIT / ADD ==========
-function showEditWord(word, e) {
-  if (e) e.stopPropagation();
+function showEditWord(word) {
   const all = getAllWords();
   const v = all.find(x => x.w.toLowerCase() === word.toLowerCase());
   if (!v) return;
@@ -387,6 +421,7 @@ function showEditWord(word, e) {
   state.editWord = word;
   document.getElementById('modal-edit-title').textContent = '単語を編集';
   document.getElementById('edit-word').value = v.w;
+  document.getElementById('edit-word').disabled = false;
   document.getElementById('edit-meaning').value = v.m;
   document.getElementById('edit-book-group').style.display = 'none';
   document.getElementById('modal-edit').classList.add('show');
@@ -396,10 +431,9 @@ function showAddWord() {
   state.editMode = 'add';
   document.getElementById('modal-edit-title').textContent = '単語を追加';
   document.getElementById('edit-word').value = '';
+  document.getElementById('edit-word').disabled = false;
   document.getElementById('edit-meaning').value = '';
-  document.getElementById('edit-book-group').style.display = 'block';
-  const sel = document.getElementById('edit-book-select');
-  sel.innerHTML = '<option value="">なし</option>' + state.books.map((b,i) => `<option value="${i}">${esc(b.name)}</option>`).join('');
+  document.getElementById('edit-book-group').style.display = 'none';
   document.getElementById('modal-edit').classList.add('show');
 }
 
@@ -419,47 +453,57 @@ function saveEdit() {
   if (!w || !m) { showToast('単語と意味を入力してください'); return; }
 
   if (state.editMode === 'add') {
-    const bookIdx = document.getElementById('edit-book-select').value;
     state.myWords.push({w, m, added: Date.now()});
-    if (bookIdx !== '') {
-      state.books[parseInt(bookIdx)].words = state.books[parseInt(bookIdx)].words || [];
-      state.books[parseInt(bookIdx)].words.push(w.toLowerCase());
+    save();
+    closeModal('modal-edit');
+    renderSearch();
+    // 単語帳があれば追加を促す
+    if (state.books.length > 0) {
+      setTimeout(() => showAddToBook(w), 400);
+    } else {
+      showToast('追加しました');
     }
-    showToast('追加しました');
   } else {
-    // Edit existing myWord or add as override
     const idx = state.myWords.findIndex(x => x.w.toLowerCase() === state.editWord.toLowerCase());
     if (idx >= 0) {
       state.myWords[idx] = {w, m, added: state.myWords[idx].added || Date.now()};
     } else {
       state.myWords.push({w, m, added: Date.now()});
     }
+    save();
     showToast('保存しました');
+    closeModal('modal-edit');
+    renderSearch();
   }
-  save();
-  closeModal('modal-edit');
-  renderSearch();
 }
 
-function addToBook(word, e) {
-  if (e) e.stopPropagation();
-  if (state.books.length === 0) { showToast('まず単語帳を作成してください'); showPage('books'); return; }
-  state.editMode = 'addToBook';
-  state.editWord = word;
-  const sel = document.getElementById('edit-book-select');
+// ========== ADD TO BOOK ==========
+function showAddToBook(word) {
+  if (state.books.length === 0) {
+    showToast('まず単語帳を作成してください');
+    showPage('books');
+    return;
+  }
+  state.addBookWord = word;
+  document.getElementById('modal-addbook-title').textContent = '「' + word + '」を単語帳に追加';
+  const sel = document.getElementById('addbook-select');
   sel.innerHTML = state.books.map((b,i) => `<option value="${i}">${esc(b.name)}</option>`).join('');
-  document.getElementById('modal-edit-title').textContent = '単語帳に追加';
-  document.getElementById('edit-word').value = word;
-  document.getElementById('edit-word').disabled = true;
-  document.getElementById('edit-book-group').style.display = 'block';
-  const all = getAllWords();
-  const v = all.find(x => x.w.toLowerCase() === word.toLowerCase());
-  document.getElementById('edit-meaning').value = v ? v.m : '';
-  document.getElementById('modal-edit').classList.add('show');
+  document.getElementById('modal-addbook').classList.add('show');
 }
 
-// Override saveEdit for addToBook
-const _origSaveEdit = saveEdit;
+function saveAddToBook() {
+  const bookIdx = parseInt(document.getElementById('addbook-select').value);
+  state.books[bookIdx].words = state.books[bookIdx].words || [];
+  const w = state.addBookWord.toLowerCase();
+  if (!state.books[bookIdx].words.includes(w)) {
+    state.books[bookIdx].words.push(w);
+    save();
+    showToast('単語帳に追加しました');
+  } else {
+    showToast('すでに登録されています');
+  }
+  closeModal('modal-addbook');
+}
 
 // ========== BOOKS ==========
 function renderBooks() {
@@ -468,17 +512,15 @@ function renderBooks() {
     container.innerHTML = '<div class="no-result">単語帳がまだありません</div>';
     return;
   }
-  container.innerHTML = state.books.map((b, i) => {
-    const count = (b.words || []).length;
-    return `<div class="book-card" onclick="openBook(${i})">
+  container.innerHTML = state.books.map((b, i) => `
+    <div class="book-card" onclick="openBook(${i})">
       <div class="book-icon">📚</div>
       <div class="book-info">
         <div class="book-name">${esc(b.name)}</div>
-        <div class="book-count">${count} 語</div>
+        <div class="book-count">${(b.words||[]).length} 語</div>
       </div>
       <div class="book-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
-    </div>`;
-  }).join('');
+    </div>`).join('');
 }
 
 function showCreateBook() {
@@ -500,19 +542,21 @@ function openBook(idx) {
   const book = state.books[idx];
   const all = getAllWords();
   const bookWords = (book.words || []).map(w => all.find(v => v.w.toLowerCase() === w)).filter(Boolean);
-  const container = document.getElementById('books-list');
-  container.innerHTML = `
-    <button class="btn-secondary" onclick="renderBooks()" style="margin-bottom:12px">← 単語帳一覧に戻る</button>
-    <div style="font-size:18px;font-weight:700;margin-bottom:12px">${esc(book.name)}</div>
+  document.getElementById('books-list').innerHTML = `
+    <button class="btn-secondary" onclick="renderBooks()">← 単語帳一覧に戻る</button>
+    <div style="font-size:18px;font-weight:700;margin:12px 0">${esc(book.name)} (${bookWords.length}語)</div>
     ${bookWords.length === 0 ? '<div class="no-result">単語がまだありません</div>' : ''}
     ${bookWords.map(v => `
       <div class="word-card">
         <div class="word-card-header"><div class="word-en">${esc(v.w)}</div></div>
         <div class="word-jp">${esc(v.m).substring(0,100)}</div>
         <div class="word-actions">
-          <button class="btn-icon" onclick="speak('${esc(v.w).replace(/'/g,"\\'")}',event)">
+          <button class="btn-icon" onclick="speak('${esc(v.w).replace(/'/g,"\\'")}')" title="発音">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
           </button>
+          <a class="btn-icon" href="${getGoogleUrl(v.w)}" target="_blank" title="Webで検索">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </a>
         </div>
       </div>`).join('')}
   `;
@@ -532,7 +576,7 @@ function exportCSV() {
 }
 
 // ========== QUIZ ==========
-let quizSetup = {source: 'all', scope: 'all'};
+let quizSetup = {scope:'all', book:'all'};
 
 function renderQuizSetup() {
   document.getElementById('quiz-content').innerHTML = `
@@ -545,14 +589,14 @@ function renderQuizSetup() {
         <button class="setup-opt" onclick="setQuizOpt(this,'scope','recent')">最近登録</button>
       </div>
       <div class="section-label">単語帳</div>
-      <div class="setup-options" id="quiz-book-opts">
+      <div class="setup-options">
         <button class="setup-opt selected" onclick="setQuizOpt(this,'book','all')">すべて</button>
         ${state.books.map((b,i) => `<button class="setup-opt" onclick="setQuizOpt(this,'book',${i})">${esc(b.name)}</button>`).join('')}
       </div>
       <button class="btn-primary" onclick="startQuiz()">スタート</button>
     </div>
   `;
-  quizSetup = {scope: 'all', book: 'all'};
+  quizSetup = {scope:'all', book:'all'};
 }
 
 function setQuizOpt(el, key, val) {
@@ -561,29 +605,22 @@ function setQuizOpt(el, key, val) {
   quizSetup[key] = val;
 }
 
-function getQuizPool() {
-  let all = getAllWords();
+function startQuiz() {
+  let pool = getAllWords();
   if (quizSetup.book !== 'all') {
-    const bookWords = state.books[quizSetup.book].words || [];
-    all = all.filter(v => bookWords.includes(v.w.toLowerCase()));
+    const bw = state.books[quizSetup.book].words || [];
+    pool = pool.filter(v => bw.includes(v.w.toLowerCase()));
   }
   if (quizSetup.scope === 'recent') {
-    const myRecent = state.myWords.slice(-100);
-    all = all.filter(v => !v.builtin).slice(-100);
-    if (all.length < 10) all = getAllWords().slice(-100);
+    const recent = state.myWords.slice(-100);
+    pool = recent.length >= 4 ? recent : pool.slice(-100);
   }
-  return all;
-}
-
-function startQuiz() {
-  const pool = getQuizPool();
   if (pool.length < 4) { showToast('単語が少なすぎます（4語以上必要）'); return; }
-  const questions = shuffle(pool).slice(0, 10).map(correct => {
-    const wrong = shuffle(pool.filter(v => v.w !== correct.w)).slice(0, 3);
-    const choices = shuffle([correct, ...wrong]);
-    return {correct, choices};
+  const questions = shuffle(pool).slice(0,10).map(correct => {
+    const wrong = shuffle(pool.filter(v => v.w !== correct.w)).slice(0,3);
+    return {correct, choices: shuffle([correct, ...wrong])};
   });
-  state.quizState = {questions, current: 0, score: 0, answered: false, results: []};
+  state.quizState = {questions, current:0, score:0, answered:false, results:[]};
   renderQuizQuestion();
 }
 
@@ -604,23 +641,19 @@ function renderQuizQuestion() {
   `;
 }
 
-function answerQuiz(choiceIdx) {
+function answerQuiz(i) {
   if (state.quizState.answered) return;
   state.quizState.answered = true;
   const {questions, current} = state.quizState;
   const q = questions[current];
-  const chosen = q.choices[choiceIdx];
-  const correct = chosen.w === q.correct.w;
+  const correct = q.choices[i].w === q.correct.w;
   if (correct) state.quizState.score++;
   state.quizState.results.push({word: q.correct.w, correct});
-
-  const btns = document.querySelectorAll('.quiz-choice');
-  btns.forEach((btn, i) => {
-    if (q.choices[i].w === q.correct.w) btn.classList.add('correct');
-    else if (i === choiceIdx) btn.classList.add('wrong');
+  document.querySelectorAll('.quiz-choice').forEach((btn, j) => {
+    if (q.choices[j].w === q.correct.w) btn.classList.add('correct');
+    else if (j === i) btn.classList.add('wrong');
     btn.disabled = true;
   });
-
   setTimeout(() => {
     state.quizState.current++;
     state.quizState.answered = false;
@@ -644,7 +677,7 @@ function renderQuizResult() {
 }
 
 // ========== FLASH ==========
-let flashSetup = {scope: 'all', book: 'all'};
+let flashSetup = {scope:'all', book:'all'};
 
 function renderFlashSetup() {
   document.getElementById('flash-content').innerHTML = `
@@ -664,7 +697,7 @@ function renderFlashSetup() {
       <button class="btn-primary" onclick="startFlash()">スタート</button>
     </div>
   `;
-  flashSetup = {scope: 'all', book: 'all'};
+  flashSetup = {scope:'all', book:'all'};
 }
 
 function setFlashOpt(el, key, val) {
@@ -674,17 +707,17 @@ function setFlashOpt(el, key, val) {
 }
 
 function startFlash() {
-  let all = getAllWords();
+  let pool = getAllWords();
   if (flashSetup.book !== 'all') {
     const bw = state.books[flashSetup.book].words || [];
-    all = all.filter(v => bw.includes(v.w.toLowerCase()));
+    pool = pool.filter(v => bw.includes(v.w.toLowerCase()));
   }
   if (flashSetup.scope === 'recent') {
-    all = all.filter(v => !v.builtin).slice(-50);
-    if (all.length < 3) all = getAllWords().slice(-50);
+    const recent = state.myWords.slice(-50);
+    pool = recent.length >= 3 ? recent : pool.slice(-50);
   }
-  if (all.length < 1) { showToast('単語がありません'); return; }
-  state.flashState = {cards: shuffle(all), current: 0, flipped: false, score: 0, total: all.length};
+  if (pool.length < 1) { showToast('単語がありません'); return; }
+  state.flashState = {cards: shuffle(pool), current:0, score:0};
   renderFlashCard();
 }
 
@@ -693,9 +726,9 @@ function renderFlashCard() {
   if (fs.current >= fs.cards.length) { renderFlashResult(); return; }
   const card = fs.cards[fs.current];
   document.getElementById('flash-content').innerHTML = `
-    <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <span style="color:var(--text3);font-size:13px">${fs.current+1} / ${fs.cards.length}</span>
-      <span style="color:var(--text3);font-size:13px">✓ ${fs.score}</span>
+      <span style="color:var(--green);font-size:13px">✓ ${fs.score}</span>
     </div>
     <div class="progress-bar" style="margin-bottom:16px"><div class="progress-fill" style="width:${(fs.current/fs.cards.length)*100}%"></div></div>
     <div class="flash-card-wrap">
@@ -705,20 +738,19 @@ function renderFlashCard() {
           <div class="flash-hint">タップして意味を見る</div>
         </div>
         <div class="flash-back">
-          <div class="flash-word" style="font-size:20px;margin-bottom:12px">${esc(card.w)}</div>
+          <div class="flash-word" style="font-size:20px;margin-bottom:8px">${esc(card.w)}</div>
           <div class="flash-meaning">${esc(card.m)}</div>
         </div>
       </div>
     </div>
-    <div style="min-height:100px" id="flash-actions-area">
+    <div id="flash-actions-area">
       <div style="text-align:center;color:var(--text3);font-size:13px;padding:20px">カードをタップしてください</div>
     </div>
   `;
 }
 
 function flipCard() {
-  const card = document.getElementById('flash-card');
-  card.classList.toggle('flipped');
+  document.getElementById('flash-card').classList.toggle('flipped');
   document.getElementById('flash-actions-area').innerHTML = `
     <div class="flash-actions" style="margin-top:16px">
       <button class="btn-wrong" onclick="flashNext(false)">✗ もう一度</button>
@@ -734,12 +766,12 @@ function flashNext(correct) {
 }
 
 function renderFlashResult() {
-  const {score, total} = state.flashState;
-  const pct = Math.round(score/total*100);
+  const {score, cards} = state.flashState;
+  const pct = Math.round(score/cards.length*100);
   document.getElementById('flash-content').innerHTML = `
     <div class="quiz-result">
       <div class="result-score">${pct}<span style="font-size:28px;color:var(--text2)">%</span></div>
-      <div class="result-label">${score}/${total} 枚 覚えました！</div>
+      <div class="result-label">${score}/${cards.length} 枚 覚えました！</div>
       <button class="btn-primary" onclick="startFlash()">もう一度</button>
       <button class="btn-secondary" onclick="renderFlashSetup()">設定に戻る</button>
     </div>
@@ -749,9 +781,7 @@ function renderFlashResult() {
 // ========== UTILS ==========
 function closeModal(id) {
   document.getElementById(id).classList.remove('show');
-  if (id === 'modal-edit') {
-    document.getElementById('edit-word').disabled = false;
-  }
+  document.getElementById('edit-word').disabled = false;
 }
 
 function showToast(msg) {
@@ -774,8 +804,87 @@ function esc(s) {
   return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
-// ========== INIT ==========
+
+// ========== THEMES ==========
+const THEMES = {
+  dark: {
+    name: '🌙 ダーク（デフォルト）',
+    '--bg': '#0f0f13',
+    '--surface': '#1a1a22',
+    '--surface2': '#26263a',
+    '--border': '#44445a',
+    '--accent': '#7c6cfc',
+    '--accent2': '#a89cff',
+    '--text': '#e8e8f0',
+    '--text2': '#b0b0c8',
+    '--text3': '#7a7a92',
+  },
+  green: {
+    name: '🌿 淡いグリーン',
+    '--bg': '#0d1410',
+    '--surface': '#162018',
+    '--surface2': '#1e2e22',
+    '--border': '#2e4a34',
+    '--accent': '#4caf78',
+    '--accent2': '#80d4a0',
+    '--text': '#e0f0e8',
+    '--text2': '#a0c8b0',
+    '--text3': '#5a8a6a',
+  },
+  warm: {
+    name: '🍵 黄色と茶色',
+    '--bg': '#141008',
+    '--surface': '#201a0c',
+    '--surface2': '#2e2410',
+    '--border': '#4a3a1a',
+    '--accent': '#c8922a',
+    '--accent2': '#e8b860',
+    '--text': '#f0e8d0',
+    '--text2': '#c8b890',
+    '--text3': '#8a7050',
+  },
+  blue: {
+    name: '🌊 淡いブルー',
+    '--bg': '#0a0f18',
+    '--surface': '#121a28',
+    '--surface2': '#1a2438',
+    '--border': '#2a3a58',
+    '--accent': '#4a8cdc',
+    '--accent2': '#80b4f0',
+    '--text': '#e0eaf8',
+    '--text2': '#a0b8d8',
+    '--text3': '#5a78a0',
+  },
+};
+
+function applyTheme(key) {
+  const theme = THEMES[key];
+  if (!theme) return;
+  const root = document.documentElement;
+  Object.entries(theme).forEach(([k, v]) => {
+    if (k.startsWith('--')) root.style.setProperty(k, v);
+  });
+  localStorage.setItem('theme', key);
+  // テーマボタンの選択状態更新
+  document.querySelectorAll('.theme-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.theme === key);
+  });
+}
+
+// 保存済みテーマを適用
+const savedTheme = localStorage.getItem('theme') || 'dark';
+// DOM読み込み後に適用
+window.addEventListener('DOMContentLoaded', () => applyTheme(savedTheme));
+
 renderSearch();
+applyTheme(localStorage.getItem('theme') || 'dark');
+// テーマボタン初期選択
+setTimeout(() => {
+  const t = localStorage.getItem('theme') || 'dark';
+  document.querySelectorAll('.theme-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.theme === t);
+  });
+}, 100);
 </script>
 </body>
 </html>
