@@ -11,12 +11,13 @@
 <title>単語帳</title>
 <style>
 :root {
-  --bg: #0f0f13;
-  --surface: #1a1a22;
-  --surface2: #26263a;
-  --border: #44445a;
+  --bg: #0f0d16;
+  --surface: #1a1820;
+  --surface2: #24213a;
+  --border: #44425a;
   --accent: #7c6cfc;
   --accent2: #a89cff;
+  --accent-rgb: 124, 108, 252;
   --green: #34d399;
   --red: #f87171;
   --yellow: #fbbf24;
@@ -25,6 +26,36 @@
   --text3: #7a7a92;
   --radius: 14px;
   --radius-sm: 8px;
+}
+[data-theme="green"] {
+  --accent: #84cc16;
+  --accent2: #bef264;
+  --accent-rgb: 132, 204, 22;
+  --bg: #0b0f07;
+  --surface: #131a0d;
+  --surface2: #1c2714;
+  --border: #3a5228;
+  --text3: #7a8a6a;
+}
+[data-theme="amber"] {
+  --accent: #d97706;
+  --accent2: #fbbf24;
+  --accent-rgb: 217, 119, 6;
+  --bg: #120e07;
+  --surface: #1e1608;
+  --surface2: #2c2010;
+  --border: #5a3e10;
+  --text3: #8a7a5a;
+}
+[data-theme="blue"] {
+  --accent: #38bdf8;
+  --accent2: #7dd3fc;
+  --accent-rgb: 56, 189, 248;
+  --bg: #07101a;
+  --surface: #0d1a28;
+  --surface2: #122438;
+  --border: #1e4060;
+  --text3: #6a8a9a;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
@@ -43,9 +74,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .hero { display: flex; flex-direction: column; align-items: center; padding: 32px 0 20px; }
 .hero-cat { width: 100px; height: 100px; margin-bottom: 12px; }
 .hero-title { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(135deg, var(--accent2), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.theme-dots { display: flex; gap: 12px; margin-top: 16px; }
+.theme-dot { width: 26px; height: 26px; border-radius: 50%; border: 2.5px solid transparent; cursor: pointer; transition: transform .2s, border-color .2s; padding: 0; }
+.theme-dot.active { border-color: var(--text); transform: scale(1.2); }
+.dot-purple { background: #7c6cfc; }
+.dot-green { background: #84cc16; }
+.dot-amber { background: #d97706; }
+.dot-blue { background: #38bdf8; }
 
-/* Search sticky header */
-.search-sticky { position: sticky; top: 0; z-index: 50; background: var(--bg); padding: 12px 0 8px; }
+/* Search header */
+.search-sticky { background: var(--bg); padding: 12px 0 8px; }
 .search-wrap { position: relative; }
 .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text3); width: 18px; height: 18px; pointer-events: none; }
 #search-input { width: 100%; padding: 14px 46px 14px 44px; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 16px; outline: none; transition: border-color .2s; -webkit-appearance: none; }
@@ -63,7 +101,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .word-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 10px; transition: border-color .2s; }
 .word-card-header { display: flex; align-items: center; gap: 10px; }
 .word-en { font-size: 20px; font-weight: 600; color: var(--text); flex: 1; }
-.word-book-tag { font-size: 12px; padding: 2px 8px; border-radius: 10px; background: rgba(124,108,252,0.15); color: var(--accent2); border: 1px solid rgba(124,108,252,0.3); white-space: nowrap; }
+.word-book-tag { font-size: 12px; padding: 2px 8px; border-radius: 10px; background: rgba(var(--accent-rgb),0.15); color: var(--accent2); border: 1px solid rgba(var(--accent-rgb),0.3); white-space: nowrap; }
 .word-jp { font-size: 15px; color: var(--text2); margin-top: 6px; line-height: 1.6; }
 .word-actions { display: flex; gap: 8px; margin-top: 12px; }
 .btn-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: none; color: var(--text2); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; text-decoration: none; flex-shrink: 0; }
@@ -81,7 +119,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .page-title { font-size: 22px; font-weight: 700; margin: 16px 0; }
 .book-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all .2s; }
 .book-card:hover { border-color: var(--accent); }
-.book-icon { width: 44px; height: 44px; border-radius: 10px; background: rgba(124,108,252,0.15); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.book-icon { width: 44px; height: 44px; border-radius: 10px; background: rgba(var(--accent-rgb),0.15); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
 .book-info { flex: 1; }
 .book-name { font-size: 16px; font-weight: 600; }
 .book-count { font-size: 13px; color: var(--text2); margin-top: 2px; }
@@ -95,7 +133,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .quiz-setup p { color: var(--text2); font-size: 14px; margin-bottom: 24px; }
 .setup-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
 .setup-opt { padding: 14px; border-radius: var(--radius); border: 2px solid var(--border); background: none; color: var(--text); cursor: pointer; transition: all .2s; font-size: 14px; }
-.setup-opt.selected { border-color: var(--accent); background: rgba(124,108,252,0.15); color: var(--accent2); }
+.setup-opt.selected { border-color: var(--accent); background: rgba(var(--accent-rgb),0.15); color: var(--accent2); }
 .section-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .08em; margin: 20px 0 10px; text-align: left; }
 
 /* Quiz */
@@ -116,7 +154,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .flash-card.flipped { transform: rotateY(180deg); }
 .flash-front, .flash-back { position: absolute; width: 100%; min-height: 220px; border-radius: var(--radius); backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
 .flash-front { background: var(--surface); border: 1.5px solid var(--border); }
-.flash-back { background: linear-gradient(135deg, rgba(124,108,252,0.2), var(--surface)); border: 1.5px solid var(--accent); transform: rotateY(180deg); }
+.flash-back { background: linear-gradient(135deg, rgba(var(--accent-rgb),0.2), var(--surface)); border: 1.5px solid var(--accent); transform: rotateY(180deg); }
 .flash-word { font-size: 30px; font-weight: 700; text-align: center; }
 .flash-meaning { font-size: 16px; color: var(--text2); text-align: center; line-height: 1.6; margin-top: 12px; }
 .flash-hint { font-size: 13px; color: var(--text3); margin-top: 12px; }
@@ -209,6 +247,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
       <ellipse cx="50" cy="88" rx="20" ry="12" fill="#7c6cfc" opacity="0.6"/>
     </svg>
     <div class="hero-title">tangocho</div>
+    <div class="theme-dots">
+      <button class="theme-dot dot-purple" onclick="setTheme('purple')" title="パープル"></button>
+      <button class="theme-dot dot-green" onclick="setTheme('green')" title="ライムグリーン"></button>
+      <button class="theme-dot dot-amber" onclick="setTheme('amber')" title="イエロー＆ブラウン"></button>
+      <button class="theme-dot dot-blue" onclick="setTheme('blue')" title="ライトブルー"></button>
+    </div>
   </div>
   <div class="search-sticky">
     <div class="search-wrap">
@@ -324,6 +368,18 @@ function save() {
   localStorage.setItem('myWords', JSON.stringify(state.myWords));
   localStorage.setItem('books', JSON.stringify(state.books));
 }
+
+function setTheme(theme) {
+  document.documentElement.dataset.theme = theme === 'purple' ? '' : theme;
+  localStorage.setItem('theme', theme);
+  document.querySelectorAll('.theme-dot').forEach(d => d.classList.remove('active'));
+  const dot = document.querySelector('.dot-' + theme);
+  if (dot) dot.classList.add('active');
+}
+(function() {
+  const t = localStorage.getItem('theme') || 'purple';
+  setTheme(t);
+})();
 
 function getAllWords() {
   const map = new Map();
