@@ -39,6 +39,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .page { display: none; padding: 0 16px 100px; max-width: 680px; margin: 0 auto; }
 .page.active { display: block; }
 
+/* Hero header */
+.hero { display: flex; flex-direction: column; align-items: center; padding: 32px 0 20px; }
+.hero-cat { width: 100px; height: 100px; margin-bottom: 12px; }
+.hero-title { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(135deg, var(--accent2), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
 /* Search sticky header */
 .search-sticky { position: sticky; top: 0; z-index: 50; background: var(--bg); padding: 12px 0 8px; }
 .search-wrap { position: relative; }
@@ -174,6 +179,37 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 
 <!-- Search Page -->
 <div class="page active" id="page-search">
+  <div class="hero">
+    <svg class="hero-cat" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- ears -->
+      <polygon points="18,42 26,18 38,38" fill="#7c6cfc"/>
+      <polygon points="62,38 74,18 82,42" fill="#7c6cfc"/>
+      <polygon points="22,40 27,24 36,38" fill="#c4b8ff"/>
+      <polygon points="64,38 73,24 78,40" fill="#c4b8ff"/>
+      <!-- head -->
+      <ellipse cx="50" cy="55" rx="34" ry="30" fill="#a89cff"/>
+      <!-- face shading -->
+      <ellipse cx="50" cy="60" rx="22" ry="18" fill="#c4b8ff" opacity="0.5"/>
+      <!-- eyes -->
+      <ellipse cx="38" cy="50" rx="5" ry="6" fill="#1a1a22"/>
+      <ellipse cx="62" cy="50" rx="5" ry="6" fill="#1a1a22"/>
+      <circle cx="39.5" cy="48.5" r="1.5" fill="white"/>
+      <circle cx="63.5" cy="48.5" r="1.5" fill="white"/>
+      <!-- nose -->
+      <ellipse cx="50" cy="60" rx="3" ry="2" fill="#f87171"/>
+      <!-- mouth -->
+      <path d="M47 62 Q50 66 53 62" stroke="#1a1a22" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+      <!-- whiskers left -->
+      <line x1="16" y1="57" x2="44" y2="61" stroke="#7c6cfc" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
+      <line x1="16" y1="62" x2="44" y2="63" stroke="#7c6cfc" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
+      <!-- whiskers right -->
+      <line x1="84" y1="57" x2="56" y2="61" stroke="#7c6cfc" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
+      <line x1="84" y1="62" x2="56" y2="63" stroke="#7c6cfc" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
+      <!-- body -->
+      <ellipse cx="50" cy="88" rx="20" ry="12" fill="#7c6cfc" opacity="0.6"/>
+    </svg>
+    <div class="hero-title">tangocho</div>
+  </div>
   <div class="search-sticky">
     <div class="search-wrap">
       <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
