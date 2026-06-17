@@ -83,7 +83,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .dot-blue { background: #38bdf8; }
 
 /* Search header */
-.search-sticky { background: var(--bg); padding: 12px 0 8px; margin-top: 18px; position: sticky; top: calc(env(safe-area-inset-top) + 10px); z-index: 20; }
+.search-sticky { background: var(--bg); padding: 12px 0 8px; margin-top: 18px; }
 .search-wrap { position: relative; }
 .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text3); width: 18px; height: 18px; pointer-events: none; }
 #search-input { width: 100%; padding: 14px 46px 14px 44px; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 16px; outline: none; transition: border-color .2s; -webkit-appearance: none; }
@@ -369,36 +369,16 @@ function save() {
   localStorage.setItem('books', JSON.stringify(state.books));
 }
 
-const THEME_KEY_MAP = {
-  purple: 'dark',
-  green: 'green',
-  amber: 'warm',
-  blue: 'blue',
-};
-const DOT_THEME_FROM_KEY = {
-  dark: 'purple',
-  green: 'green',
-  warm: 'amber',
-  blue: 'blue',
-};
-
 function setTheme(theme) {
-  const themeKey = THEME_KEY_MAP[theme] || theme;
-  applyTheme(themeKey);
-  document.documentElement.dataset.theme = themeKey === 'dark' ? '' : themeKey;
-  localStorage.setItem('theme', themeKey);
+  document.documentElement.dataset.theme = theme === 'purple' ? '' : theme;
+  localStorage.setItem('theme', theme);
   document.querySelectorAll('.theme-dot').forEach(d => d.classList.remove('active'));
   const dot = document.querySelector('.dot-' + theme);
   if (dot) dot.classList.add('active');
 }
 (function() {
-  const savedTheme = localStorage.getItem('theme') || 'dark';
-  const themeKey = THEME_KEY_MAP[savedTheme] ? THEME_KEY_MAP[savedTheme] : (savedTheme === 'dark' || savedTheme === 'green' || savedTheme === 'warm' || savedTheme === 'blue' ? savedTheme : 'dark');
-  const dotTheme = DOT_THEME_FROM_KEY[themeKey] || 'purple';
-  document.querySelectorAll('.theme-dot').forEach(d => d.classList.remove('active'));
-  const dot = document.querySelector('.dot-' + dotTheme);
-  if (dot) dot.classList.add('active');
-  applyTheme(themeKey);
+  const t = localStorage.getItem('theme') || 'purple';
+  setTheme(t);
 })();
 
 function getAllWords() {
