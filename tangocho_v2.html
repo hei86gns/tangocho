@@ -104,6 +104,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .word-en { font-size: 20px; font-weight: 600; color: var(--text); flex: 1; }
 .word-book-tag { font-size: 12px; padding: 2px 8px; border-radius: 10px; background: rgba(var(--accent-rgb),0.15); color: var(--accent2); border: 1px solid rgba(var(--accent-rgb),0.3); white-space: nowrap; }
 .word-jp { font-size: 15px; color: var(--text2); margin-top: 6px; line-height: 1.6; }
+.more-btn { background: none; border: none; color: var(--accent2); font-size: 13px; cursor: pointer; padding: 2px 0 0; display: block; }
 .word-actions { display: flex; gap: 8px; margin-top: 12px; }
 .btn-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: none; color: var(--text2); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; text-decoration: none; flex-shrink: 0; }
 .btn-icon:hover { border-color: var(--accent); color: var(--accent2); }
@@ -522,13 +523,17 @@ function renderSearch() {
     return;
   }
 
-  container.innerHTML = results.slice(0, 100).map(v => `
+  window._wm = {};
+  const _r = results.slice(0, 100);
+  _r.forEach((v, i) => { window._wm[i] = v.m; });
+  container.innerHTML = _r.map((v, i) => `
     <div class="word-card">
       <div class="word-card-header">
         <div class="word-en">${esc(v.w)}</div>
         ${!v.builtin ? '<span class="word-book-tag">マイ単語</span>' : ''}
       </div>
-      <div class="word-jp">${esc(v.m).substring(0,120)}${v.m.length>120?'…':''}</div>
+      <div class="word-jp" id="wmt${i}">${esc(v.m.length>120?v.m.substring(0,120)+'…':v.m)}</div>
+      ${v.m.length>120?`<button class="more-btn" id="wmb${i}" onclick="toggleJp(${i})">▾ 続きを読む</button>`:''}
       <div class="word-actions">
         <button class="btn-icon" onclick="speak('${esc(v.w).replace(/'/g,"\\'")}')" title="発音">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
@@ -547,19 +552,37 @@ function renderSearch() {
   `).join('') + (results.length > 100 ? `<div class="no-result">他 ${results.length-100} 件（検索で絞り込んでください）</div>` : '');
 }
 
+function toggleJp(i) {
+  const t = document.getElementById('wmt' + i);
+  const b = document.getElementById('wmb' + i);
+  if (!t || !b || !window._wm) return;
+  const expanded = b.textContent.startsWith('▴');
+  t.textContent = expanded ? window._wm[i].substring(0, 120) + '…' : window._wm[i];
+  b.textContent = expanded ? '▾ 続きを読む' : '▴ 閉じる';
+}
+
 // ========== SPEAK ==========
+let _cachedVoice = null;
+function _pickVoice() {
+  const vs = speechSynthesis.getVoices();
+  _cachedVoice = vs.find(v => v.lang === 'en-US' && v.name === 'Samantha')
+    || vs.find(v => v.lang === 'en-US' && (v.name.includes('Enhanced') || v.name.includes('Premium')))
+    || vs.find(v => v.lang === 'en-US' && v.name.includes('Google'))
+    || vs.find(v => v.lang === 'en-US' && !v.name.toLowerCase().includes('compact'))
+    || vs.find(v => v.lang.startsWith('en'))
+    || null;
+}
+if ('speechSynthesis' in window) {
+  speechSynthesis.addEventListener('voiceschanged', _pickVoice);
+  _pickVoice();
+}
+
 function speak(word) {
   if (!('speechSynthesis' in window)) return;
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(word);
   u.lang = 'en-US';
-  const voices = speechSynthesis.getVoices();
-  const best = voices.find(v => v.lang === 'en-US' && v.name === 'Samantha')
-    || voices.find(v => v.lang === 'en-US' && (v.name.includes('Enhanced') || v.name.includes('Premium')))
-    || voices.find(v => v.lang === 'en-US' && v.name.includes('Google'))
-    || voices.find(v => v.lang === 'en-US' && !v.name.toLowerCase().includes('compact'))
-    || voices.find(v => v.lang.startsWith('en'));
-  if (best) u.voice = best;
+  if (_cachedVoice) u.voice = _cachedVoice;
   speechSynthesis.speak(u);
 }
 
