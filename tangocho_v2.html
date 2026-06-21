@@ -180,7 +180,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .form-label { font-size: 13px; color: var(--text2); margin-bottom: 6px; display: block; }
 .form-input { width: 100%; padding: 12px 14px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 15px; outline: none; -webkit-appearance: none; }
 .form-input:focus { border-color: var(--accent); }
-.form-textarea { width: 100%; padding: 12px 14px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 14px; outline: none; min-height: 80px; resize: vertical; font-family: inherit; -webkit-appearance: none; }
+.form-textarea { width: 100%; padding: 12px 14px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 14px; outline: none; height: 120px; resize: none; overflow-y: scroll; -webkit-overflow-scrolling: touch; font-family: inherit; -webkit-appearance: none; appearance: none; }
 .form-textarea:focus { border-color: var(--accent); }
 .modal-actions { display: flex; gap: 10px; margin-top: 16px; }
 .btn-cancel { flex: 1; padding: 12px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: none; color: var(--text2); cursor: pointer; font-size: 15px; }
@@ -287,6 +287,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
   </div>
   <div class="section-label">データ管理</div>
   <button class="btn-secondary" onclick="exportCSV()">📥 CSVでバックアップ</button>
+  <button class="btn-secondary" onclick="exportJSON()">📤 マイ単語をコピー（他の端末へ）</button>
+  <button class="btn-secondary" onclick="showImportJSON()">📥 マイ単語を読み込む（他の端末から）</button>
   <button class="btn-secondary" onclick="showAddWord()">＋ 単語を追加</button>
 </div>
 
@@ -347,6 +349,21 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-addbook')">キャンセル</button>
       <button class="btn-save" onclick="saveAddToBook()">追加</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-import">
+  <div class="modal">
+    <div class="modal-title">マイ単語を読み込む</div>
+    <div class="form-group">
+      <label class="form-label">コピーしたJSONテキストを貼り付け</label>
+      <textarea class="form-textarea" id="import-json" placeholder='[{"w":"word","m":"意味"},...] の形式で貼り付け'></textarea>
+    </div>
+    <div id="import-preview" style="font-size:13px;color:var(--text3);margin-bottom:8px"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-import')">キャンセル</button>
+      <button class="btn-save" onclick="importJSON()">読み込む（重複はスキップ）</button>
     </div>
   </div>
 </div>
@@ -532,12 +549,18 @@ function renderSearch() {
 
 // ========== SPEAK ==========
 function speak(word) {
-  if ('speechSynthesis' in window) {
-    const u = new SpeechSynthesisUtterance(word);
-    u.lang = 'en-US';
-    speechSynthesis.cancel();
-    speechSynthesis.speak(u);
-  }
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(word);
+  u.lang = 'en-US';
+  const voices = speechSynthesis.getVoices();
+  const best = voices.find(v => v.lang === 'en-US' && v.name === 'Samantha')
+    || voices.find(v => v.lang === 'en-US' && (v.name.includes('Enhanced') || v.name.includes('Premium')))
+    || voices.find(v => v.lang === 'en-US' && v.name.includes('Google'))
+    || voices.find(v => v.lang === 'en-US' && !v.name.toLowerCase().includes('compact'))
+    || voices.find(v => v.lang.startsWith('en'));
+  if (best) u.voice = best;
+  speechSynthesis.speak(u);
 }
 
 // ========== EDIT / ADD ==========
@@ -701,6 +724,39 @@ function exportCSV() {
   a.download = 'tangocho_backup.csv';
   a.click();
   showToast('バックアップしました');
+}
+
+// ========== JSON EXPORT / IMPORT ==========
+function exportJSON() {
+  const json = JSON.stringify(state.myWords, null, 0);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(json).then(() => showToast('クリップボードにコピーしました（他の端末で貼り付け）'));
+  } else {
+    prompt('以下のテキストをコピーしてください:', json);
+  }
+}
+
+function showImportJSON() {
+  document.getElementById('import-json').value = '';
+  document.getElementById('import-preview').textContent = '';
+  document.getElementById('modal-import').classList.add('show');
+}
+
+function importJSON() {
+  try {
+    const raw = document.getElementById('import-json').value.trim();
+    const imported = JSON.parse(raw);
+    if (!Array.isArray(imported)) throw new Error('配列ではありません');
+    const existing = new Set(state.myWords.map(w => w.w.toLowerCase()));
+    const newWords = imported.filter(v => v.w && v.m && !existing.has(v.w.toLowerCase()));
+    state.myWords.push(...newWords);
+    save();
+    closeModal('modal-import');
+    renderSearch();
+    showToast(`${newWords.length}語を追加しました（重複${imported.length - newWords.length}件スキップ）`);
+  } catch(e) {
+    document.getElementById('import-preview').textContent = '⚠️ 形式が正しくありません: ' + e.message;
+  }
 }
 
 // ========== QUIZ ==========
