@@ -172,9 +172,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .result-row:last-child { border-bottom: none; }
 
 /* Modal */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 200; display: none; align-items: flex-start; justify-content: center; padding: 24px 16px; backdrop-filter: blur(4px); overflow-y: auto; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 200; display: none; align-items: flex-start; justify-content: center; padding: 24px 16px; backdrop-filter: blur(4px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .modal-overlay.show { display: flex; }
-.modal { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 20px; width: 100%; max-width: 480px; max-height: calc(100vh - 64px); max-height: calc(100dvh - 64px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.modal { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 20px; width: 100%; max-width: 480px; margin-bottom: 24px; }
 .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
 .form-group { margin-bottom: 14px; }
 .form-label { font-size: 13px; color: var(--text2); margin-bottom: 6px; display: block; }
@@ -761,7 +761,12 @@ function renderQuizQuestion() {
       <div class="quiz-progress">${current+1} / ${questions.length}</div>
       <div class="progress-bar"><div class="progress-fill" style="width:${(current/questions.length)*100}%"></div></div>
       <div class="quiz-word">${esc(q.correct.w)}</div>
-      <div class="quiz-hint">日本語の意味は？</div>
+      <div style="display:flex;justify-content:center;margin:4px 0 0">
+        <button class="btn-icon" onclick="speak('${esc(q.correct.w).replace(/'/g,"\\'")}')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        </button>
+      </div>
+      <div class="quiz-hint" style="margin-top:10px">日本語の意味は？</div>
       <div class="quiz-choices">
         ${q.choices.map((c,i) => `<button class="quiz-choice" onclick="answerQuiz(${i})">${esc(c.m).substring(0,60)}</button>`).join('')}
       </div>
@@ -863,7 +868,10 @@ function renderFlashCard() {
       <div class="flash-card" id="flash-card" onclick="flipCard()">
         <div class="flash-front">
           <div class="flash-word">${esc(card.w)}</div>
-          <div class="flash-hint">タップして意味を見る</div>
+          <button class="btn-icon" style="margin:12px auto 0" onclick="event.stopPropagation();speak('${esc(card.w).replace(/'/g,"\\'")}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          </button>
+          <div class="flash-hint" style="margin-top:10px">タップして意味を見る</div>
         </div>
         <div class="flash-back">
           <div class="flash-word" style="font-size:20px;margin-bottom:8px">${esc(card.w)}</div>
@@ -908,7 +916,10 @@ function renderFlashResult() {
 
 // ========== UTILS ==========
 function closeModal(id) {
-  document.getElementById(id).classList.remove('show');
+  const el = document.getElementById(id);
+  el.classList.remove('show');
+  el.style.height = '';
+  el.style.top = '';
   document.getElementById('edit-word').disabled = false;
 }
 
@@ -1004,6 +1015,16 @@ function applyTheme(key) {
   document.querySelectorAll('.theme-dot').forEach(d => {
     const themeKey = d.dataset.theme === 'dark' ? 'dark' : d.dataset.theme;
     d.classList.toggle('active', themeKey === key);
+  });
+}
+
+// iOS キーボード表示時にモーダルを正しいサイズに調整
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', () => {
+    document.querySelectorAll('.modal-overlay.show').forEach(el => {
+      el.style.height = window.visualViewport.height + 'px';
+      el.style.top = window.visualViewport.offsetTop + 'px';
+    });
   });
 }
 
