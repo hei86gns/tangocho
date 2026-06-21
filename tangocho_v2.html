@@ -172,9 +172,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .result-row:last-child { border-bottom: none; }
 
 /* Modal */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 200; display: none; padding: 24px 16px; backdrop-filter: blur(4px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
-.modal-overlay.show { display: block; }
-.modal { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 20px; width: 100%; max-width: 480px; margin: 0 auto 24px; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 200; display: none; align-items: flex-start; justify-content: center; padding: 24px 16px; backdrop-filter: blur(4px); }
+.modal-overlay.show { display: flex; }
+.modal { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 20px; width: 100%; max-width: 480px; max-height: calc(100dvh - 48px); overflow-y: scroll; -webkit-overflow-scrolling: touch; }
 .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
 .form-group { margin-bottom: 14px; }
 .form-label { font-size: 13px; color: var(--text2); margin-bottom: 6px; display: block; }
@@ -918,8 +918,7 @@ function renderFlashResult() {
 function closeModal(id) {
   const el = document.getElementById(id);
   el.classList.remove('show');
-  el.style.height = '';
-  el.style.top = '';
+  el.querySelectorAll('.modal').forEach(m => m.style.maxHeight = '');
   document.getElementById('edit-word').disabled = false;
 }
 
@@ -1018,13 +1017,17 @@ function applyTheme(key) {
   });
 }
 
-// iOS キーボード表示時にモーダルを正しいサイズに調整
+// iOS キーボード表示時: モーダルのmax-heightを更新し、フォーカス要素を表示
 if (window.visualViewport) {
   window.visualViewport.addEventListener('resize', () => {
-    document.querySelectorAll('.modal-overlay.show').forEach(el => {
-      el.style.height = window.visualViewport.height + 'px';
-      el.style.top = window.visualViewport.offsetTop + 'px';
+    const h = window.visualViewport.height - 48;
+    document.querySelectorAll('.modal-overlay.show .modal').forEach(el => {
+      el.style.maxHeight = h + 'px';
     });
+    const active = document.activeElement;
+    if (active && active.closest('.modal-overlay.show')) {
+      setTimeout(() => active.scrollIntoView({ block: 'nearest' }), 50);
+    }
   });
 }
 
