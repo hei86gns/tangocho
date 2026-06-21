@@ -172,9 +172,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .result-row:last-child { border-bottom: none; }
 
 /* Modal */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 200; display: none; align-items: flex-start; justify-content: center; padding: 24px 16px; backdrop-filter: blur(4px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
-.modal-overlay.show { display: flex; }
-.modal { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 20px; width: 100%; max-width: 480px; margin-bottom: 24px; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 200; display: none; padding: 24px 16px; backdrop-filter: blur(4px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.modal-overlay.show { display: block; }
+.modal { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 20px; width: 100%; max-width: 480px; margin: 0 auto 24px; }
 .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
 .form-group { margin-bottom: 14px; }
 .form-label { font-size: 13px; color: var(--text2); margin-bottom: 6px; display: block; }
