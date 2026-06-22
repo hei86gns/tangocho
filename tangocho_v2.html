@@ -374,8 +374,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
       <button class="btn-save" id="auth-btn" onclick="authLogin()">ログイン</button>
     </div>
     <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--text3)">
-      アカウントがない場合 →
-      <button onclick="authSignup()" style="background:none;border:none;color:var(--accent2);font-size:13px;cursor:pointer;padding:0">新規登録</button>
+      招待制です。管理者からの招待メールでアカウントを作成してください。
     </div>
   </div>
 </div>
@@ -487,7 +486,7 @@ function renderAuthUI() {
       <button class="btn-secondary" onclick="authLogout()">ログアウト</button>
     `;
   } else {
-    el.innerHTML = `<button class="btn-primary" onclick="document.getElementById('modal-auth').classList.add('show')">ログイン / 新規登録して同期する</button>`;
+    el.innerHTML = `<button class="btn-primary" onclick="document.getElementById('modal-auth').classList.add('show')">ログインして同期する</button>`;
   }
 }
 
