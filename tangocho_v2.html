@@ -256,6 +256,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
       <button class="theme-dot dot-amber" data-theme="warm" onclick="setTheme('amber')" title="イエロー＆ブラウン"></button>
       <button class="theme-dot dot-blue" data-theme="blue" onclick="setTheme('blue')" title="ライトブルー"></button>
     </div>
+    <div id="login-status" style="margin-top:12px;font-size:12px;color:var(--text3);text-align:center"></div>
   </div>
   <div class="search-sticky">
     <div class="search-wrap">
@@ -472,17 +473,19 @@ async function supaLoad() {
 
 function renderAuthUI() {
   const el = document.getElementById('auth-ui');
-  if (!el) return;
+  const status = document.getElementById('login-status');
   if (_user) {
-    el.innerHTML = `
+    if (el) el.innerHTML = `
       <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:10px">
         <div style="font-size:12px;color:var(--text3);margin-bottom:4px">ログイン中 — 自動同期ON</div>
         <div style="font-size:14px;color:var(--text)">${_user.email}</div>
       </div>
       <button class="btn-secondary" onclick="authLogout()">ログアウト</button>
     `;
+    if (status) status.textContent = '👤 ' + _user.email;
   } else {
-    el.innerHTML = `<button class="btn-primary" onclick="document.getElementById('modal-auth').classList.add('show')">ログインして同期する</button>`;
+    if (el) el.innerHTML = `<button class="btn-primary" onclick="document.getElementById('modal-auth').classList.add('show')">ログインして同期する</button>`;
+    if (status) status.textContent = '';
   }
 }
 
