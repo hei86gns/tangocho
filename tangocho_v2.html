@@ -537,10 +537,17 @@ async function authResetPassword() {
   });
   if (error) {
     msg.style.color = 'var(--red)';
-    msg.textContent = error.message;
+    const m = error?.message || '';
+    if (m.toLowerCase().includes('rate') || m.includes('429')) {
+      msg.textContent = '⚠️ メール送信数の上限です。1時間後に再試行してください。';
+    } else if (!m || m === '{}') {
+      msg.textContent = '⚠️ エラーが発生しました。しばらく待ってから再試行してください。';
+    } else {
+      msg.textContent = m;
+    }
   } else {
     msg.style.color = 'var(--green)';
-    msg.textContent = 'パスワードリセットメールを送りました。メールを確認してください。';
+    msg.textContent = '✓ パスワードリセットメールを送りました。メールを確認してください。';
   }
 }
 
