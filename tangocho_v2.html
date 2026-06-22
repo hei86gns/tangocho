@@ -374,7 +374,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
       <button class="btn-save" id="auth-btn" onclick="authLogin()">ログイン</button>
     </div>
     <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--text3)">
-      招待制です。管理者からの招待メールでアカウントを作成してください。
+      招待制です。管理者からの招待メールでアカウントを作成してください。<br>
+      <button onclick="authResetPassword()" style="background:none;border:none;color:var(--accent2);font-size:13px;cursor:pointer;padding:4px 0 0">パスワードを忘れた場合はこちら</button>
     </div>
   </div>
 </div>
@@ -523,6 +524,28 @@ async function authSignup() {
   } else {
     msg.style.color = 'var(--green)';
     msg.textContent = '確認メールを送りました。メール内のリンクをクリックしてからログインしてください。';
+  }
+}
+
+async function authResetPassword() {
+  const email = document.getElementById('auth-email').value.trim();
+  const msg = document.getElementById('auth-msg');
+  if (!email) {
+    msg.style.color = 'var(--red)';
+    msg.textContent = '上のメールアドレス欄にメールを入力してから押してください';
+    return;
+  }
+  msg.style.color = 'var(--text3)';
+  msg.textContent = '送信中...';
+  const { error } = await _sb.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://hei86gns.github.io/tangocho/'
+  });
+  if (error) {
+    msg.style.color = 'var(--red)';
+    msg.textContent = error.message;
+  } else {
+    msg.style.color = 'var(--green)';
+    msg.textContent = 'パスワードリセットメールを送りました。メールを確認してください。';
   }
 }
 
