@@ -357,6 +357,21 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-newpass">
+  <div class="modal">
+    <div class="modal-title">新しいパスワードを設定</div>
+    <p style="font-size:14px;color:var(--text2);margin-bottom:16px">パスワードリセットリンクから来ました。新しいパスワードを設定してください。</p>
+    <div class="form-group">
+      <label class="form-label">新しいパスワード（6文字以上）</label>
+      <input class="form-input" id="newpass-input" type="password" placeholder="新しいパスワード">
+    </div>
+    <div id="newpass-msg" style="font-size:13px;min-height:18px;margin-bottom:8px;color:var(--red)"></div>
+    <div class="modal-actions">
+      <button class="btn-save" style="flex:1" onclick="setNewPassword()">パスワードを設定する</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-auth">
   <div class="modal">
     <div class="modal-title" id="auth-title">ログイン</div>
@@ -437,11 +452,17 @@ async function supaLoad() {
   if (!_user) return;
   const { data } = await _sb.from('user_data').select().eq('user_id', _user.id).maybeSingle();
   if (data && (data.my_words?.length || data.books?.length)) {
+    // クラウドにデータあり → クラウドを使う
     state.myWords = data.my_words || [];
     state.books = data.books || [];
     localStorage.setItem('myWords', JSON.stringify(state.myWords));
     localStorage.setItem('books', JSON.stringify(state.books));
   } else {
+    // 新規ユーザー → 空で始める（他人のlocalStorageをアップロードしない）
+    state.myWords = [];
+    state.books = [];
+    localStorage.setItem('myWords', '[]');
+    localStorage.setItem('books', '[]');
     await supaSave();
   }
   renderSearch();
@@ -523,6 +544,24 @@ async function authResetPassword() {
   }
 }
 
+async function setNewPassword() {
+  const pass = document.getElementById('newpass-input').value;
+  const msg = document.getElementById('newpass-msg');
+  if (pass.length < 6) {
+    msg.textContent = '6文字以上で入力してください';
+    return;
+  }
+  const { error } = await _sb.auth.updateUser({ password: pass });
+  if (error) {
+    msg.style.color = 'var(--red)';
+    msg.textContent = error.message;
+  } else {
+    closeModal('modal-newpass');
+    showToast('パスワードを設定しました！');
+    await supaLoad();
+  }
+}
+
 async function authLogout() {
   await _sb.auth.signOut();
   _user = null;
@@ -533,7 +572,9 @@ async function authLogout() {
 _sb.auth.onAuthStateChange(async (event, session) => {
   _user = session?.user || null;
   renderAuthUI();
-  if (_user && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
+  if (event === 'PASSWORD_RECOVERY') {
+    document.getElementById('modal-newpass').classList.add('show');
+  } else if (_user && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
     await supaLoad();
   }
 });
