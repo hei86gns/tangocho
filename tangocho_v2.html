@@ -441,6 +441,179 @@ function save() {
   supaSave();
 }
 
+
+// ========== PRESETS ==========
+const PRESETS = [
+  {
+    id: 'toeic600',
+    name: 'TOEIC 600点',
+    words: [
+      {w:"apply",m:"申し込む、応募する"},
+      {w:"available",m:"利用できる、入手可能な"},
+      {w:"schedule",m:"予定、スケジュール"},
+      {w:"require",m:"必要とする、要求する"},
+      {w:"provide",m:"提供する、与える"},
+      {w:"increase",m:"増加する、増やす"},
+      {w:"customer",m:"顧客、お客様"},
+      {w:"manager",m:"マネージャー、管理者"},
+      {w:"department",m:"部門、部署"},
+      {w:"deadline",m:"締め切り、期限"},
+      {w:"conference",m:"会議、会合"},
+      {w:"announce",m:"発表する、告知する"},
+      {w:"policy",m:"方針、規則"},
+      {w:"receipt",m:"領収書、受取"},
+      {w:"invoice",m:"請求書"},
+      {w:"budget",m:"予算"},
+      {w:"profit",m:"利益、利潤"},
+      {w:"expense",m:"費用、経費"},
+      {w:"contract",m:"契約"},
+      {w:"product",m:"製品、商品"},
+      {w:"develop",m:"開発する、成長する"},
+      {w:"conduct",m:"行う、実施する"},
+      {w:"complete",m:"完了する、完成させる"},
+      {w:"submit",m:"提出する"},
+      {w:"review",m:"見直す、審査する"},
+      {w:"improve",m:"改善する、向上させる"},
+      {w:"attend",m:"参加する、出席する"},
+      {w:"promote",m:"昇進させる、宣伝する"},
+      {w:"achieve",m:"達成する"},
+      {w:"confirm",m:"確認する"},
+      {w:"assign",m:"割り当てる、任命する"},
+      {w:"inform",m:"知らせる、通知する"},
+      {w:"purchase",m:"購入する、買う"},
+      {w:"deliver",m:"配達する、届ける"},
+      {w:"estimate",m:"見積もる、推定する"},
+      {w:"negotiate",m:"交渉する"},
+      {w:"maintain",m:"維持する、保守する"},
+      {w:"contact",m:"連絡する、連絡先"},
+      {w:"prepare",m:"準備する"},
+      {w:"present",m:"発表する、提示する"},
+      {w:"replace",m:"取り替える、交代させる"},
+      {w:"propose",m:"提案する"},
+      {w:"extend",m:"延長する、拡張する"},
+      {w:"cancel",m:"キャンセルする、取り消す"},
+      {w:"receive",m:"受け取る"},
+      {w:"respond",m:"返答する、応答する"},
+      {w:"request",m:"依頼する、要請する"},
+      {w:"discuss",m:"議論する、話し合う"},
+      {w:"distribute",m:"配布する、分配する"},
+      {w:"headquarters",m:"本社、本部"}
+    ]
+  },
+  {
+    id: 'toeic800',
+    name: 'TOEIC 800点',
+    words: [
+      {w:"accommodate",m:"収容する、対応する"},
+      {w:"acquisition",m:"買収、取得"},
+      {w:"adjacent",m:"隣接した"},
+      {w:"adhere",m:"遵守する、固執する"},
+      {w:"agenda",m:"議題、アジェンダ"},
+      {w:"allocate",m:"割り当てる、配分する"},
+      {w:"anticipate",m:"予期する、見越す"},
+      {w:"authorize",m:"権限を与える、認可する"},
+      {w:"collaborate",m:"協力する、共同作業する"},
+      {w:"commodity",m:"商品、日用品"},
+      {w:"comply",m:"従う、応じる"},
+      {w:"consolidate",m:"統合する、強固にする"},
+      {w:"contemplate",m:"熟慮する、検討する"},
+      {w:"coordinates",m:"調整する、連携する"},
+      {w:"deficit",m:"赤字、不足"},
+      {w:"delegate",m:"委任する、代表者"},
+      {w:"designate",m:"指定する、任命する"},
+      {w:"discrepancy",m:"食い違い、矛盾"},
+      {w:"eligible",m:"資格のある、適格な"},
+      {w:"enforce",m:"施行する、強制する"},
+      {w:"enhance",m:"高める、向上させる"},
+      {w:"exceed",m:"超える、上回る"},
+      {w:"facilitate",m:"促進する、容易にする"},
+      {w:"fluctuate",m:"変動する"},
+      {w:"implement",m:"実施する、導入する"},
+      {w:"incentive",m:"インセンティブ、奨励策"},
+      {w:"initiative",m:"イニシアチブ、主導権"},
+      {w:"liability",m:"負債、責任"},
+      {w:"mandatory",m:"義務的な、必須の"},
+      {w:"negotiate",m:"交渉する"},
+      {w:"objective",m:"目標、客観的な"},
+      {w:"obtain",m:"得る、獲得する"},
+      {w:"optimize",m:"最適化する"},
+      {w:"outsource",m:"外注する、アウトソースする"},
+      {w:"preliminary",m:"予備の、準備の"},
+      {w:"productive",m:"生産的な"},
+      {w:"profitable",m:"利益を生む、収益性の高い"},
+      {w:"prospect",m:"見込み客、展望"},
+      {w:"reimburse",m:"払い戻す、返金する"},
+      {w:"relocate",m:"移転する、転居する"},
+      {w:"restructure",m:"再編する、構造改革する"},
+      {w:"retain",m:"保持する、引き止める"},
+      {w:"revenue",m:"収益、歳入"},
+      {w:"scrutinize",m:"精査する、詳しく調べる"},
+      {w:"subsequent",m:"その後の、続く"},
+      {w:"surplus",m:"余剰、黒字"},
+      {w:"sustainable",m:"持続可能な"},
+      {w:"tentative",m:"暫定的な、試験的な"},
+      {w:"terminate",m:"終了する、解雇する"},
+      {w:"verify",m:"確認する、検証する"}
+    ]
+  },
+  {
+    id: 'toeic990',
+    name: 'TOEIC 990点',
+    words: [
+      {w:"abdicate",m:"退位する、放棄する"},
+      {w:"aberrant",m:"異常な、逸脱した"},
+      {w:"acrimonious",m:"辛辣な、険悪な"},
+      {w:"amalgamate",m:"合併する、統合する"},
+      {w:"ameliorate",m:"改善する、好転させる"},
+      {w:"ambiguous",m:"曖昧な、多義的な"},
+      {w:"annex",m:"併合する、付属建物"},
+      {w:"arbitration",m:"仲裁、調停"},
+      {w:"asymmetrical",m:"非対称の"},
+      {w:"attrition",m:"消耗、自然減"},
+      {w:"benevolent",m:"慈悲深い、善意の"},
+      {w:"bureaucratic",m:"官僚的な"},
+      {w:"capitulate",m:"降伏する、折れる"},
+      {w:"circumvent",m:"回避する、出し抜く"},
+      {w:"clandestine",m:"秘密の、内密の"},
+      {w:"collateral",m:"担保、付随的な"},
+      {w:"commensurate",m:"釣り合った、相応の"},
+      {w:"concession",m:"譲歩、特許権"},
+      {w:"contingent",m:"偶発的な、条件付きの"},
+      {w:"correlate",m:"相関させる、関連付ける"},
+      {w:"culpable",m:"有責の、非難に値する"},
+      {w:"deferential",m:"敬意を示す、従順な"},
+      {w:"delineate",m:"描写する、概説する"},
+      {w:"depreciate",m:"価値が下がる、減価する"},
+      {w:"diligent",m:"勤勉な、熱心な"},
+      {w:"discernible",m:"識別できる、認識可能な"},
+      {w:"discretionary",m:"任意の、裁量による"},
+      {w:"disseminate",m:"普及させる、広める"},
+      {w:"divulge",m:"漏らす、公表する"},
+      {w:"egregious",m:"ひどい、言語道断の"},
+      {w:"emulate",m:"模倣する、見習う"},
+      {w:"encumber",m:"妨げる、負担をかける"},
+      {w:"enumerate",m:"列挙する、数え上げる"},
+      {w:"exacerbate",m:"悪化させる"},
+      {w:"expedite",m:"促進する、迅速に処理する"},
+      {w:"extrapolate",m:"外挿する、推定する"},
+      {w:"feasible",m:"実行可能な、可能な"},
+      {w:"fiduciary",m:"受託者の、信頼に基づく"},
+      {w:"fluctuation",m:"変動、波動"},
+      {w:"formidable",m:"手ごわい、恐ろしい"},
+      {w:"fraudulent",m:"詐欺的な、不正な"},
+      {w:"idiosyncrasy",m:"個癖、特異性"},
+      {w:"impeccable",m:"非の打ち所のない、完璧な"},
+      {w:"inadvertent",m:"不注意による、うっかりの"},
+      {w:"insolvent",m:"支払い不能の、破産した"},
+      {w:"meticulous",m:"細心の注意を払う、几帳面な"},
+      {w:"mitigate",m:"緩和する、軽減する"},
+      {w:"perfunctory",m:"おざなりの、形式的な"},
+      {w:"perpetuate",m:"永続させる"},
+      {w:"reciprocate",m:"お返しをする、互恵的に行動する"}
+    ]
+  }
+];
+
 // ========== SUPABASE ==========
 const _SB_URL = 'https://disfgytjjflnlowywess.supabase.co';
 const _SB_KEY = 'sb_publishable_om-kf2zIGYcP5CZhxXXgJA_JY1IaBo1';
@@ -984,6 +1157,10 @@ function renderQuizSetup() {
         <button class="setup-opt selected" onclick="setQuizOpt(this,'book','all')">すべて</button>
         ${state.books.map((b,i) => `<button class="setup-opt" onclick="setQuizOpt(this,'book',${i})">${esc(b.name)}</button>`).join('')}
       </div>
+      <div class="section-label">プリセット単語帳</div>
+      <div class="setup-options">
+        ${PRESETS.map(p => `<button class="setup-opt" onclick="setQuizOpt(this,'book','preset:${p.id}')">${esc(p.name)}</button>`).join('')}
+      </div>
       <button class="btn-primary" onclick="startQuiz()">スタート</button>
     </div>
   `;
@@ -999,8 +1176,14 @@ function setQuizOpt(el, key, val) {
 function startQuiz() {
   let pool = getAllWords();
   if (quizSetup.book !== 'all') {
-    const bw = state.books[quizSetup.book].words || [];
-    pool = pool.filter(v => bw.includes(v.w.toLowerCase()));
+    if (String(quizSetup.book).startsWith('preset:')) {
+      const presetId = quizSetup.book.slice(7);
+      const preset = PRESETS.find(p => p.id === presetId);
+      pool = preset ? preset.words : pool;
+    } else {
+      const bw = state.books[quizSetup.book].words || [];
+      pool = pool.filter(v => bw.includes(v.w.toLowerCase()));
+    }
   }
   if (quizSetup.scope === 'recent') {
     const recent = state.myWords.slice(-100);
@@ -1090,6 +1273,10 @@ function renderFlashSetup() {
         <button class="setup-opt selected" onclick="setFlashOpt(this,'book','all')">すべて</button>
         ${state.books.map((b,i) => `<button class="setup-opt" onclick="setFlashOpt(this,'book',${i})">${esc(b.name)}</button>`).join('')}
       </div>
+      <div class="section-label">プリセット単語帳</div>
+      <div class="setup-options">
+        ${PRESETS.map(p => `<button class="setup-opt" onclick="setFlashOpt(this,'book','preset:${p.id}')">${esc(p.name)}</button>`).join('')}
+      </div>
       <button class="btn-primary" onclick="startFlash()">スタート</button>
     </div>
   `;
@@ -1105,8 +1292,14 @@ function setFlashOpt(el, key, val) {
 function startFlash() {
   let pool = getAllWords();
   if (flashSetup.book !== 'all') {
-    const bw = state.books[flashSetup.book].words || [];
-    pool = pool.filter(v => bw.includes(v.w.toLowerCase()));
+    if (String(flashSetup.book).startsWith('preset:')) {
+      const presetId = flashSetup.book.slice(7);
+      const preset = PRESETS.find(p => p.id === presetId);
+      pool = preset ? preset.words : pool;
+    } else {
+      const bw = state.books[flashSetup.book].words || [];
+      pool = pool.filter(v => bw.includes(v.w.toLowerCase()));
+    }
   }
   if (flashSetup.scope === 'recent') {
     const recent = state.myWords.slice(-50);
