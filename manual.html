@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>tangocho 使い方</title>
+<style>
+:root { --bg:#0f0d16; --surface:#1a1820; --surface2:#24213a; --border:#44425a; --accent:#7c6cfc; --accent2:#a89cff; --text:#e8e8f0; --text2:#b0b0c8; --text3:#7a7a92; --green:#34d399; --radius:14px; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif; background:var(--bg); color:var(--text); padding:24px 16px 60px; max-width:680px; margin:0 auto; line-height:1.7; }
+h1 { font-size:28px; font-weight:800; background:linear-gradient(135deg,var(--accent2),var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:6px; }
+.subtitle { color:var(--text3); font-size:14px; margin-bottom:32px; }
+h2 { font-size:18px; font-weight:700; color:var(--accent2); margin:32px 0 12px; display:flex; align-items:center; gap:8px; }
+h2::before { content:''; display:inline-block; width:4px; height:18px; background:var(--accent); border-radius:2px; }
+.card { background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:12px; }
+.step { display:flex; gap:12px; margin-bottom:10px; align-items:flex-start; }
+.step:last-child { margin-bottom:0; }
+.num { background:var(--accent); color:#fff; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; margin-top:2px; }
+.step-text { font-size:15px; color:var(--text2); }
+.step-text strong { color:var(--text); }
+.tag { display:inline-block; padding:2px 10px; border-radius:20px; font-size:12px; background:rgba(124,108,252,0.15); color:var(--accent2); border:1px solid rgba(124,108,252,0.3); margin-right:4px; }
+.tip { background:var(--surface2); border-left:3px solid var(--accent); border-radius:0 8px 8px 0; padding:12px 14px; margin-bottom:12px; font-size:14px; color:var(--text2); }
+.tip strong { color:var(--accent2); }
+table { width:100%; border-collapse:collapse; font-size:14px; }
+th { text-align:left; padding:8px 12px; color:var(--text3); font-weight:600; border-bottom:1px solid var(--border); }
+td { padding:10px 12px; border-bottom:1px solid var(--border); color:var(--text2); vertical-align:top; }
+td:first-child { color:var(--accent2); font-weight:600; white-space:nowrap; }
+tr:last-child td { border-bottom:none; }
+.url { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-family:monospace; font-size:14px; color:var(--accent2); word-break:break-all; margin-bottom:12px; }
+a { color:var(--accent2); }
+</style>
+</head>
+<body>
+
+<h1>📖 tangocho</h1>
+<p class="subtitle">使い方マニュアル</p>
+
+<div class="url">https://hei86gns.github.io/tangocho/</div>
+
+<!-- ログイン -->
+<h2>ログイン・アカウント</h2>
+<div class="card">
+  <div class="step"><div class="num">1</div><div class="step-text">アプリを開き、下の <strong>「単語帳」</strong> タブをタップ</div></div>
+  <div class="step"><div class="num">2</div><div class="step-text"><strong>「ログインして同期する」</strong> をタップ</div></div>
+  <div class="step"><div class="num">3</div><div class="step-text">管理者から受け取った <strong>メールアドレスとパスワード</strong> を入力 → <strong>「ログイン」</strong></div></div>
+  <div class="step"><div class="num">4</div><div class="step-text">ログインすると単語が自動的にクラウドに保存・同期されます</div></div>
+</div>
+<div class="tip"><strong>招待制です。</strong>管理者から連絡を受けた方のみ利用できます。</div>
+
+<!-- 単語を検索 -->
+<h2>単語を検索する</h2>
+<div class="card">
+  <div class="step"><div class="num">1</div><div class="step-text">下のタブ <strong>「検索」</strong> をタップ</div></div>
+  <div class="step"><div class="num">2</div><div class="step-text">検索窓に <strong>英語または日本語</strong> を入力</div></div>
+  <div class="step"><div class="num">3</div><div class="step-text">フィルターボタンで絞り込み可能：<span class="tag">すべて</span><span class="tag">マイ単語</span><span class="tag">履歴</span></div></div>
+</div>
+<table>
+  <tr><th>フィルター</th><th>表示内容</th></tr>
+  <tr><td>すべて</td><td>全単語（約2,250語＋マイ単語）</td></tr>
+  <tr><td>マイ単語</td><td>自分で追加した単語のみ</td></tr>
+  <tr><td>履歴</td><td>最近追加した単語（新しい順）</td></tr>
+</table>
+
+<!-- 単語を追加 -->
+<h2>単語を追加する</h2>
+<div class="card">
+  <div class="step"><div class="num">1</div><div class="step-text">検索窓に追加したい英単語を入力</div></div>
+  <div class="step"><div class="num">2</div><div class="step-text"><strong>「＋ この単語を追加する」</strong> ボタンをタップ</div></div>
+  <div class="step"><div class="num">3</div><div class="step-text">英単語と日本語の意味を入力 → <strong>「保存」</strong></div></div>
+</div>
+<div class="tip">既存の単語カードの <strong>✏️ 編集ボタン</strong> から意味を変更することもできます。</div>
+
+<!-- 単語カードの操作 -->
+<h2>単語カードのボタン</h2>
+<table>
+  <tr><th>ボタン</th><th>機能</th></tr>
+  <tr><td>🔊 音声</td><td>英語の発音を読み上げる</td></tr>
+  <tr><td>✏️ 編集</td><td>意味を編集する</td></tr>
+  <tr><td>📚 単語帳追加</td><td>単語帳に追加する</td></tr>
+  <tr><td>🌐 Web検索</td><td>Google・Weblio等で検索する</td></tr>
+</table>
+
+<!-- フラッシュカード -->
+<h2>フラッシュカードで暗記する</h2>
+<div class="card">
+  <div class="step"><div class="num">1</div><div class="step-text">下のタブ <strong>「カード」</strong> をタップ</div></div>
+  <div class="step"><div class="num">2</div><div class="step-text">対象の単語帳・範囲を選択 → <strong>「スタート」</strong></div></div>
+  <div class="step"><div class="num">3</div><div class="step-text">カードをタップすると <strong>日本語の意味が表示</strong> される</div></div>
+  <div class="step"><div class="num">4</div><div class="step-text"><strong>「✓ 覚えた」</strong> または <strong>「✗ もう一度」</strong> を選択して次へ</div></div>
+</div>
+
+<!-- クイズ -->
+<h2>クイズに挑戦する</h2>
+<div class="card">
+  <div class="step"><div class="num">1</div><div class="step-text">下のタブ <strong>「クイズ」</strong> をタップ</div></div>
+  <div class="step"><div class="num">2</div><div class="step-text">範囲・出題方向（英→日 / 日→英）を選択 → <strong>「スタート」</strong></div></div>
+  <div class="step"><div class="num">3</div><div class="step-text">4択から正しい意味を選ぶ。10問終了後に結果が表示される</div></div>
+</div>
+
+<!-- 単語帳 -->
+<h2>単語帳を使う</h2>
+<div class="card">
+  <div class="step"><div class="num">1</div><div class="step-text">下のタブ <strong>「単語帳」</strong> → <strong>「＋ 新しい単語帳を作る」</strong></div></div>
+  <div class="step"><div class="num">2</div><div class="step-text">単語帳の名前を入力して作成</div></div>
+  <div class="step"><div class="num">3</div><div class="step-text">単語カードの <strong>📚 ボタン</strong> から単語帳に追加できる</div></div>
+  <div class="step"><div class="num">4</div><div class="step-text">クイズ・フラッシュカードで特定の単語帳だけ練習できる</div></div>
+</div>
+
+<!-- 複数デバイス同期 -->
+<h2>複数の端末で使う</h2>
+<div class="tip"><strong>ログインすれば自動同期されます。</strong>iPhone・Mac・その他どの端末でも同じURLにアクセスしてログインするだけです。</div>
+<div class="card">
+  <div class="step"><div class="num">1</div><div class="step-text">新しい端末で同じURLを開く</div></div>
+  <div class="step"><div class="num">2</div><div class="step-text">同じメールアドレスとパスワードでログイン</div></div>
+  <div class="step"><div class="num">3</div><div class="step-text">自動的に単語データが同期される</div></div>
+</div>
+
+<!-- ホーム画面に追加 -->
+<h2>iPhoneのホーム画面に追加する</h2>
+<div class="card">
+  <div class="step"><div class="num">1</div><div class="step-text">Braveでアプリを開く</div></div>
+  <div class="step"><div class="num">2</div><div class="step-text">画面下の <strong>共有ボタン（□↑）</strong> をタップ</div></div>
+  <div class="step"><div class="num">3</div><div class="step-text"><strong>「ホーム画面に追加」</strong> をタップ → 追加</div></div>
+  <div class="step"><div class="num">4</div><div class="step-text">ホーム画面からアイコンをタップするだけで開ける</div></div>
+</div>
+
+<!-- アップデート -->
+<h2>アプリの更新について</h2>
+<div class="tip">アップデートは自動的に反映されます。<br>最新版を使うには <strong>アプリを開いて画面を上から引っ張って更新</strong>（プルリフレッシュ）するだけです。</div>
+
+<p style="text-align:center;color:var(--text3);font-size:13px;margin-top:40px">tangocho — <a href="https://hei86gns.github.io/tangocho/">アプリを開く</a></p>
+
+</body>
+</html>
