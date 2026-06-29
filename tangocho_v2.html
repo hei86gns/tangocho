@@ -290,6 +290,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
   </div>
   <div class="section-label">アカウント（自動同期）</div>
   <div id="auth-ui"></div>
+  <button class="btn-secondary" onclick="manualSync()" style="margin-bottom:10px">☁️ 今すぐクラウドに保存</button>
   <div class="section-label">データ管理</div>
   <button class="btn-secondary" onclick="exportCSV()">📥 CSVでバックアップ</button>
   <button class="btn-secondary" onclick="exportJSON()">📤 マイ単語をコピー（他の端末へ）</button>
@@ -625,12 +626,25 @@ let _user = null;
 
 async function supaSave() {
   if (!_user) return;
-  await _sb.from('user_data').upsert({
+  const { error } = await _sb.from('user_data').upsert({
     user_id: _user.id,
     my_words: state.myWords,
     books: state.books,
     updated_at: new Date().toISOString()
   }, { onConflict: 'user_id' });
+  if (error) {
+    console.error('supaSave error:', error);
+    showToast('⚠️ クラウド保存失敗: ' + (error.message || error.code || JSON.stringify(error)));
+  }
+}
+
+async function manualSync() {
+  if (!_user) {
+    showToast('先にログインしてください');
+    return;
+  }
+  await supaSave();
+  if (_user) showToast('✓ ' + state.myWords.length + '語をクラウドに保存しました');
 }
 
 async function supaLoad() {
