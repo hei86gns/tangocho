@@ -635,24 +635,30 @@ async function supaSave() {
 
 async function supaLoad() {
   if (!_user) return;
-  const { data } = await _sb.from('user_data').select().eq('user_id', _user.id).maybeSingle();
+  const { data, error } = await _sb.from('user_data').select().eq('user_id', _user.id).maybeSingle();
+  if (error) {
+    // ネットワークエラー等 → ローカルデータをそのまま使う（絶対に消さない）
+    showToast('⚠️ 同期できませんでした。ローカルデータを使用中。');
+    return;
+  }
   if (data && (data.my_words?.length || data.books?.length)) {
     // クラウドにデータあり → クラウドを使う
     state.myWords = data.my_words || [];
     state.books = data.books || [];
     localStorage.setItem('myWords', JSON.stringify(state.myWords));
     localStorage.setItem('books', JSON.stringify(state.books));
-  } else {
-    // 新規ユーザー → 空で始める（他人のlocalStorageをアップロードしない）
-    state.myWords = [];
-    state.books = [];
-    localStorage.setItem('myWords', '[]');
-    localStorage.setItem('books', '[]');
+    showToast('クラウドから同期しました');
+  } else if (state.myWords.length || state.books.length) {
+    // クラウドは空だがローカルにデータあり → ローカルをクラウドへアップロード
     await supaSave();
+    showToast('ローカルデータをクラウドに保存しました');
+  } else {
+    // 両方空 = 本当の新規ユーザー
+    await supaSave();
+    showToast('クラウドから同期しました');
   }
   renderSearch();
   if (document.getElementById('page-books').classList.contains('active')) renderBooks();
-  showToast('クラウドから同期しました');
 }
 
 function renderAuthUI() {
