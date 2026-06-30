@@ -291,6 +291,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
   <div class="section-label">アカウント（自動同期）</div>
   <div id="auth-ui"></div>
   <button class="btn-secondary" onclick="manualSync()" style="margin-bottom:10px">☁️ 今すぐクラウドに保存</button>
+  <button class="btn-secondary" onclick="copyEmergencySQL()" style="margin-bottom:10px;border-color:#f59e0b;color:#f59e0b">🆘 SQL緊急保存（クラウドに繋がらない時）</button>
   <div class="section-label">データ管理</div>
   <button class="btn-secondary" onclick="exportCSV()">📥 CSVでバックアップ</button>
   <button class="btn-secondary" onclick="exportJSON()">📤 マイ単語をコピー（他の端末へ）</button>
@@ -645,6 +646,26 @@ async function manualSync() {
   }
   await supaSave();
   if (_user) showToast('✓ ' + state.myWords.length + '語をクラウドに保存しました');
+}
+
+function copyEmergencySQL() {
+  if (!_user) { showToast('先にログインしてください'); return; }
+  if (!state.myWords.length && !state.books.length) { showToast('保存する単語がありません'); return; }
+  const wordsJson = JSON.stringify(state.myWords);
+  const booksJson = JSON.stringify(state.books);
+  const uid = _user.id;
+  const sql = `INSERT INTO user_data (user_id, my_words, books, updated_at)\nVALUES (\n  '${uid}',\n  $WORDS$${wordsJson}$WORDS$::jsonb,\n  $BOOKS$${booksJson}$BOOKS$::jsonb,\n  NOW()\n)\nON CONFLICT (user_id) DO UPDATE SET\n  my_words = EXCLUDED.my_words,\n  books = EXCLUDED.books,\n  updated_at = NOW();`;
+  navigator.clipboard.writeText(sql).then(() => {
+    showToast('✓ SQLをコピーしました！Supabase SQL Editorに貼り付けて実行してください');
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = sql;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('✓ SQLをコピーしました！Supabase SQL Editorに貼り付けて実行してください');
+  });
 }
 
 async function supaLoad() {
