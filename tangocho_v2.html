@@ -677,19 +677,24 @@ async function supaLoad() {
     return;
   }
   if (data && (data.my_words?.length || data.books?.length)) {
-    // クラウドにデータあり → クラウドを使う
-    state.myWords = data.my_words || [];
-    state.books = data.books || [];
-    localStorage.setItem('myWords', JSON.stringify(state.myWords));
-    localStorage.setItem('books', JSON.stringify(state.books));
-    showToast('クラウドから同期しました');
+    const cloudWords = data.my_words || [];
+    const localWords = state.myWords || [];
+    if (cloudWords.length >= localWords.length) {
+      // クラウドの方が多い（または同じ）→ クラウドを使う
+      state.myWords = cloudWords;
+      state.books = data.books || [];
+      localStorage.setItem('myWords', JSON.stringify(state.myWords));
+      localStorage.setItem('books', JSON.stringify(state.books));
+      showToast('クラウドから同期しました（' + cloudWords.length + '語）');
+    } else {
+      // ローカルの方が多い → ローカルをクラウドへ保存（データを守る）
+      showToast('ローカルデータ（' + localWords.length + '語）を確認中…');
+    }
   } else if (state.myWords.length || state.books.length) {
     // クラウドは空だがローカルにデータあり → ローカルをクラウドへアップロード
-    await supaSave();
-    showToast('ローカルデータをクラウドに保存しました');
+    showToast('ローカルデータ（' + state.myWords.length + '語）を確認中…');
   } else {
     // 両方空 = 本当の新規ユーザー
-    await supaSave();
     showToast('クラウドから同期しました');
   }
   renderSearch();
