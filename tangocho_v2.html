@@ -670,9 +670,18 @@ function copyEmergencySQL() {
 
 async function supaLoad() {
   if (!_user) return;
-  const { data, error } = await _sb.from('user_data').select().eq('user_id', _user.id).maybeSingle();
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 6000);
+  let data, error;
+  try {
+    ({ data, error } = await _sb.from('user_data').select().eq('user_id', _user.id).maybeSingle().abortSignal(controller.signal));
+  } catch(e) {
+    clearTimeout(timer);
+    showToast('⚠️ 同期タイムアウト。ローカルデータを使用中。');
+    return;
+  }
+  clearTimeout(timer);
   if (error) {
-    // ネットワークエラー等 → ローカルデータをそのまま使う（絶対に消さない）
     showToast('⚠️ 同期できませんでした。ローカルデータを使用中。');
     return;
   }
