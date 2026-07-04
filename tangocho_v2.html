@@ -7,8 +7,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="単語帳">
 <meta name="theme-color" content="#7c6cfc">
-<link rel="apple-touch-icon" href="icon_Tango_Guinness.png">
-<link rel="icon" type="image/png" href="icon_Tango_Guinness.png">
+<link rel="apple-touch-icon" href="Gunness_icon_tangocho2.png">
+<link rel="icon" type="image/png" href="Gunness_icon_tangocho2.png">
 <title>単語帳</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -331,6 +331,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
       <button class="btn-cancel" onclick="closeModal('modal-edit')">キャンセル</button>
       <button class="btn-save" onclick="saveEdit()">保存</button>
     </div>
+    <button id="edit-delete-btn" onclick="deleteCurrentWord()" style="display:none;width:100%;margin-top:10px;padding:12px;border-radius:12px;border:1.5px solid #ef4444;background:transparent;color:#ef4444;font-size:15px;font-weight:600;cursor:pointer">🗑 この単語を削除</button>
   </div>
 </div>
 
@@ -839,8 +840,20 @@ function setTheme(theme) {
 function getAllWords() {
   const map = new Map();
   BUILTIN.forEach(v => map.set(v.w.toLowerCase(), {w: v.w, m: v.m, builtin: true}));
-  state.myWords.forEach(v => map.set(v.w.toLowerCase(), {w: v.w, m: v.m, builtin: false, added: v.added}));
+  state.myWords.forEach(v => {
+    const key = v.w.toLowerCase();
+    if (v.del) { map.delete(key); }       // 削除マーカー → 組み込み単語も非表示にする
+    else map.set(key, {w: v.w, m: v.m, builtin: false, added: v.added});
+  });
   return [...map.values()];
+}
+
+// added（登録日）を比較可能な数値に変換（数値タイムスタンプ／"2025-01-01"文字列の混在に対応）
+function addedTime(v) {
+  const a = v.added;
+  if (typeof a === 'number') return a;
+  if (typeof a === 'string') { const t = Date.parse(a); return isNaN(t) ? 0 : t; }
+  return 0;
 }
 
 // ========== NAV ==========
@@ -893,7 +906,7 @@ function renderSearch() {
   if (state.filter === 'mywords') {
     pool = all.filter(v => !v.builtin);
   } else if (state.filter === 'recent') {
-    pool = all.filter(v => !v.builtin).sort((a, b) => (b.added || 0) - (a.added || 0));
+    pool = all.filter(v => !v.builtin).sort((a, b) => addedTime(b) - addedTime(a));
   } else {
     pool = all;
   }
@@ -922,17 +935,13 @@ function renderSearch() {
 
   const container = document.getElementById('search-results');
 
+  // 完全一致（見出し語がクエリと完全に同じ）があるか
+  const hasExact = q && pool.some(v => v.w.toLowerCase() === q);
+
   if (results.length === 0 && q) {
     container.innerHTML = `
       <div class="no-result">「${esc(state.query)}」は見つかりませんでした</div>
-      <div class="ext-card">
-        <div class="ext-title">📖 外部辞書・ウェブで検索</div>
-        <div class="ext-links">
-          <a class="ext-link" href="https://ejje.weblio.jp/content/${encodeURIComponent(state.query)}" target="_blank">Weblio</a>
-          <a class="ext-link" href="https://eow.alc.co.jp/search?q=${encodeURIComponent(state.query)}" target="_blank">英辞郎</a>
-          <a class="ext-link" href="${getGoogleUrl(state.query)}" target="_blank">🌐 Google</a>
-        </div>
-      </div>
+      ${extSearchCard()}
       <button class="btn-secondary" style="margin-top:8px" onclick="showAddWordWithQuery()">＋ この単語を追加する</button>
     `;
     return;
@@ -964,7 +973,27 @@ function renderSearch() {
         </a>
       </div>
     </div>
-  `).join('') + (results.length > 100 ? `<div class="no-result">他 ${results.length-100} 件（検索で絞り込んでください）</div>` : '');
+  `).join('')
+    + (results.length > 100 ? `<div class="no-result">他 ${results.length-100} 件（検索で絞り込んでください）</div>` : '')
+    + (q && !hasExact ? `
+        <div style="margin-top:14px;padding-top:14px;border-top:1px dashed var(--border)">
+          <div class="no-result" style="margin-bottom:8px">「${esc(state.query)}」そのものを調べる</div>
+          ${extSearchCard()}
+          <button class="btn-secondary" style="margin-top:8px" onclick="showAddWordWithQuery()">＋ この単語を追加する</button>
+        </div>` : '');
+}
+
+function extSearchCard() {
+  const q = encodeURIComponent(state.query);
+  return `
+    <div class="ext-card">
+      <div class="ext-title">📖 外部辞書・ウェブで検索</div>
+      <div class="ext-links">
+        <a class="ext-link" href="https://ejje.weblio.jp/content/${q}" target="_blank">Weblio</a>
+        <a class="ext-link" href="https://eow.alc.co.jp/search?q=${q}" target="_blank">英辞郎</a>
+        <a class="ext-link" href="${getGoogleUrl(state.query)}" target="_blank">🌐 Google</a>
+      </div>
+    </div>`;
 }
 
 function toggleJp(i) {
@@ -1013,6 +1042,7 @@ function showEditWord(word) {
   document.getElementById('edit-word').disabled = false;
   document.getElementById('edit-meaning').value = v.m;
   document.getElementById('edit-book-group').style.display = 'none';
+  document.getElementById('edit-delete-btn').style.display = 'block';
   document.getElementById('modal-edit').classList.add('show');
 }
 
@@ -1023,6 +1053,7 @@ function showAddWord() {
   document.getElementById('edit-word').disabled = false;
   document.getElementById('edit-meaning').value = '';
   document.getElementById('edit-book-group').style.display = 'none';
+  document.getElementById('edit-delete-btn').style.display = 'none';
   document.getElementById('modal-edit').classList.add('show');
 }
 
@@ -1053,17 +1084,50 @@ function saveEdit() {
       showToast('追加しました');
     }
   } else {
-    const idx = state.myWords.findIndex(x => x.w.toLowerCase() === state.editWord.toLowerCase());
-    if (idx >= 0) {
-      state.myWords[idx] = {w, m, added: state.myWords[idx].added || Date.now()};
-    } else {
-      state.myWords.push({w, m, added: Date.now()});
+    const oldKey = state.editWord.toLowerCase();
+    const newKey = w.toLowerCase();
+    // 変更前の登録日を引き継ぐ（無ければ現在時刻）
+    const prev = state.myWords.find(x => x.w.toLowerCase() === oldKey);
+    const added = prev && prev.added ? prev.added : Date.now();
+    // 旧キー・新キーの既存マイ単語を除去（重複防止）
+    state.myWords = state.myWords.filter(x => {
+      const k = x.w.toLowerCase();
+      return k !== oldKey && k !== newKey;
+    });
+    // 見出し語を別の単語に変えた場合、元が組み込み単語なら非表示にする
+    if (oldKey !== newKey && BUILTIN.some(b => b.w.toLowerCase() === oldKey)) {
+      state.myWords.push({w: state.editWord, del: true});
     }
+    state.myWords.push({w, m, added});
     save();
     showToast('保存しました');
     closeModal('modal-edit');
     renderSearch();
   }
+}
+
+// 編集モーダルで開いている単語を削除
+function deleteCurrentWord() {
+  if (!state.editWord) return;
+  if (!confirm('「' + state.editWord + '」を削除しますか？\nこの操作は取り消せません。')) return;
+  deleteWord(state.editWord);
+  closeModal('modal-edit');
+}
+
+function deleteWord(word) {
+  const key = word.toLowerCase();
+  // マイ単語から削除
+  state.myWords = state.myWords.filter(x => x.w.toLowerCase() !== key);
+  // 組み込み単語なら削除マーカーを追加して非表示にする
+  if (BUILTIN.some(b => b.w.toLowerCase() === key)) {
+    state.myWords.push({w: word, del: true});
+  }
+  // 単語帳からも取り除く
+  state.books.forEach(b => { if (b.words) b.words = b.words.filter(x => x.toLowerCase() !== key); });
+  save();
+  showToast('削除しました');
+  renderSearch();
+  if (document.getElementById('page-books').classList.contains('active')) renderBooks();
 }
 
 // ========== ADD TO BOOK ==========
