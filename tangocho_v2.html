@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="単語帳">
@@ -175,15 +175,15 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .result-row:last-child { border-bottom: none; }
 
 /* Modal */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 200; display: none; align-items: flex-start; justify-content: center; padding: 24px 16px; backdrop-filter: blur(4px); }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 200; display: none; align-items: center; justify-content: center; padding: 24px 16px; backdrop-filter: blur(4px); }
 .modal-overlay.show { display: flex; }
 .modal { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 20px; width: 100%; max-width: 480px; max-height: calc(100dvh - 48px); overflow-y: scroll; -webkit-overflow-scrolling: touch; }
 .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
 .form-group { margin-bottom: 14px; }
 .form-label { font-size: 13px; color: var(--text2); margin-bottom: 6px; display: block; }
-.form-input { width: 100%; padding: 12px 14px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 15px; outline: none; -webkit-appearance: none; }
+.form-input { width: 100%; padding: 12px 14px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 16px; outline: none; -webkit-appearance: none; }
 .form-input:focus { border-color: var(--accent); }
-.form-textarea { width: 100%; padding: 12px 14px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 14px; outline: none; height: 120px; resize: none; overflow-y: scroll; -webkit-overflow-scrolling: touch; font-family: inherit; -webkit-appearance: none; appearance: none; }
+.form-textarea { width: 100%; padding: 12px 14px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 16px; outline: none; height: 120px; resize: none; overflow-y: scroll; -webkit-overflow-scrolling: touch; font-family: inherit; -webkit-appearance: none; appearance: none; }
 .form-textarea:focus { border-color: var(--accent); }
 .modal-actions { display: flex; gap: 10px; margin-top: 16px; }
 .btn-cancel { flex: 1; padding: 12px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: none; color: var(--text2); cursor: pointer; font-size: 15px; }
@@ -261,7 +261,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
   <div class="search-sticky">
     <div class="search-wrap">
       <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="search" id="search-input" placeholder="英語または日本語で検索..." autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="none" inputmode="latin" pattern="[A-Za-z0-9 ]*" lang="en">
+      <input type="url" id="search-input" placeholder="英語または日本語で検索..." autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="none" enterkeyhint="search" lang="en">
       <button id="search-clear" onclick="clearSearch()">
         <svg viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
@@ -950,7 +950,15 @@ function renderSearch() {
   window._wm = {};
   const _r = results.slice(0, 100);
   _r.forEach((v, i) => { window._wm[i] = v.m; });
-  container.innerHTML = _r.map((v, i) => `
+  // クエリに完全一致がない時は、検索窓のすぐ下（先頭）に「追加・外部辞書」を出す
+  // ＝キーボードに隠れず押せる位置
+  const topBar = (q && !hasExact) ? `
+    <div style="margin-bottom:14px;padding:12px;background:var(--surface);border:1.5px solid var(--border);border-radius:12px">
+      <div style="font-size:14px;color:var(--text2);margin-bottom:8px">「${esc(state.query)}」を追加 / 辞書で調べる</div>
+      <button class="btn-secondary" style="margin:0 0 8px" onclick="showAddWordWithQuery()">＋ この単語を追加する</button>
+      ${extSearchCard()}
+    </div>` : '';
+  container.innerHTML = topBar + _r.map((v, i) => `
     <div class="word-card">
       <div class="word-card-header">
         <div class="word-en">${esc(v.w)}</div>
@@ -974,13 +982,7 @@ function renderSearch() {
       </div>
     </div>
   `).join('')
-    + (results.length > 100 ? `<div class="no-result">他 ${results.length-100} 件（検索で絞り込んでください）</div>` : '')
-    + (q && !hasExact ? `
-        <div style="margin-top:14px;padding-top:14px;border-top:1px dashed var(--border)">
-          <div class="no-result" style="margin-bottom:8px">「${esc(state.query)}」そのものを調べる</div>
-          ${extSearchCard()}
-          <button class="btn-secondary" style="margin-top:8px" onclick="showAddWordWithQuery()">＋ この単語を追加する</button>
-        </div>` : '');
+    + (results.length > 100 ? `<div class="no-result">他 ${results.length-100} 件（検索で絞り込んでください）</div>` : '');
 }
 
 function extSearchCard() {
