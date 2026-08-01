@@ -178,7 +178,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .result-row:last-child { border-bottom: none; }
 
 /* Modal */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 200; display: none; align-items: center; justify-content: center; padding: 24px 16px; backdrop-filter: blur(4px); }
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,.75); z-index: 200; display: none; align-items: center; justify-content: center; padding: 24px 16px; backdrop-filter: blur(4px); }
 .modal-overlay.show { display: flex; }
 .modal { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 20px; width: 100%; max-width: 480px; max-height: calc(100dvh - 48px); overflow-y: scroll; -webkit-overflow-scrolling: touch; }
 .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
@@ -320,11 +320,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
     <div class="modal-title" id="modal-edit-title">単語を編集</div>
     <div class="form-group">
       <label class="form-label">英単語</label>
-      <input class="form-input" id="edit-word" placeholder="英単語">
+      <input class="form-input" id="edit-word" placeholder="英単語" lang="en" autocapitalize="none" autocorrect="off" spellcheck="false">
     </div>
     <div class="form-group">
       <label class="form-label">日本語の意味</label>
-      <textarea class="form-textarea" id="edit-meaning" placeholder="日本語の意味"></textarea>
+      <textarea class="form-textarea" id="edit-meaning" placeholder="日本語の意味" lang="ja"></textarea>
     </div>
     <div class="form-group" id="edit-book-group" style="display:none">
       <label class="form-label">単語帳に追加</label>
@@ -896,6 +896,26 @@ function updateHeroCollapse() {
   else ps.classList.remove('searching');
 }
 
+// ===== モーダルをキーボードの上の「見える範囲」に固定する =====
+// iOSはキーボードを開くと画面をスクロールして入力欄を上に飛ばすため、
+// Visual Viewport（実際に見えている領域）に合わせてモーダルを再配置する。
+function syncModalViewport() {
+  const vv = window.visualViewport;
+  if (!vv) return;
+  document.querySelectorAll('.modal-overlay').forEach(o => {
+    o.style.top = vv.offsetTop + 'px';
+    o.style.left = vv.offsetLeft + 'px';
+    o.style.width = vv.width + 'px';
+    o.style.height = vv.height + 'px';
+    const m = o.querySelector('.modal');
+    if (m) m.style.maxHeight = (vv.height - 32) + 'px';
+  });
+}
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', syncModalViewport);
+  window.visualViewport.addEventListener('scroll', syncModalViewport);
+}
+
 function clearSearch() {
   document.getElementById('search-input').value = '';
   state.query = '';
@@ -1061,6 +1081,7 @@ function showEditWord(word) {
   document.getElementById('edit-book-group').style.display = 'none';
   document.getElementById('edit-delete-btn').style.display = 'block';
   document.getElementById('modal-edit').classList.add('show');
+  syncModalViewport();
 }
 
 function showAddWord() {
@@ -1072,6 +1093,7 @@ function showAddWord() {
   document.getElementById('edit-book-group').style.display = 'none';
   document.getElementById('edit-delete-btn').style.display = 'none';
   document.getElementById('modal-edit').classList.add('show');
+  syncModalViewport();
 }
 
 function showAddWordWithQuery() {
