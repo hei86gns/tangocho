@@ -61,7 +61,7 @@
 }
 html { min-height: 100%; }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); touch-action: manipulation; }
 
 /* Nav - 下部固定 */
 .nav { display: flex; gap: 0; background: var(--surface); border-top: 1px solid var(--border); position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; padding-bottom: env(safe-area-inset-bottom); }
@@ -108,7 +108,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .word-card-header { display: flex; align-items: center; gap: 10px; }
 .word-en { font-size: 20px; font-weight: 600; color: var(--text); flex: 1; }
 .word-book-tag { font-size: 12px; padding: 2px 8px; border-radius: 10px; background: rgba(var(--accent-rgb),0.15); color: var(--accent2); border: 1px solid rgba(var(--accent-rgb),0.3); white-space: nowrap; }
-.word-jp { font-size: 15px; color: var(--text2); margin-top: 6px; line-height: 1.6; }
+.word-jp { font-size: 15px; color: var(--text2); margin-top: 6px; line-height: 1.6; white-space: pre-wrap; }
 .more-btn { background: none; border: none; color: var(--accent2); font-size: 13px; cursor: pointer; padding: 2px 0 0; display: block; }
 .word-actions { display: flex; gap: 8px; margin-top: 12px; }
 .btn-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: none; color: var(--text2); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; text-decoration: none; flex-shrink: 0; }
@@ -154,6 +154,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .quiz-choice { padding: 14px; border-radius: var(--radius); border: 1.5px solid var(--border); background: var(--surface2); color: var(--text); cursor: pointer; font-size: 15px; text-align: left; transition: all .2s; }
 .quiz-choice.correct { border-color: var(--green); background: rgba(52,211,153,0.15); color: var(--green); }
 .quiz-choice.wrong { border-color: var(--red); background: rgba(248,113,113,0.15); color: var(--red); }
+.quiz-answer-reveal { margin-top: 14px; padding: 14px; border-radius: var(--radius); background: var(--surface2); border: 1.5px solid var(--border); font-size: 15px; text-align: left; }
 
 /* Flash */
 .flash-card-wrap { perspective: 1000px; margin-bottom: 20px; }
@@ -163,7 +164,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .flash-front { background: var(--surface); border: 1.5px solid var(--border); }
 .flash-back { background: linear-gradient(135deg, rgba(var(--accent-rgb),0.2), var(--surface)); border: 1.5px solid var(--accent); transform: rotateY(180deg); }
 .flash-word { font-size: 30px; font-weight: 700; text-align: center; }
-.flash-meaning { font-size: 16px; color: var(--text2); text-align: center; line-height: 1.6; margin-top: 12px; }
+.flash-meaning { font-size: 16px; color: var(--text2); text-align: center; line-height: 1.6; margin-top: 12px; white-space: pre-wrap; }
 .flash-hint { font-size: 13px; color: var(--text3); margin-top: 12px; }
 .flash-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .btn-wrong { padding: 14px; border-radius: var(--radius); border: 1.5px solid rgba(248,113,113,0.4); background: rgba(248,113,113,0.1); color: var(--red); font-size: 15px; cursor: pointer; }
@@ -1351,12 +1352,27 @@ function startQuiz() {
     pool = recent.length >= 4 ? recent : pool.slice(-100);
   }
   if (pool.length < 4) { showToast('単語が少なすぎます（4語以上必要）'); return; }
+  buildQuiz(pool);
+}
+
+// pool（出題する単語）からクイズを作る。選択肢の誤答は distractor から補う
+function buildQuiz(pool) {
+  const distractor = getAllWords();
   const questions = shuffle(pool).slice(0,10).map(correct => {
-    const wrong = shuffle(pool.filter(v => v.w !== correct.w)).slice(0,3);
+    // 誤答候補：出題プールが4語以上ならその中から、少なければ辞書全体から
+    const src = (pool.length >= 4 ? pool : distractor).filter(v => v.w !== correct.w);
+    const wrong = shuffle(src).slice(0,3);
     return {correct, choices: shuffle([correct, ...wrong])};
   });
   state.quizState = {questions, current:0, score:0, answered:false, results:[]};
   renderQuizQuestion();
+}
+
+// 間違えた単語だけでもう一度クイズ
+function reviewWrongQuiz() {
+  const wrong = (state.quizState.results || []).filter(r => !r.correct).map(r => r.wordObj);
+  if (!wrong.length) { showToast('間違えた単語はありません'); return; }
+  buildQuiz(wrong);
 }
 
 function renderQuizQuestion() {
@@ -1388,29 +1404,46 @@ function answerQuiz(i) {
   const q = questions[current];
   const correct = q.choices[i].w === q.correct.w;
   if (correct) state.quizState.score++;
-  state.quizState.results.push({word: q.correct.w, correct});
+  state.quizState.results.push({word: q.correct.w, meaning: q.correct.m, wordObj: q.correct, correct});
   document.querySelectorAll('.quiz-choice').forEach((btn, j) => {
     if (q.choices[j].w === q.correct.w) btn.classList.add('correct');
     else if (j === i) btn.classList.add('wrong');
     btn.disabled = true;
   });
+  // 間違えた時は正しい意味（全文）を表示して、確認できる時間を長めにとる
+  if (!correct) {
+    const cont = document.getElementById('quiz-content');
+    const info = document.createElement('div');
+    info.className = 'quiz-answer-reveal';
+    info.innerHTML = `<div style="font-weight:700;color:var(--text);margin-bottom:4px">${esc(q.correct.w)}</div><div style="color:var(--text2);white-space:pre-wrap;line-height:1.6">${esc(q.correct.m)}</div>`;
+    cont.querySelector('.quiz-card').appendChild(info);
+  }
   setTimeout(() => {
     state.quizState.current++;
     state.quizState.answered = false;
     renderQuizQuestion();
-  }, 1000);
+  }, correct ? 900 : 2600);
 }
 
 function renderQuizResult() {
   const {score, questions, results} = state.quizState;
+  const wrongCount = results.filter(r => !r.correct).length;
   document.getElementById('quiz-content').innerHTML = `
     <div class="quiz-result">
       <div class="result-score">${score}<span style="font-size:32px;color:var(--text2)">/${questions.length}</span></div>
-      <div class="result-label">${score===10?'パーフェクト！🎉':score>=7?'よくできました！👏':score>=5?'もう少し！💪':'頑張ろう！📚'}</div>
+      <div class="result-label">${score===questions.length?'パーフェクト！🎉':score>=Math.ceil(questions.length*0.7)?'よくできました！👏':score>=Math.ceil(questions.length*0.5)?'もう少し！💪':'頑張ろう！📚'}</div>
       <div class="result-detail">
-        ${results.map(r => `<div class="result-row"><span>${esc(r.word)}</span><span>${r.correct?'<span style="color:var(--green)">✓</span>':'<span style="color:var(--red)">✗</span>'}</span></div>`).join('')}
+        ${results.map(r => `
+          <div class="result-row" style="align-items:flex-start">
+            <span style="flex:1">
+              <span style="font-weight:600;color:var(--text)">${esc(r.word)}</span>
+              ${!r.correct ? `<div style="color:var(--text2);font-size:13px;margin-top:4px;white-space:pre-wrap;line-height:1.5">${esc(r.meaning || '')}</div>` : ''}
+            </span>
+            <span style="margin-left:10px">${r.correct?'<span style="color:var(--green)">✓</span>':'<span style="color:var(--red)">✗</span>'}</span>
+          </div>`).join('')}
       </div>
-      <button class="btn-primary" onclick="startQuiz()">もう一度</button>
+      ${wrongCount ? `<button class="btn-primary" onclick="reviewWrongQuiz()">❌ 間違えた${wrongCount}語をもう一度</button>` : ''}
+      <button class="${wrongCount?'btn-secondary':'btn-primary'}" onclick="startQuiz()">もう一度（全体）</button>
       <button class="btn-secondary" onclick="renderQuizSetup()">設定に戻る</button>
     </div>
   `;
