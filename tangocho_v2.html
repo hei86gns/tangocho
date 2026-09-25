@@ -105,7 +105,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 
 /* Word card */
 .word-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 10px; transition: border-color .2s; }
-.word-card-header { display: flex; align-items: center; gap: 10px; }
+.word-card-header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.word-book-tag.book { background: rgba(var(--accent-rgb),0.08); color: var(--text2); border-color: rgba(var(--accent-rgb),0.25); }
 .word-en { font-size: 20px; font-weight: 600; color: var(--text); flex: 1; }
 .word-book-tag { font-size: 12px; padding: 2px 8px; border-radius: 10px; background: rgba(var(--accent-rgb),0.15); color: var(--accent2); border: 1px solid rgba(var(--accent-rgb),0.3); white-space: nowrap; }
 .word-jp { font-size: 15px; color: var(--text2); margin-top: 6px; line-height: 1.6; white-space: pre-wrap; }
@@ -265,7 +266,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
   <div class="search-sticky">
     <div class="search-wrap">
       <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="url" id="search-input" placeholder="英語または日本語で検索..." autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="none" enterkeyhint="search" lang="en">
+      <input type="search" id="search-input" placeholder="英語または日本語で検索..." autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="none" enterkeyhint="search">
       <button id="search-clear" onclick="clearSearch()">
         <svg viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
@@ -852,6 +853,14 @@ function getAllWords() {
   return [...map.values()];
 }
 
+// この単語が入っている単語帳の名前一覧を返す
+function booksContaining(word) {
+  const key = word.toLowerCase();
+  return (state.books || [])
+    .filter(b => (b.words || []).some(w => String(w).toLowerCase() === key))
+    .map(b => b.name);
+}
+
 // added（登録日）を比較可能な数値に変換（数値タイムスタンプ／"2025-01-01"文字列の混在に対応）
 function addedTime(v) {
   const a = v.added;
@@ -999,6 +1008,7 @@ function renderSearch() {
       <div class="word-card-header">
         <div class="word-en">${esc(v.w)}</div>
         ${!v.builtin ? '<span class="word-book-tag">マイ単語</span>' : ''}
+        ${booksContaining(v.w).map(name => `<span class="word-book-tag book">📚 ${esc(name)}</span>`).join('')}
       </div>
       <div class="word-jp" id="wmt${i}">${esc(v.m.length>120?v.m.substring(0,120)+'…':v.m)}</div>
       ${v.m.length>120?`<button class="more-btn" id="wmb${i}" onclick="toggleJp(${i})">▾ 続きを読む</button>`:''}
