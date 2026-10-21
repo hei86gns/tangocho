@@ -660,7 +660,11 @@ function copyEmergencySQL() {
   const wordsJson = JSON.stringify(state.myWords);
   const booksJson = JSON.stringify(state.books);
   const uid = _user.id;
-  const sql = `INSERT INTO user_data (user_id, my_words, books, updated_at)\nVALUES (\n  '${uid}',\n  $WORDS$${wordsJson}$WORDS$::jsonb,\n  $BOOKS$${booksJson}$BOOKS$::jsonb,\n  NOW()\n)\nON CONFLICT (user_id) DO UPDATE SET\n  my_words = EXCLUDED.my_words,\n  books = EXCLUDED.books,\n  updated_at = NOW();`;
+  // 単語の中に区切り記号と同じ文字があるとSQLの文が書き換わるので、データに含まれない区切り記号を毎回作る
+  let tag;
+  do { tag = '$d' + Math.random().toString(36).slice(2, 10) + '$'; }
+  while (wordsJson.includes(tag) || booksJson.includes(tag));
+  const sql = `INSERT INTO user_data (user_id, my_words, books, updated_at)\nVALUES (\n  '${uid}',\n  ${tag}${wordsJson}${tag}::jsonb,\n  ${tag}${booksJson}${tag}::jsonb,\n  NOW()\n)\nON CONFLICT (user_id) DO UPDATE SET\n  my_words = EXCLUDED.my_words,\n  books = EXCLUDED.books,\n  updated_at = NOW();`;
   navigator.clipboard.writeText(sql).then(() => {
     showToast('✓ SQLをコピーしました！Supabase SQL Editorに貼り付けて実行してください');
   }).catch(() => {
@@ -1013,13 +1017,13 @@ function renderSearch() {
       <div class="word-jp" id="wmt${i}">${esc(v.m.length>120?v.m.substring(0,120)+'…':v.m)}</div>
       ${v.m.length>120?`<button class="more-btn" id="wmb${i}" onclick="toggleJp(${i})">▾ 続きを読む</button>`:''}
       <div class="word-actions">
-        <button class="btn-icon" onclick="speak('${esc(v.w).replace(/'/g,"\\'")}')" title="発音">
+        <button class="btn-icon" onclick="speak(${jsq(v.w)})" title="発音">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
         </button>
-        <button class="btn-icon" onclick="showEditWord('${esc(v.w).replace(/'/g,"\\'")}')" title="編集">
+        <button class="btn-icon" onclick="showEditWord(${jsq(v.w)})" title="編集">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
-        <button class="btn-icon" onclick="showAddToBook('${esc(v.w).replace(/'/g,"\\'")}')" title="単語帳に追加">
+        <button class="btn-icon" onclick="showAddToBook(${jsq(v.w)})" title="単語帳に追加">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="9" x2="12" y2="15"/><line x1="9" y1="12" x2="15" y2="12"/></svg>
         </button>
         <a class="btn-icon" href="${getGoogleUrl(v.w)}" target="_blank" title="Webで検索">
@@ -1254,7 +1258,7 @@ function openBook(idx) {
         <div class="word-card-header"><div class="word-en">${esc(v.w)}</div></div>
         <div class="word-jp">${esc(v.m).substring(0,100)}</div>
         <div class="word-actions">
-          <button class="btn-icon" onclick="speak('${esc(v.w).replace(/'/g,"\\'")}')" title="発音">
+          <button class="btn-icon" onclick="speak(${jsq(v.w)})" title="発音">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
           </button>
           <a class="btn-icon" href="${getGoogleUrl(v.w)}" target="_blank" title="Webで検索">
@@ -1395,7 +1399,7 @@ function renderQuizQuestion() {
       <div class="progress-bar"><div class="progress-fill" style="width:${(current/questions.length)*100}%"></div></div>
       <div class="quiz-word">${esc(q.correct.w)}</div>
       <div style="display:flex;justify-content:center;margin:4px 0 0">
-        <button class="btn-icon" onclick="speak('${esc(q.correct.w).replace(/'/g,"\\'")}')">
+        <button class="btn-icon" onclick="speak(${jsq(q.correct.w)})">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
         </button>
       </div>
@@ -1528,7 +1532,7 @@ function renderFlashCard() {
       <div class="flash-card" id="flash-card" onclick="flipCard()">
         <div class="flash-front">
           <div class="flash-word">${esc(card.w)}</div>
-          <button class="btn-icon" style="margin:12px auto 0" onclick="event.stopPropagation();speak('${esc(card.w).replace(/'/g,"\\'")}')">
+          <button class="btn-icon" style="margin:12px auto 0" onclick="event.stopPropagation();speak(${jsq(card.w)})">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
           </button>
           <div class="flash-hint" style="margin-top:10px">タップして意味を見る</div>
@@ -1600,6 +1604,10 @@ function shuffle(arr) {
 
 function esc(s) {
   return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+// onclick="..." の中に文字列を埋め込むとき用。JSの文字列として安全に囲んでから、HTML属性用にエスケープする
+function jsq(s) {
+  return esc(JSON.stringify(String(s ?? '')));
 }
 
 
