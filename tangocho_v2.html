@@ -86,10 +86,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .dot-blue { background: #38bdf8; }
 
 /* Search header */
-.search-sticky { background: var(--bg); padding: 12px 0 8px; margin-top: 18px; position: sticky; top: 0; z-index: 10; }
-/* 検索中（フォーカス or 入力あり）はヘッダーを畳んで検索窓を上部に上げる → 結果ボタンがキーボードに隠れない */
-#page-search.searching .hero { display: none; }
-#page-search.searching .search-sticky { margin-top: 0; }
+/* sticky時もステータスバー（時刻表示）の下で止まるよう safe-area 分ずらし、その上を背景色で塞ぐ */
+.search-sticky { background: var(--bg); padding: 12px 0 8px; margin-top: 18px; position: sticky; top: env(safe-area-inset-top); z-index: 10; }
+.search-sticky::before { content: ''; position: absolute; left: 0; right: 0; bottom: 100%; height: env(safe-area-inset-top); background: var(--bg); }
+/* 検索中（フォーカス or 入力あり）はヘッダーを小さく畳む。
+   完全に消すと検索窓が画面最上部（時刻の真下）に張り付き、カーソル移動の拡大鏡が時刻と重なるため、タイトル行だけ残して余白を確保 */
+#page-search.searching .hero { padding: 14px 0 6px; }
+#page-search.searching .hero-cat,
+#page-search.searching .theme-dots { display: none; }
+#page-search.searching .hero-title { font-size: 22px; margin-bottom: 0; }
+#page-search.searching .search-sticky { margin-top: 4px; }
 .search-wrap { position: relative; }
 .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text3); width: 18px; height: 18px; pointer-events: none; }
 #search-input { width: 100%; padding: 14px 46px 14px 44px; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 16px; outline: none; transition: border-color .2s; -webkit-appearance: none; }
@@ -913,16 +919,29 @@ function updateHeroCollapse() {
 // ===== モーダルをキーボードの上の「見える範囲」に固定する =====
 // iOSはキーボードを開くと画面をスクロールして入力欄を上に飛ばすため、
 // Visual Viewport（実際に見えている領域）に合わせてモーダルを再配置する。
+// 日本語変換（IME）の最中にレイアウトやスクロールを動かすと、iOSが変換を打ち切ってしまう。
+// 変換中は再配置を止め、変換確定後にまとめて1回だけ合わせる。
+let imeComposing = false;
+document.addEventListener('compositionstart', () => { imeComposing = true; });
+document.addEventListener('compositionend', () => {
+  imeComposing = false;
+  setTimeout(syncModalViewport, 0);
+});
+
+function setStyleIfChanged(el, prop, val) {
+  if (el.style[prop] !== val) el.style[prop] = val;
+}
+
 function syncModalViewport() {
   const vv = window.visualViewport;
-  if (!vv) return;
+  if (!vv || imeComposing) return;
   document.querySelectorAll('.modal-overlay').forEach(o => {
-    o.style.top = vv.offsetTop + 'px';
-    o.style.left = vv.offsetLeft + 'px';
-    o.style.width = vv.width + 'px';
-    o.style.height = vv.height + 'px';
+    setStyleIfChanged(o, 'top', vv.offsetTop + 'px');
+    setStyleIfChanged(o, 'left', vv.offsetLeft + 'px');
+    setStyleIfChanged(o, 'width', vv.width + 'px');
+    setStyleIfChanged(o, 'height', vv.height + 'px');
     const m = o.querySelector('.modal');
-    if (m) m.style.maxHeight = (vv.height - 32) + 'px';
+    if (m) setStyleIfChanged(m, 'maxHeight', (vv.height - 32) + 'px');
   });
 }
 if (window.visualViewport) {
@@ -1685,16 +1704,14 @@ function applyTheme(key) {
   });
 }
 
-// iOS キーボード表示時: モーダルのmax-heightを更新し、フォーカス要素を表示
+// iOS キーボード表示時: フォーカス中の入力欄をモーダル内で見える位置へ
+// （max-heightは syncModalViewport が担当。変換中にスクロールすると変換が切れるので何もしない）
 if (window.visualViewport) {
   window.visualViewport.addEventListener('resize', () => {
-    const h = window.visualViewport.height - 48;
-    document.querySelectorAll('.modal-overlay.show .modal').forEach(el => {
-      el.style.maxHeight = h + 'px';
-    });
+    if (imeComposing) return;
     const active = document.activeElement;
     if (active && active.closest('.modal-overlay.show')) {
-      setTimeout(() => active.scrollIntoView({ block: 'nearest' }), 50);
+      setTimeout(() => { if (!imeComposing) active.scrollIntoView({ block: 'nearest' }); }, 50);
     }
   });
 }
