@@ -26,6 +26,7 @@
   --text: #e8e8f0;
   --text2: #b0b0c8;
   --text3: #7a7a92;
+  --on-accent: #fff;
   --radius: 14px;
   --radius-sm: 8px;
 }
@@ -81,8 +82,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .theme-dot { width: 26px; height: 26px; border-radius: 50%; border: 2.5px solid transparent; cursor: pointer; transition: transform .2s, border-color .2s; padding: 0; }
 .theme-dot.active, .theme-dot.selected { border-color: var(--text); transform: scale(1.2); }
 .dot-purple { background: #7c6cfc; }
-.dot-green { background: #84cc16; }
-.dot-amber { background: #d97706; }
+.dot-green { background: #22c55e; }
+.dot-amber { background: linear-gradient(135deg, #f7d046 50%, #5a3420 50%); }
 .dot-blue { background: #38bdf8; }
 
 /* Search header */
@@ -106,7 +107,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 
 .filter-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
 .filter-btn { padding: 7px 16px; border-radius: 20px; border: 1.5px solid var(--border); background: none; color: var(--text2); font-size: 13px; cursor: pointer; transition: all .2s; }
-.filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.filter-btn.active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
 .result-count { font-size: 13px; color: var(--text3); padding: 8px 0 4px; }
 
 /* Word card */
@@ -114,20 +115,23 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .word-card-header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .word-book-tag.book { background: rgba(var(--accent-rgb),0.08); color: var(--text2); border-color: rgba(var(--accent-rgb),0.25); }
 .word-en { font-size: 20px; font-weight: 600; color: var(--text); flex: 1; }
-.word-book-tag { font-size: 12px; padding: 2px 8px; border-radius: 10px; background: rgba(var(--accent-rgb),0.15); color: var(--accent2); border: 1px solid rgba(var(--accent-rgb),0.3); white-space: nowrap; }
+.word-book-tag { font-size: 12px; padding: 2px 8px; border-radius: 10px; background: rgba(var(--accent-rgb),0.18); color: var(--text); border: 1px solid rgba(var(--accent-rgb),0.5); white-space: nowrap; }
 .word-jp { font-size: 15px; color: var(--text2); margin-top: 6px; line-height: 1.6; white-space: pre-wrap; }
 .more-btn { background: none; border: none; color: var(--accent2); font-size: 13px; cursor: pointer; padding: 2px 0 0; display: block; }
 .word-actions { display: flex; gap: 8px; margin-top: 12px; }
 .btn-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: none; color: var(--text2); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; text-decoration: none; flex-shrink: 0; }
 .btn-icon:hover { border-color: var(--accent); color: var(--accent2); }
 .btn-icon svg { width: 16px; height: 16px; }
+.btn-icon.btn-text { width: auto; padding: 0 12px; font-size: 13px; white-space: nowrap; }
+.btn-icon.btn-danger { color: var(--red); }
+.btn-icon.btn-danger:hover { border-color: var(--red); color: var(--red); }
 
 /* External links */
 .ext-card { background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; }
 .ext-title { font-size: 13px; color: var(--text3); margin-bottom: 10px; }
 .ext-links { display: flex; gap: 8px; flex-wrap: wrap; }
 .ext-link { padding: 8px 16px; border-radius: 20px; border: 1.5px solid var(--border); background: none; color: var(--accent2); font-size: 14px; cursor: pointer; text-decoration: none; display: inline-block; transition: all .2s; }
-.ext-link:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+.ext-link:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 
 /* Books */
 .page-title { font-size: 22px; font-weight: 700; margin: 16px 0; }
@@ -138,7 +142,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .book-name { font-size: 16px; font-weight: 600; }
 .book-count { font-size: 13px; color: var(--text2); margin-top: 2px; }
 .book-arrow svg { width: 16px; height: 16px; color: var(--text3); }
-.btn-primary { width: 100%; padding: 14px; background: var(--accent); border: none; border-radius: var(--radius); color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity .2s; margin-bottom: 10px; }
+.btn-primary { width: 100%; padding: 14px; background: var(--accent); border: none; border-radius: var(--radius); color: var(--on-accent); font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity .2s; margin-bottom: 10px; }
 .btn-secondary { width: 100%; padding: 14px; background: none; border: 1.5px solid var(--border); border-radius: var(--radius); color: var(--text2); font-size: 15px; cursor: pointer; transition: all .2s; margin-bottom: 10px; }
 
 /* Quiz/Flash setup */
@@ -147,7 +151,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .quiz-setup p { color: var(--text2); font-size: 14px; margin-bottom: 24px; }
 .setup-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
 .setup-opt { padding: 14px; border-radius: var(--radius); border: 2px solid var(--border); background: none; color: var(--text); cursor: pointer; transition: all .2s; font-size: 14px; }
-.setup-opt.selected { border-color: var(--accent); background: rgba(var(--accent-rgb),0.15); color: var(--accent2); }
+.setup-opt.selected { border-color: var(--accent); background: var(--accent); color: var(--on-accent); font-weight: 600; }
 .section-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .08em; margin: 20px 0 10px; text-align: left; }
 
 /* Quiz */
@@ -198,7 +202,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
 .form-textarea:focus { border-color: var(--accent); }
 .modal-actions { display: flex; gap: 10px; margin-top: 16px; }
 .btn-cancel { flex: 1; padding: 12px; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: none; color: var(--text2); cursor: pointer; font-size: 15px; }
-.btn-save { flex: 1; padding: 12px; border-radius: var(--radius-sm); border: none; background: var(--accent); color: #fff; cursor: pointer; font-size: 15px; font-weight: 600; }
+.btn-save { flex: 1; padding: 12px; border-radius: var(--radius-sm); border: none; background: var(--accent); color: var(--on-accent); cursor: pointer; font-size: 15px; font-weight: 600; }
 
 /* Toast */
 .toast { position: fixed; bottom: calc(80px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); background: var(--surface2); border: 1.5px solid var(--border); border-radius: 20px; padding: 10px 20px; font-size: 14px; z-index: 300; opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap; }
@@ -264,8 +268,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
     <div class="hero-title">tangocho</div>
     <div class="theme-dots">
       <button class="theme-dot dot-purple" data-theme="dark" onclick="setTheme('purple')" title="パープル"></button>
-      <button class="theme-dot dot-green" data-theme="green" onclick="setTheme('green')" title="ライムグリーン"></button>
-      <button class="theme-dot dot-amber" data-theme="warm" onclick="setTheme('amber')" title="イエロー＆ブラウン"></button>
+      <button class="theme-dot dot-green" data-theme="green" onclick="setTheme('green')" title="グリーン"></button>
+      <button class="theme-dot dot-amber" data-theme="warm" onclick="setTheme('amber')" title="チョコバナナ"></button>
       <button class="theme-dot dot-blue" data-theme="blue" onclick="setTheme('blue')" title="ライトブルー"></button>
     </div>
   </div>
@@ -296,7 +300,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px" id="theme-btns">
     <button class="theme-btn setup-opt" data-theme="dark" onclick="applyTheme('dark')">🌙 ダーク</button>
     <button class="theme-btn setup-opt" data-theme="green" onclick="applyTheme('green')">🌿 グリーン</button>
-    <button class="theme-btn setup-opt" data-theme="warm" onclick="applyTheme('warm')">🍵 茶色・黄色</button>
+    <button class="theme-btn setup-opt" data-theme="warm" onclick="applyTheme('warm')">🍫 チョコバナナ</button>
     <button class="theme-btn setup-opt" data-theme="blue" onclick="applyTheme('blue')">🌊 ブルー</button>
   </div>
   <div class="section-label">アカウント（自動同期）</div>
@@ -369,7 +373,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI'
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-addbook')">キャンセル</button>
-      <button class="btn-save" onclick="saveAddToBook()">追加</button>
+      <button class="btn-save" id="addbook-save-btn" onclick="saveAddToBook()">追加</button>
     </div>
   </div>
 </div>
@@ -906,6 +910,29 @@ document.getElementById('search-input').addEventListener('input', e => {
   renderSearch();
 });
 document.getElementById('search-input').addEventListener('focus', updateHeroCollapse);
+
+// iOSは入力欄タップ時に画面全体を上へずらす（検索窓が時刻表示の下に潜る）。
+// ① タップ時は自前で preventScroll 付きフォーカス ② それでもキーボード表示中にずれたら元に戻す
+(() => {
+  const input = document.getElementById('search-input');
+  let guardUntil = 0;
+  input.addEventListener('touchend', e => {
+    if (document.activeElement === input) return; // 入力中のカーソル移動・拡大鏡は邪魔しない
+    e.preventDefault();
+    input.focus({ preventScroll: true });
+  });
+  input.addEventListener('focus', () => { guardUntil = Date.now() + 800; });
+  const undoShift = () => {
+    if (Date.now() > guardUntil || imeComposing) return;
+    if (document.activeElement !== input) return;
+    if (window.scrollY > 0 || (window.visualViewport && window.visualViewport.offsetTop > 0)) window.scrollTo(0, 0);
+  };
+  window.addEventListener('scroll', undoShift);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', undoShift);
+    window.visualViewport.addEventListener('scroll', undoShift);
+  }
+})();
 document.getElementById('search-input').addEventListener('blur', () => setTimeout(updateHeroCollapse, 100));
 
 // 検索窓にフォーカス中 or 入力ありのときヘッダーを畳む
@@ -1211,16 +1238,52 @@ function showAddToBook(word) {
     return;
   }
   state.addBookWord = word;
+  state.moveFromBook = null;
   document.getElementById('modal-addbook-title').textContent = '「' + word + '」を単語帳に追加';
+  document.getElementById('addbook-save-btn').textContent = '追加';
   const sel = document.getElementById('addbook-select');
   sel.innerHTML = state.books.map((b,i) => `<option value="${i}">${esc(b.name)}</option>`).join('');
   document.getElementById('modal-addbook').classList.add('show');
+}
+
+// 間違えて登録した単語を、別の単語帳へ移す（選択肢は移動元以外）
+function showMoveWord(word, fromIdx) {
+  if (state.books.length < 2) { showToast('移動先の単語帳がありません'); return; }
+  state.addBookWord = word;
+  state.moveFromBook = fromIdx;
+  document.getElementById('modal-addbook-title').textContent = '「' + word + '」を別の単語帳へ移動';
+  document.getElementById('addbook-save-btn').textContent = '移動';
+  const sel = document.getElementById('addbook-select');
+  sel.innerHTML = state.books.map((b,i) => i === fromIdx ? '' : `<option value="${i}">${esc(b.name)}</option>`).join('');
+  document.getElementById('modal-addbook').classList.add('show');
+}
+
+function removeFromBook(word, idx) {
+  const book = state.books[idx];
+  if (!confirm('「' + word + '」を単語帳「' + book.name + '」から外しますか？\n（単語そのものは消えません）')) return;
+  const key = word.toLowerCase();
+  book.words = (book.words || []).filter(x => x.toLowerCase() !== key);
+  save();
+  showToast('単語帳から外しました');
+  openBook(idx);
 }
 
 function saveAddToBook() {
   const bookIdx = parseInt(document.getElementById('addbook-select').value);
   state.books[bookIdx].words = state.books[bookIdx].words || [];
   const w = state.addBookWord.toLowerCase();
+  if (state.moveFromBook != null) {
+    const fromIdx = state.moveFromBook;
+    const from = state.books[fromIdx];
+    from.words = (from.words || []).filter(x => x.toLowerCase() !== w);
+    if (!state.books[bookIdx].words.includes(w)) state.books[bookIdx].words.push(w);
+    state.moveFromBook = null;
+    save();
+    showToast('「' + state.books[bookIdx].name + '」へ移動しました');
+    closeModal('modal-addbook');
+    openBook(fromIdx);
+    return;
+  }
   if (!state.books[bookIdx].words.includes(w)) {
     state.books[bookIdx].words.push(w);
     save();
@@ -1283,6 +1346,8 @@ function openBook(idx) {
           <a class="btn-icon" href="${getGoogleUrl(v.w)}" target="_blank" title="Webで検索">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
           </a>
+          <button class="btn-icon btn-text" onclick="showMoveWord(${jsq(v.w)}, ${idx})" title="別の単語帳へ移動">↪ 移動</button>
+          <button class="btn-icon btn-text btn-danger" onclick="removeFromBook(${jsq(v.w)}, ${idx})" title="この単語帳から外す">✕ 外す</button>
         </div>
       </div>`).join('')}
   `;
@@ -1641,35 +1706,40 @@ const THEMES = {
     '--accent': '#7c6cfc',
     '--accent2': '#a89cff',
     '--accent-rgb': '124, 108, 252',
+    '--on-accent': '#fff',
     '--text': '#e8e8f0',
     '--text2': '#b0b0c8',
     '--text3': '#7a7a92',
   },
+  // 箱（surface）は緑みを抑えた黒に近い色、アクセントは鮮やかな緑 → 文字とのメリハリを出す
   green: {
-    name: '🌿 淡いグリーン',
-    '--bg': '#0d1410',
-    '--surface': '#162018',
-    '--surface2': '#1e2e22',
-    '--border': '#2e4a34',
-    '--accent': '#4caf78',
-    '--accent2': '#80d4a0',
-    '--accent-rgb': '76, 175, 120',
-    '--text': '#e0f0e8',
-    '--text2': '#a0c8b0',
-    '--text3': '#5a8a6a',
+    name: '🌿 グリーン',
+    '--bg': '#0a0d0b',
+    '--surface': '#151a17',
+    '--surface2': '#1f2622',
+    '--border': '#38463e',
+    '--accent': '#22c55e',
+    '--accent2': '#4ade80',
+    '--accent-rgb': '34, 197, 94',
+    '--on-accent': '#052e16',
+    '--text': '#f3f7f4',
+    '--text2': '#c6d1ca',
+    '--text3': '#8a998f',
   },
+  // チョコバナナ: チョコレート色の土台 + バナナの黄色。黄色の上の文字はチョコ色で読みやすく
   warm: {
-    name: '🍵 黄色と茶色',
-    '--bg': '#141008',
-    '--surface': '#201a0c',
-    '--surface2': '#2e2410',
-    '--border': '#4a3a1a',
-    '--accent': '#c8922a',
-    '--accent2': '#e8b860',
-    '--accent-rgb': '200, 146, 42',
-    '--text': '#f0e8d0',
-    '--text2': '#c8b890',
-    '--text3': '#8a7050',
+    name: '🍫 チョコバナナ',
+    '--bg': '#170e09',
+    '--surface': '#261811',
+    '--surface2': '#35231a',
+    '--border': '#5c3f2d',
+    '--accent': '#f7d046',
+    '--accent2': '#ffe27a',
+    '--accent-rgb': '247, 208, 70',
+    '--on-accent': '#2b1810',
+    '--text': '#fff8ea',
+    '--text2': '#ead6bc',
+    '--text3': '#ab8c70',
   },
   blue: {
     name: '🌊 淡いブルー',
@@ -1680,6 +1750,7 @@ const THEMES = {
     '--accent': '#4a8cdc',
     '--accent2': '#80b4f0',
     '--accent-rgb': '74, 140, 220',
+    '--on-accent': '#fff',
     '--text': '#e0eaf8',
     '--text2': '#a0b8d8',
     '--text3': '#5a78a0',
