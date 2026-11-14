@@ -17,7 +17,7 @@ body { font-family:"Hiragino Maru Gothic ProN","Hiragino Sans",-apple-system,Bli
 main { max-width:680px; margin:0 auto; padding:8px 16px 60px; }
 .toc { display:flex; flex-wrap:wrap; gap:6px; margin:16px 0 4px; }
 .toc a { font-size:13px; padding:4px 12px; border-radius:99px; background:var(--surface); border:1.5px solid var(--border); color:var(--text2); text-decoration:none; }
-h2 { font-size:18px; font-weight:800; margin:30px 0 10px; display:flex; align-items:center; gap:8px; scroll-margin-top:16px; }
+h2 { font-size:18px; font-weight:800; margin:30px 0 10px; display:flex; align-items:center; gap:8px; scroll-margin-top:64px; }
 h2::before { content:''; width:5px; height:20px; background:var(--accent); border-radius:3px; }
 h3 { font-size:15px; font-weight:800; margin:16px 0 8px; }
 .card { background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); padding:14px 16px; margin-bottom:12px; }
@@ -37,6 +37,11 @@ tr:last-child td { border-bottom:none; }
 .tabbar { display:grid; grid-template-columns:repeat(5,1fr); background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); padding:8px 4px; margin-bottom:12px; text-align:center; font-size:11.5px; line-height:1.5; color:var(--text2); }
 .url { background:var(--surface); border:1.5px solid var(--border); border-radius:12px; padding:10px 14px; font-family:ui-monospace,Menlo,monospace; font-size:14px; color:var(--accent); word-break:break-all; margin:14px 0 4px; }
 a { color:var(--accent); }
+.to-toc { position:fixed; top:calc(12px + env(safe-area-inset-top)); right:max(12px, env(safe-area-inset-right)); z-index:10; display:inline-flex; align-items:center; gap:4px; padding:8px 14px; border-radius:99px; background:var(--accent); color:#fff; font-size:14px; font-weight:800; text-decoration:none; box-shadow:0 6px 18px rgba(0,0,0,.25); opacity:0; transform:translateY(-8px); pointer-events:none; transition:opacity .2s, transform .2s; }
+@media (prefers-color-scheme: dark) { .to-toc { color:#16121f; } }
+.to-toc.show { opacity:1; transform:none; pointer-events:auto; }
+html { scroll-behavior:smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } }
 .foot { text-align:center; color:var(--text3); font-size:13px; margin-top:40px; }
 </style>
 </head>
@@ -50,7 +55,7 @@ a { color:var(--accent); }
 <main>
 <div class="url">https://hei86gns.github.io/tangocho/</div>
 
-<nav class="toc">
+<nav class="toc" id="toc">
   <a href="#tabs">画面の見方</a><a href="#login">ログイン</a><a href="#color">色・明るさ</a><a href="#search">検索</a><a href="#add">単語の追加</a><a href="#books">単語帳</a><a href="#quiz">クイズ</a><a href="#card">カード</a><a href="#cal">カレンダー</a><a href="#cat">猫を飼う</a><a href="#data">データ管理</a><a href="#devices">複数の端末</a><a href="#homescreen">ホーム画面に追加</a><a href="#update">アプリの更新</a>
 </nav>
 
@@ -225,8 +230,16 @@ a { color:var(--accent); }
 <h2 id="update">アプリの更新について</h2>
 <div class="tip">新しい版が出ると、<strong>アプリを開いたとき（またはアプリに戻ったとき）に自動で切り替わります</strong>。「新しいバージョンに更新します」と表示されたら、少し待つだけでOKです。<br>今の版は「設定」タブのいちばん下で確認できます。</div>
 
+<a class="to-toc" id="toTop" href="#toc" aria-label="目次に戻る">↑ 目次へ</a>
+
 <p class="foot">tangocho — <a href="https://hei86gns.github.io/tangocho/">アプリを開く</a></p>
 </main>
+
+<script>
+// 目次が画面から外れたら、右上に「目次へ」ボタンを出す
+const toc = document.getElementById('toc'), btn = document.getElementById('toTop');
+new IntersectionObserver(([e]) => btn.classList.toggle('show', !e.isIntersecting && e.boundingClientRect.top < 0)).observe(toc);
+</script>
 
 </body>
 </html>
