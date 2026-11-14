@@ -43,6 +43,8 @@ body { font-family: var(--font-ui); background: var(--bg1); color: var(--text); 
 /* 上の帯（各ページ共通） */
 .band { margin: 0 -16px; background: linear-gradient(90deg, var(--header1), var(--header2)); color: var(--on-header); padding: 12px 20px 18px; border-radius: 0 0 26px 26px; position: relative; overflow: hidden; }
 .band-title { font-size: 24px; font-weight: 800; padding-top: 4px; }
+.band-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+a.tool-btn { text-decoration: none; }
 .home-band { border-radius: 0; padding-bottom: 4px; }
 
 /* Search header */
@@ -510,7 +512,7 @@ button.row, a.row { cursor: pointer; }
 
 <!-- 設定 -->
 <div class="page" id="page-settings">
-  <div class="band"><div class="band-title">設定</div></div>
+  <div class="band band-row"><div class="band-title">設定</div><a class="tool-btn" href="manual.html" target="_blank">📖 ヘルプ</a></div>
   <div class="stack">
     <div class="label">見た目</div>
     <div class="group">
