@@ -127,6 +127,11 @@ body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; height: 
 .btn-icon.btn-danger { color: var(--red); }
 .app-version { text-align: center; font-size: 12px; color: var(--text3); margin: 16px 0 8px; }
 .btn-icon.btn-danger:hover { border-color: var(--red); color: var(--red); }
+.word-book-tag.book.tappable { cursor: pointer; }
+.book-checks { display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto; }
+.book-check { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; font-size: 15px; color: var(--text); }
+.book-check input { width: 18px; height: 18px; accent-color: var(--accent); flex-shrink: 0; }
+.book-check:has(input:checked) { border-color: var(--accent); background: rgba(var(--accent-rgb),0.08); }
 
 /* External links */
 .ext-card { background: var(--surface2); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; }
@@ -317,7 +322,7 @@ body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; height: 
   <div class="section-label">ヘルプ</div>
   <a href="manual.html" target="_blank" class="btn-secondary" style="display:block;text-align:center;text-decoration:none;padding:14px;border-radius:14px;border:1.5px solid var(--border);color:var(--text2);font-size:15px;margin-bottom:10px">📖 使い方マニュアル</a>
   <!-- 修正をGitHubに反映するたびに更新する（iPhoneに新しい版が届いたかの確認用） -->
-  <div class="app-version">tangocho v2.3（2026-11-01）</div>
+  <div class="app-version">tangocho v2.4（2026-11-14）</div>
 </div>
 
 <!-- Quiz Page -->
@@ -343,8 +348,9 @@ body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; height: 
       <textarea class="form-textarea" id="edit-meaning" placeholder="日本語の意味" lang="ja"></textarea>
     </div>
     <div class="form-group" id="edit-book-group" style="display:none">
-      <label class="form-label">単語帳に追加</label>
-      <select class="form-input" id="edit-book-select"></select>
+      <label class="form-label">入れる単語帳（任意・複数OK）</label>
+      <div class="book-checks" id="edit-book-checks"></div>
+      <div style="font-size:12px;color:var(--text3);margin-top:6px">どれにもチェックしなければ、単語帳に入れず「マイ単語」としてだけ登録されます</div>
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal('modal-edit')">キャンセル</button>
@@ -1062,7 +1068,7 @@ function renderSearch() {
       <div class="word-card-header">
         <div class="word-en">${esc(v.w)}</div>
         ${!v.builtin ? '<span class="word-book-tag">マイ単語</span>' : ''}
-        ${booksContaining(v.w).map(name => `<span class="word-book-tag book">📚 ${esc(name)}</span>`).join('')}
+        ${booksContaining(v.w).map(name => `<span class="word-book-tag book tappable" onclick="showEditWord(${jsq(v.w)}, true)">📚 ${esc(name)}</span>`).join('')}
       </div>
       <div class="word-jp" id="wmt${i}">${esc(v.m.length>120?v.m.substring(0,120)+'…':v.m)}</div>
       ${v.m.length>120?`<button class="more-btn" id="wmb${i}" onclick="toggleJp(${i})">▾ 続きを読む</button>`:''}
@@ -1070,12 +1076,8 @@ function renderSearch() {
         <button class="btn-icon" onclick="speak(${jsq(v.w)})" title="発音">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
         </button>
-        <button class="btn-icon" onclick="showEditWord(${jsq(v.w)})" title="編集">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        </button>
-        <button class="btn-icon" onclick="showAddToBook(${jsq(v.w)})" title="単語帳に追加">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="12" y1="9" x2="12" y2="15"/><line x1="9" y1="12" x2="15" y2="12"/></svg>
-        </button>
+        <button class="btn-icon btn-text" onclick="showEditWord(${jsq(v.w)})" title="意味・単語帳を編集">✏️ 編集</button>
+        <button class="btn-icon btn-text" onclick="showEditWord(${jsq(v.w)}, true)" title="入れる単語帳を変更">📚 単語帳</button>
         <a class="btn-icon" href="${getGoogleUrl(v.w)}" target="_blank" title="Webで検索">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
         </a>
@@ -1133,29 +1135,61 @@ function speak(word) {
 }
 
 // ========== EDIT / ADD ==========
-function showEditWord(word) {
+// 編集モーダル内の「入れる単語帳」チェックボックスを描画
+function renderEditBookChecks(word) {
+  const group = document.getElementById('edit-book-group');
+  if (!state.books.length) { group.style.display = 'none'; return; }
+  const key = (word || '').toLowerCase();
+  document.getElementById('edit-book-checks').innerHTML = state.books.map((b, i) => {
+    const on = key && (b.words || []).some(x => String(x).toLowerCase() === key);
+    return `<label class="book-check"><input type="checkbox" value="${i}"${on ? ' checked' : ''}><span>📚 ${esc(b.name)}</span></label>`;
+  }).join('');
+  group.style.display = 'block';
+}
+
+// チェックボックスの状態を単語帳に反映（oldKey は見出し語を変えた時の旧キー）
+function applyEditBookChecks(newWord, oldKey) {
+  if (!state.books.length) return;
+  const newKey = newWord.toLowerCase();
+  const checked = new Set([...document.querySelectorAll('#edit-book-checks input:checked')].map(x => +x.value));
+  state.books.forEach((b, i) => {
+    b.words = (b.words || []).filter(x => {
+      const k = String(x).toLowerCase();
+      return k !== newKey && k !== oldKey;
+    });
+    if (checked.has(i)) b.words.push(newKey);
+  });
+}
+
+// focusBooks: true なら単語帳欄までスクロール / fromBook: 単語帳画面から開いた時のその番号
+function showEditWord(word, focusBooks, fromBook) {
   const all = getAllWords();
   const v = all.find(x => x.w.toLowerCase() === word.toLowerCase());
   if (!v) return;
   state.editMode = 'edit';
   state.editWord = word;
+  state.editFromBook = (fromBook == null) ? null : fromBook;
   document.getElementById('modal-edit-title').textContent = '単語を編集';
   document.getElementById('edit-word').value = v.w;
   document.getElementById('edit-word').disabled = false;
   document.getElementById('edit-meaning').value = v.m;
-  document.getElementById('edit-book-group').style.display = 'none';
+  renderEditBookChecks(v.w);
   document.getElementById('edit-delete-btn').style.display = 'block';
   document.getElementById('modal-edit').classList.add('show');
   syncModalViewport();
+  if (focusBooks && state.books.length) {
+    setTimeout(() => document.getElementById('edit-book-group').scrollIntoView({block: 'center', behavior: 'smooth'}), 50);
+  }
 }
 
 function showAddWord() {
   state.editMode = 'add';
+  state.editFromBook = null;
   document.getElementById('modal-edit-title').textContent = '単語を追加';
   document.getElementById('edit-word').value = '';
   document.getElementById('edit-word').disabled = false;
   document.getElementById('edit-meaning').value = '';
-  document.getElementById('edit-book-group').style.display = 'none';
+  renderEditBookChecks('');
   document.getElementById('edit-delete-btn').style.display = 'none';
   document.getElementById('modal-edit').classList.add('show');
   syncModalViewport();
@@ -1177,16 +1211,14 @@ function saveEdit() {
   if (!w || !m) { showToast('単語と意味を入力してください'); return; }
 
   if (state.editMode === 'add') {
+    const key = w.toLowerCase();
+    state.myWords = state.myWords.filter(x => x.w.toLowerCase() !== key);
     state.myWords.push({w, m, added: Date.now()});
+    applyEditBookChecks(w, key);
     save();
     closeModal('modal-edit');
     renderSearch();
-    // 単語帳があれば追加を促す
-    if (state.books.length > 0) {
-      setTimeout(() => showAddToBook(w), 400);
-    } else {
-      showToast('追加しました');
-    }
+    showToast('追加しました');
   } else {
     const oldKey = state.editWord.toLowerCase();
     const newKey = w.toLowerCase();
@@ -1203,10 +1235,13 @@ function saveEdit() {
       state.myWords.push({w: state.editWord, del: true});
     }
     state.myWords.push({w, m, added});
+    // 単語帳の中身も新しい見出し語に付け替え＋チェック状態を反映
+    applyEditBookChecks(w, oldKey);
     save();
     showToast('保存しました');
     closeModal('modal-edit');
     renderSearch();
+    if (state.editFromBook != null && state.books[state.editFromBook]) openBook(state.editFromBook);
   }
 }
 
@@ -1350,6 +1385,7 @@ function openBook(idx) {
           <a class="btn-icon" href="${getGoogleUrl(v.w)}" target="_blank" title="Webで検索">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
           </a>
+          <button class="btn-icon btn-text" onclick="showEditWord(${jsq(v.w)}, false, ${idx})" title="意味・単語帳を編集">✏️ 編集</button>
           <button class="btn-icon btn-text" onclick="showMoveWord(${jsq(v.w)}, ${idx})" title="別の単語帳へ移動">↪ 移動</button>
           <button class="btn-icon btn-text btn-danger" onclick="removeFromBook(${jsq(v.w)}, ${idx})" title="この単語帳から外す">✕ 外す</button>
         </div>
