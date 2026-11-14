@@ -13,101 +13,61 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
-  --bg: #0f0d16;
-  --surface: #1a1820;
-  --surface2: #24213a;
-  --border: #44425a;
-  --accent: #7c6cfc;
-  --accent2: #a89cff;
-  --accent-rgb: 124, 108, 252;
-  --green: #34d399;
-  --red: #f87171;
-  --yellow: #fbbf24;
-  --text: #e8e8f0;
-  --text2: #b0b0c8;
-  --text3: #7a7a92;
-  --on-accent: #fff;
+  /* 実際の色は JS の applyTheme() がテーマ×明るさに合わせて上書きする（ここは読み込み直後の仮の色） */
+  --bg: #f4f0fd; --bg1: #f4f0fd; --bg2: #e1d6fb;
+  --surface: #ffffffd9; --surface2: #f4f0fd; --modal: #ffffff; --border: #e2d9f7;
+  --accent: #7051f5; --accent2: #7051f5; --accent-rgb: 112, 81, 245; --accent-soft: #ece6ff; --on-accent: #fff;
+  --header1: #9579ff; --header2: #6847ee; --on-header: #fff;
+  --pattern: #7c5cff; --pattern-op: .07; --nav: #ffffffe6; --xp: #ffb84d;
+  --green: #16a34a; --red: #dc2626; --yellow: #d97706;
+  --text: #251e3a; --text2: #6b6386; --text3: #6b6386bb;
   --radius: 14px;
   --radius-sm: 8px;
-}
-[data-theme="green"] {
-  --accent: #84cc16;
-  --accent2: #bef264;
-  --accent-rgb: 132, 204, 22;
-  --bg: #0b0f07;
-  --surface: #131a0d;
-  --surface2: #1c2714;
-  --border: #3a5228;
-  --text3: #7a8a6a;
-}
-[data-theme="amber"] {
-  --accent: #d97706;
-  --accent2: #fbbf24;
-  --accent-rgb: 217, 119, 6;
-  --bg: #120e07;
-  --surface: #1e1608;
-  --surface2: #2c2010;
-  --border: #5a3e10;
-  --text3: #8a7a5a;
-}
-[data-theme="blue"] {
-  --accent: #38bdf8;
-  --accent2: #7dd3fc;
-  --accent-rgb: 56, 189, 248;
-  --bg: #07101a;
-  --surface: #0d1a28;
-  --surface2: #122438;
-  --border: #1e4060;
-  --text3: #6a8a9a;
+  --font-ui: "Hiragino Maru Gothic ProN", "Hiragino Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 html { min-height: 100%; }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); touch-action: manipulation; }
+body { font-family: var(--font-ui); background: var(--bg1); color: var(--text); min-height: 100vh; overflow-x: hidden; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); touch-action: manipulation; }
 
-/* Nav - 下部固定 */
-.nav { display: flex; gap: 0; background: var(--surface); border-top: 1px solid var(--border); position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; padding-bottom: env(safe-area-inset-bottom); }
-.nav-btn { flex: 1; padding: 10px 4px 10px; border: none; background: none; color: var(--text2); font-size: 11px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: color .2s; }
-.nav-btn svg { width: 22px; height: 22px; }
-.nav-btn.active { color: var(--accent2); }
+/* Nav - 下部固定（5タブ） */
+.nav { display: flex; gap: 0; background: var(--nav); border-top: 1px solid var(--border); position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; padding-bottom: env(safe-area-inset-bottom); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.nav-btn { flex: 1; padding: 8px 2px 8px; border: none; background: none; color: var(--text2); font-size: 10.5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: color .2s; }
+.nav-btn svg { width: 22px; height: 22px; padding: 2px 10px; box-sizing: content-box; border-radius: 10px; transition: background .2s; }
+.nav-btn.active { color: var(--accent); font-weight: 800; }
+.nav-btn.active svg { background: var(--accent-soft); }
 
 /* Pages */
 .page { display: none; padding: 0 16px 100px; max-width: 680px; margin: 0 auto; }
 .page.active { display: block; }
 
-/* Hero header */
-.hero { display: flex; flex-direction: column; align-items: center; padding: 42px 0 24px; }
-.hero-cat { width: 110px; height: 110px; margin-bottom: 14px; }
-.hero-title { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 10px; background: linear-gradient(135deg, var(--accent2), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-.theme-dots { display: flex; gap: 12px; margin-top: 18px; }
-.theme-dot { width: 26px; height: 26px; border-radius: 50%; border: 2.5px solid transparent; cursor: pointer; transition: transform .2s, border-color .2s; padding: 0; }
-.theme-dot.active, .theme-dot.selected { border-color: var(--text); transform: scale(1.2); }
-.dot-purple { background: #7c6cfc; }
-.dot-green { background: #22c55e; }
-.dot-amber { background: linear-gradient(135deg, #f7d046 50%, #5a3420 50%); }
-.dot-blue { background: #38bdf8; }
+/* 上の帯（各ページ共通） */
+.band { margin: 0 -16px; background: linear-gradient(90deg, var(--header1), var(--header2)); color: var(--on-header); padding: 12px 20px 18px; border-radius: 0 0 26px 26px; position: relative; overflow: hidden; }
+.band-title { font-size: 24px; font-weight: 800; padding-top: 4px; }
+.home-band { border-radius: 0; padding-bottom: 4px; }
 
 /* Search header */
 /* sticky時もステータスバー（時刻表示）の下で止まるよう safe-area 分ずらす */
-.search-sticky { background: var(--bg); padding: 12px 0 8px; margin-top: 18px; position: sticky; top: env(safe-area-inset-top); z-index: 10; }
-/* ステータスバーの裏を背景色で塞ぐ帯（画面最上部に固定。スクロールした中身が時刻と重ならない） */
-body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; height: env(safe-area-inset-top); background: var(--bg); z-index: 150; pointer-events: none; }
-/* 検索中（フォーカス or 入力あり）はヘッダーを小さく畳む。
+.search-sticky { margin: 0 -16px; padding: 6px 20px 16px; background: linear-gradient(90deg, var(--header1), var(--header2)); border-radius: 0 0 26px 26px; position: sticky; top: env(safe-area-inset-top); z-index: 10; }
+/* ステータスバーの裏を帯の色で塞ぐ（画面最上部に固定。スクロールした中身が時刻と重ならない） */
+body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; height: env(safe-area-inset-top); background: linear-gradient(90deg, var(--header1), var(--header2)); z-index: 150; pointer-events: none; }
+/* 検索中（フォーカス or 入力あり）は上の帯を小さく畳む。
    完全に消すと検索窓が画面最上部（時刻の真下）に張り付き、カーソル移動の拡大鏡が時刻と重なるため、タイトル行だけ残して余白を確保 */
-#page-search.searching .hero { padding: 14px 0 6px; }
-#page-search.searching .hero-cat,
-#page-search.searching .theme-dots { display: none; }
-#page-search.searching .hero-title { font-size: 22px; margin-bottom: 0; }
-#page-search.searching .search-sticky { margin-top: 4px; }
+#page-search.searching .cat-home-wrap,
+#page-search.searching .hero-info .game-only,
+#page-search.searching .invite-bubble { display: none !important; }
+#page-search.searching .hero-row { min-height: 0; flex-direction: row; }
+#page-search.searching .hero-info { padding-bottom: 0; }
+#page-search.searching .hero-title b { font-size: 20px; text-align: left; }
 .search-wrap { position: relative; }
 .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text3); width: 18px; height: 18px; pointer-events: none; }
-#search-input { width: 100%; padding: 14px 46px 14px 44px; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 16px; outline: none; transition: border-color .2s; -webkit-appearance: none; }
-#search-input:focus { border-color: var(--accent); }
+#search-input { width: 100%; padding: 13px 46px 13px 44px; background: var(--modal); border: 1.5px solid transparent; border-radius: var(--radius); color: var(--text); font-size: 16px; outline: none; transition: border-color .2s; -webkit-appearance: none; }
+#search-input:focus { border-color: var(--on-header); box-shadow: 0 0 0 3px rgba(255,255,255,.35); }
 #search-input::placeholder { color: var(--text3); }
 #search-clear { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: var(--text3); border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; display: none; align-items: center; justify-content: center; flex-shrink: 0; }
 #search-clear svg { width: 12px; height: 12px; }
 
-.filter-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-.filter-btn { padding: 7px 16px; border-radius: 20px; border: 1.5px solid var(--border); background: none; color: var(--text2); font-size: 13px; cursor: pointer; transition: all .2s; }
+.filter-row { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+.filter-btn { padding: 7px 16px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text2); font-size: 13px; cursor: pointer; transition: all .2s; }
 .filter-btn.active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
 .result-count { font-size: 13px; color: var(--text3); padding: 8px 0 4px; }
 
@@ -153,7 +113,7 @@ body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; height: 
 .btn-secondary { width: 100%; padding: 14px; background: none; border: 1.5px solid var(--border); border-radius: var(--radius); color: var(--text2); font-size: 15px; cursor: pointer; transition: all .2s; margin-bottom: 10px; }
 
 /* Quiz/Flash setup */
-.quiz-setup { text-align: center; padding: 20px 0; }
+.quiz-setup { text-align: center; padding: 4px 0 20px; }
 .quiz-setup h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
 .quiz-setup p { color: var(--text2); font-size: 14px; margin-bottom: 24px; }
 .setup-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
@@ -179,8 +139,8 @@ body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; height: 
 .flash-card { width: 100%; min-height: 220px; border-radius: var(--radius); position: relative; transform-style: preserve-3d; transition: transform .5s; cursor: pointer; }
 .flash-card.flipped { transform: rotateY(180deg); }
 .flash-front, .flash-back { position: absolute; width: 100%; min-height: 220px; border-radius: var(--radius); backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
-.flash-front { background: var(--surface); border: 1.5px solid var(--border); }
-.flash-back { background: linear-gradient(135deg, rgba(var(--accent-rgb),0.2), var(--surface)); border: 1.5px solid var(--accent); transform: rotateY(180deg); }
+.flash-front { background: var(--modal); border: 1.5px solid var(--border); }
+.flash-back { background: linear-gradient(135deg, rgba(var(--accent-rgb),0.2), var(--modal)); border: 1.5px solid var(--accent); transform: rotateY(180deg); }
 .flash-word { font-size: 30px; font-weight: 700; text-align: center; }
 .flash-meaning { font-size: 16px; color: var(--text2); text-align: center; line-height: 1.6; margin-top: 12px; white-space: pre-wrap; }
 .flash-hint { font-size: 13px; color: var(--text3); margin-top: 12px; }
@@ -199,7 +159,7 @@ body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; height: 
 /* Modal */
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,.75); z-index: 200; display: none; align-items: center; justify-content: center; padding: 24px 16px; backdrop-filter: blur(4px); }
 .modal-overlay.show { display: flex; }
-.modal { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 20px; width: 100%; max-width: 480px; max-height: calc(100dvh - 48px); overflow-y: scroll; -webkit-overflow-scrolling: touch; }
+.modal { background: var(--modal); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 20px; width: 100%; max-width: 480px; max-height: calc(100dvh - 48px); overflow-y: scroll; -webkit-overflow-scrolling: touch; }
 .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
 .form-group { margin-bottom: 14px; }
 .form-label { font-size: 13px; color: var(--text2); margin-bottom: 6px; display: block; }
@@ -212,73 +172,254 @@ body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; height: 
 .btn-save { flex: 1; padding: 12px; border-radius: var(--radius-sm); border: none; background: var(--accent); color: var(--on-accent); cursor: pointer; font-size: 15px; font-weight: 600; }
 
 /* Toast */
-.toast { position: fixed; bottom: calc(80px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); background: var(--surface2); border: 1.5px solid var(--border); border-radius: 20px; padding: 10px 20px; font-size: 14px; z-index: 300; opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap; }
+.toast { position: fixed; bottom: calc(80px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); background: var(--modal); color: var(--text); box-shadow: 0 6px 18px rgba(0,0,0,.18); border: 1.5px solid var(--border); border-radius: 20px; padding: 10px 20px; font-size: 14px; z-index: 300; opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap; }
 .toast.show { opacity: 1; }
 
 .no-result { text-align: center; color: var(--text3); padding: 48px 20px; font-size: 15px; }
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ================= v3: 背景・ねこ・カレンダー・設定 ================= */
+button, input, textarea, select { font-family: inherit; }
+.bgfx { position: fixed; inset: 0; z-index: -1; background: linear-gradient(165deg, var(--bg1), var(--bg2)); pointer-events: none; }
+.bgfx svg { width: 100%; height: 100%; display: block; opacity: var(--pattern-op); }
+.stack { display: grid; gap: 10px; margin-top: 14px; }
+.stack > .section-label { margin: 8px 2px -2px; }
+.label { font-size: 12px; font-weight: 700; color: var(--text2); letter-spacing: .04em; margin: 6px 2px -2px; }
+.card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px; padding: 12px 14px; text-align: left; }
+.card-title { font-size: 14px; font-weight: 800; }
+.btn-outline { width: 100%; padding: 12px; border: 1.5px dashed var(--accent); background: var(--surface); color: var(--accent); border-radius: var(--radius); font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 10px; }
+.btn-secondary { background: var(--surface); }
+
+/* ホームの帯：ねこ・吹き出し・なかよしポイント */
+.hero-row { display: flex; align-items: flex-end; gap: 6px; min-height: 118px; }
+.hero-info { flex: 1; min-width: 0; display: grid; gap: 6px; padding-bottom: 10px; }
+.hero-title { display: flex; align-items: center; gap: 8px; }
+.hero-title b { font-size: 26px; font-weight: 800; letter-spacing: -.3px; flex: 1; }
+.streak { font-size: 12px; font-weight: 700; background: rgba(255,255,255,.22); padding: 2px 9px; border-radius: 99px; white-space: nowrap; }
+.bubble { background: rgba(255,255,255,.94); color: #2a2233; font-size: 12.5px; font-weight: 700; padding: 6px 11px; border-radius: 14px 14px 14px 4px; line-height: 1.45; justify-self: start; }
+.bubble.pop { animation: pop .35s ease; }
+@keyframes pop { 0% { transform: scale(.7); } 70% { transform: scale(1.08); } 100% { transform: scale(1); } }
+.xprow { display: flex; align-items: center; gap: 8px; font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.cat-name { font-size: 13px; font-weight: 800; max-width: 7em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lv { background: rgba(255,255,255,.95); color: var(--header2); font-weight: 800; border-radius: 8px; padding: 0 7px; font-size: 12px; }
+.xpbar { flex: 1; height: 8px; background: rgba(255,255,255,.28); border-radius: 99px; overflow: hidden; }
+.xpbar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--xp), #fff); border-radius: 99px; transition: width .6s cubic-bezier(.3,1.4,.5,1); }
+.cat-home-wrap, .cat-cal-wrap { border: 0; background: none; padding: 0; cursor: pointer; flex-shrink: 0; display: block; }
+.cat-home-wrap { width: 120px; }
+.cat-cal-wrap { width: 96px; }
+.invite-bubble { position: absolute; top: 14px; left: 50%; margin-left: 46px; background: #fff; color: #2a2233; font-size: 13px; font-weight: 800; padding: 6px 12px; border-radius: 14px 14px 14px 4px; opacity: 0; transform: scale(.6); transform-origin: left bottom; transition: opacity .25s, transform .25s; pointer-events: none; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+.invite-bubble.show { opacity: 1; transform: scale(1); }
+body:not(.game-off) .invite-bubble { display: none; }
+body.game-off .game-only { display: none !important; }
+body.game-off .hero-row { min-height: 0; flex-direction: column; align-items: center; gap: 0; }
+body.game-off .cat-home-wrap { width: 84px; order: -1; }
+body.game-off .hero-info { padding-bottom: 0; }
+body.game-off .hero-title b { text-align: center; }
+body.game-off .cat:not(.invite) * { animation: none; }
+
+/* ねこ */
+.cat { width: 100%; height: auto; overflow: visible; display: block; }
+.cat * { transform-box: view-box; }
+.cat .tail { transform-origin: 140px 160px; animation: tail 2.6s ease-in-out infinite; }
+.cat .body { transform-origin: 110px 192px; animation: breathe 3.2s ease-in-out infinite; }
+.cat .head { transform-origin: 110px 120px; animation: headbob 3.2s ease-in-out infinite; }
+.cat .ear-l { transform-origin: 82px 60px; }
+.cat .ear-r { transform-origin: 138px 60px; animation: twitch 6s ease-in-out infinite; }
+.cat .eyes-normal { transform-origin: 110px 86px; animation: blink 4.5s infinite; }
+.cat .eyes-happy, .cat .eyes-sad, .cat .eyes-closed, .cat .mouth-open, .cat .sweat, .cat .mouth-yawn { display: none; }
+.cat .whole { transform-origin: 110px 192px; }
+@keyframes tail { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(14deg); } }
+@keyframes breathe { 0%,100% { transform: scale(1, 1); } 50% { transform: scale(1.015, 1.035); } }
+@keyframes headbob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(1.5px); } }
+@keyframes blink { 0%, 93%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
+@keyframes twitch { 0%, 80%, 88%, 100% { transform: rotate(0); } 84% { transform: rotate(12deg); } }
+.cat.happy .eyes-normal { display: none; } .cat.happy .eyes-happy { display: inline; }
+.cat.happy .mouth-closed { display: none; } .cat.happy .mouth-open { display: inline; }
+.cat.happy .whole { animation: jump .7s cubic-bezier(.3,.7,.4,1) 2; }
+.cat.happy .tail { animation-duration: .5s; }
+@keyframes jump { 0% { transform: translateY(0) scale(1.08,.9); } 35% { transform: translateY(-30px) scale(.95,1.06); } 70% { transform: translateY(0) scale(1.1,.88); } 100% { transform: translateY(0) scale(1); } }
+.cat.sad .eyes-normal { display: none; } .cat.sad .eyes-sad, .cat.sad .sweat { display: inline; }
+.cat.sad .ear-l { transform: rotate(-28deg); transition: transform .3s; }
+.cat.sad .ear-r { transform: rotate(28deg); animation: none; transition: transform .3s; }
+.cat.sad .head { animation: droop 1.8s ease forwards; }
+.cat.sad .tail { animation: tailDown 1.8s ease forwards; }
+@keyframes droop { 0% { transform: translateY(0) rotate(0); } 20% { transform: translateY(6px) rotate(-4deg); } 30% { transform: translateY(6px) rotate(4deg); } 40%,100% { transform: translateY(7px) rotate(0); } }
+@keyframes tailDown { to { transform: rotate(-30deg); } }
+.cat.levelup .eyes-normal { display: none; } .cat.levelup .eyes-happy { display: inline; }
+.cat.levelup .mouth-closed { display: none; } .cat.levelup .mouth-open { display: inline; }
+.cat.levelup .whole { animation: proud 1.5s cubic-bezier(.3,.7,.4,1); }
+.cat.levelup .tail { animation: tailUp 1.5s ease-in-out; }
+.cat.levelup .ear-l, .cat.levelup .ear-r { animation: perk 1.5s ease-in-out; }
+@keyframes proud { 0% { transform: none; } 15% { transform: scale(1.14, .84); } 38% { transform: translateY(-40px) scale(.94, 1.08); } 58% { transform: scale(1.14, .86); } 72% { transform: scale(1.1); } 88% { transform: scale(1.1); } 100% { transform: none; } }
+@keyframes perk { 0%,100% { transform: none; } 30%,85% { transform: translateY(-4px); } }
+.cat.purr .eyes-normal { display: none; } .cat.purr .eyes-closed { display: inline; }
+.cat.purr .head { animation: nuzzle .9s ease-in-out 3; transform-origin: 110px 130px; }
+.cat.purr .tail { animation-duration: 3.6s; }
+@keyframes nuzzle { 0%,100% { transform: rotate(0); } 30% { transform: rotate(-7deg); } 70% { transform: rotate(6deg); } }
+/* 誘う（ゲームモードOFF時） */
+.cat.invite .head { animation: nuzzle .8s ease-in-out 2; transform-origin: 110px 130px; }
+.cat.invite .tail { animation: tail .9s ease-in-out 2; }
+.cat.invite .ear-r { animation: twitch .8s ease-in-out 2; }
+/* 退屈：背伸び＋あくび */
+.cat.yawn .eyes-normal, .cat.yawn .mouth-closed { display: none; }
+.cat.yawn .eyes-closed, .cat.yawn .mouth-yawn { display: inline; }
+.cat.yawn .whole { animation: stretch 2.8s ease-in-out; }
+.cat.yawn .head { animation: yawnHead 2.8s ease-in-out; }
+.cat.yawn .tail { animation: tailUp 2.8s ease-in-out; }
+.cat.yawn .mouth-yawn { transform-origin: 110px 104px; animation: yawnMouth 2.8s ease-in-out; }
+@keyframes stretch { 0%,100% { transform: none; } 18%,42% { transform: scale(1.18, .82); } 58% { transform: scale(.96, 1.06); } 72% { transform: none; } }
+@keyframes yawnHead { 0%,100% { transform: none; } 18%,42% { transform: translateY(12px); } 58%,86% { transform: translateY(-4px) rotate(-7deg); } }
+@keyframes tailUp { 0%,100% { transform: rotate(-6deg); } 25%,45% { transform: rotate(32deg); } }
+@keyframes yawnMouth { 0%,45% { transform: scale(.4); } 62%,84% { transform: scale(1.15); } 100% { transform: scale(.3); } }
+
+/* ふわっと出る文字・紙ふぶき・レベルアップ */
+.fx-layer { position: fixed; left: 50%; top: 36%; width: 0; height: 0; z-index: 260; pointer-events: none; }
+.fx-layer .fx { position: absolute; left: 0; top: 0; white-space: nowrap; background: var(--modal); color: var(--accent); border: 1.5px solid var(--border); padding: 4px 14px; border-radius: 99px; font-weight: 800; font-size: 15px; box-shadow: 0 6px 16px rgba(0,0,0,.18); animation: floatUpC 1.3s ease-out forwards; }
+@keyframes floatUpC { 0% { opacity: 0; transform: translate(-50%, 0) scale(.7); } 20% { opacity: 1; transform: translate(calc(-50% + var(--dx, 0px)), -10px) scale(1); } 100% { opacity: 0; transform: translate(calc(-50% + var(--dx, 0px)), -70px) scale(1); } }
+.fx-local { position: absolute; pointer-events: none; font-weight: 800; animation: floatUp 1.2s ease-out forwards; text-shadow: 0 1px 2px rgba(0,0,0,.2); z-index: 3; top: 40%; }
+@keyframes floatUp { 0% { opacity: 0; transform: translate(0, 0) scale(.6); } 20% { opacity: 1; transform: translate(var(--dx, 0), -10px) scale(1); } 100% { opacity: 0; transform: translate(var(--dx, 0), -60px) scale(1); } }
+.confetti { position: absolute; width: 8px; height: 12px; border-radius: 2px; pointer-events: none; top: 55%; right: 70px; animation: burst 1.3s cubic-bezier(.2,.7,.4,1) forwards; z-index: 3; }
+.fx-layer .confetti, .event-card .confetti { top: 0; left: 0; right: auto; }
+.event-card .confetti { top: 32%; left: 50%; }
+@keyframes burst { 0% { opacity: 1; transform: translate(0,0) rotate(0); } 100% { opacity: 0; transform: translate(var(--x), var(--y)) rotate(var(--r)); } }
+.lvup-flag { position: absolute; left: 0; top: 60px; background: var(--modal); color: var(--accent); font-weight: 800; font-size: 22px; padding: 8px 20px; border-radius: 16px; animation: flag 1.8s ease forwards; white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,.25); border: 2px solid var(--accent); }
+@keyframes flag { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.4); } 20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } 30%, 80% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -80%) scale(1); } }
+
+/* イベント・名前のカード */
+.modal.event-card { background: linear-gradient(170deg, var(--bg1), var(--bg2)); border-radius: 26px; text-align: center; max-width: 360px; position: relative; animation: pop .4s ease; box-shadow: 0 20px 40px rgba(0,0,0,.3); }
+#eventOv .event-card { overflow: hidden; }
+#nameOv .event-card { overflow-y: auto; }
+.event-kicker { display: inline-block; background: var(--accent); color: var(--on-accent); font-weight: 800; font-size: 12px; padding: 3px 12px; border-radius: 99px; }
+.event-cat { width: 130px; margin: 6px auto 0; }
+.event-title { display: block; font-size: 18px; margin-top: 4px; text-wrap: balance; color: var(--text); }
+.event-text { margin: 6px 0 10px; font-size: 13.5px; color: var(--text2); }
+.event-reward { display: inline-block; font-size: 13px; font-weight: 800; color: var(--accent); background: var(--accent-soft); border-radius: 10px; padding: 4px 12px; }
+.event-ok { display: block; width: 100%; margin-top: 14px; border: 0; background: var(--accent); color: var(--on-accent); font-weight: 800; font-size: 15px; padding: 12px; border-radius: 14px; cursor: pointer; }
+.event-skip { display: block; margin: 8px auto 0; background: none; border: 0; color: var(--text2); font-size: 13px; cursor: pointer; padding: 4px; }
+.name-input { display: block; width: 100%; margin-top: 10px; border: 1.5px solid var(--border); background: var(--modal); color: var(--text); border-radius: 12px; padding: 10px 12px; font-size: 16px; text-align: center; outline: none; }
+.name-input:focus { border-color: var(--accent); }
+.name-sugg { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 8px; }
+.name-sugg button { border: 1.5px solid var(--border); background: var(--surface); color: var(--text); border-radius: 99px; padding: 3px 12px; font-size: 12.5px; cursor: pointer; }
+
+/* 学習タブ */
+.seg2 { display: grid; grid-template-columns: 1fr 1fr; background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 4px; gap: 4px; margin: 14px 0 6px; }
+.seg2 button { border: 0; background: none; font-size: 15px; font-weight: 700; color: var(--text2); padding: 10px; border-radius: 10px; cursor: pointer; }
+.seg2 button.on { background: var(--accent); color: var(--on-accent); }
+.setup-opt { background: var(--surface); }
+.setup-options.three { grid-template-columns: 1fr 1fr 1fr; }
+.last-card { margin-top: 4px; }
+.last-card div { font-size: 13px; color: var(--text2); }
+.result-bar { height: 8px; background: var(--accent-soft); border-radius: 99px; overflow: hidden; margin-top: 6px; }
+.result-bar i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
+.hint-card { font-size: 13px; color: var(--text2); margin-top: 10px; }
+
+/* カレンダータブ */
+.cal-hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 4px; position: relative; overflow: hidden; }
+.cal-hero .bubble { margin-bottom: 18px; background: var(--modal); color: var(--text); border: 1.5px solid var(--border); }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.stat { background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 8px 4px; text-align: center; }
+.stat b { display: block; font-size: 20px; font-weight: 800; color: var(--accent); font-variant-numeric: tabular-nums; }
+.stat span { font-size: 11px; color: var(--text2); }
+.cal-head { display: flex; justify-content: space-between; align-items: center; font-weight: 800; margin-bottom: 8px; }
+.cal-nav { display: flex; gap: 4px; }
+.cal-nav button { width: 32px; height: 32px; border-radius: 10px; border: 1.5px solid var(--border); background: none; color: var(--text2); font-size: 16px; cursor: pointer; }
+.cal-nav button:disabled { opacity: .35; cursor: default; }
+.cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.cal .dow { font-size: 11px; color: var(--text2); font-weight: 700; padding-bottom: 2px; }
+.cal .d { aspect-ratio: 1; border-radius: 10px; display: grid; place-items: center; position: relative; color: var(--text2); }
+.cal .d.done { background: var(--accent-soft); color: var(--text); font-weight: 700; }
+.cal .d.done svg { position: absolute; width: 13px; height: 13px; right: 2px; bottom: 2px; fill: var(--accent); }
+.cal .d.lots { background: var(--accent); color: var(--on-accent); }
+.cal .d.lots svg { fill: var(--on-accent); }
+.cal .d.today { box-shadow: 0 0 0 2px var(--accent); }
+.cal-legend { display: flex; gap: 12px; font-size: 11px; color: var(--text2); margin-top: 8px; }
+.cal-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
+.mission { display: flex; align-items: center; gap: 10px; font-size: 13.5px; padding: 6px 0 4px; }
+.mission + .mission { border-top: 1px solid var(--border); padding-top: 8px; }
+.mission .ck { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--accent); display: grid; place-items: center; font-size: 12px; color: var(--on-accent); flex-shrink: 0; }
+.mission .ck.ok { background: var(--accent); }
+.mission .pg { margin-left: auto; color: var(--text2); font-size: 12px; font-variant-numeric: tabular-nums; }
+.goals { display: grid; gap: 10px; margin-top: 8px; }
+.goal { display: grid; grid-template-columns: auto 1fr auto; gap: 2px 8px; align-items: center; font-size: 13px; }
+.goal .gi { grid-row: span 2; font-size: 18px; }
+.goal .gr { color: var(--text2); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.goal .gb { grid-column: 2 / 4; height: 7px; background: var(--accent-soft); border-radius: 99px; overflow: hidden; }
+.goal .gb i { display: block; height: 100%; background: linear-gradient(90deg, var(--xp), var(--accent)); border-radius: 99px; }
+.badges { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px; }
+.badge { border: 0; background: var(--accent-soft); border-radius: 14px; padding: 8px 2px 6px; display: grid; justify-items: center; gap: 2px; font-size: 10px; line-height: 1.3; color: var(--text); cursor: pointer; text-align: center; }
+.badge span { font-size: 22px; }
+.badge.locked { background: none; border: 1.5px dashed var(--border); color: var(--text2); cursor: default; }
+.badge.locked span { filter: grayscale(1); opacity: .35; }
+
+/* 設定タブ */
+.group { background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px; overflow: hidden; }
+.row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; font-size: 15px; color: var(--text); width: 100%; background: none; border: 0; text-align: left; text-decoration: none; }
+button.row, a.row { cursor: pointer; }
+.row + .row, .pswatches + .row { border-top: 1px solid var(--border); }
+.row .ic { width: 26px; text-align: center; flex-shrink: 0; }
+.row .grow { flex: 1; min-width: 0; word-break: break-all; }
+.row small { display: block; font-size: 12px; color: var(--text2); }
+.row .chev { color: var(--text2); font-size: 18px; }
+.row.accent { color: var(--accent); font-weight: 700; }
+.row.warn { color: #e08a00; }
+.row.danger { color: #e5484d; justify-content: center; font-weight: 700; }
+.pswatches { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px 14px; }
+.psw { border: 1.5px solid var(--border); background: none; border-radius: 12px; padding: 8px 4px; display: grid; justify-items: center; gap: 4px; font-size: 11.5px; color: var(--text); cursor: pointer; }
+.psw i { width: 26px; height: 26px; border-radius: 50%; }
+.psw[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+.mini-seg { display: inline-flex; background: var(--accent-soft); border-radius: 10px; padding: 3px; gap: 2px; flex-shrink: 0; }
+.mini-seg button { border: 0; background: none; font-size: 12.5px; padding: 5px 9px; border-radius: 8px; color: var(--text2); cursor: pointer; }
+.mini-seg button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); font-weight: 700; }
+.toggle { width: 50px; height: 30px; border-radius: 99px; background: var(--border); border: 0; position: relative; cursor: pointer; flex-shrink: 0; transition: background .2s; }
+.toggle::after { content: ""; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .2s; }
+.toggle[aria-checked="true"] { background: var(--accent); }
+.toggle[aria-checked="true"]::after { transform: translateX(20px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .cat *, .cat .whole { animation-duration: .01s !important; animation-iteration-count: 1 !important; }
+  .confetti, .fx-local { display: none; }
+}
 </style>
 </head>
 <body>
+<div class="bgfx" aria-hidden="true"><svg><defs><pattern id="paws" width="70" height="70" patternUnits="userSpaceOnUse" patternTransform="rotate(-18)"><g style="fill: var(--pattern)"><ellipse cx="20" cy="26" rx="7" ry="6"/><circle cx="12" cy="17" r="3"/><circle cx="18" cy="13" r="3"/><circle cx="24" cy="13" r="3"/><circle cx="29" cy="18" r="3"/><ellipse cx="55" cy="61" rx="5" ry="4.5"/><circle cx="49" cy="54" r="2.2"/><circle cx="54" cy="51" r="2.2"/><circle cx="59" cy="51" r="2.2"/><circle cx="62.5" cy="55" r="2.2"/></g></pattern></defs><rect width="100%" height="100%" fill="url(#paws)"/></svg></div>
 
 <nav class="nav">
   <button class="nav-btn active" onclick="showPage('search')" id="nav-search">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    検索
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 11 12 4l9 7"/><path d="M5.5 9.5V20h13V9.5"/></svg>
+    ホーム
   </button>
   <button class="nav-btn" onclick="showPage('books')" id="nav-books">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
     単語帳
   </button>
-  <button class="nav-btn" onclick="showPage('quiz')" id="nav-quiz">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
-    クイズ
+  <button class="nav-btn" onclick="showPage('study')" id="nav-study">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="13" height="15" rx="2"/><path d="M7 3h11a2 2 0 0 1 2 2v13"/><path d="m7.5 13.5 2 2 3.5-4"/></svg>
+    学習
   </button>
-  <button class="nav-btn" onclick="showPage('flash')" id="nav-flash">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-    カード
+  <button class="nav-btn" onclick="showPage('cal')" id="nav-cal">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+    カレンダー
+  </button>
+  <button class="nav-btn" onclick="showPage('settings')" id="nav-settings">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+    設定
   </button>
 </nav>
 
-<!-- Search Page -->
+<!-- ホーム（検索） -->
 <div class="page active" id="page-search">
-  <div class="hero">
-    <svg class="hero-cat" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- ears -->
-      <polygon points="18,42 26,18 38,38" fill="var(--accent)"/>
-      <polygon points="62,38 74,18 82,42" fill="var(--accent)"/>
-      <polygon points="22,40 27,24 36,38" fill="var(--accent2)" opacity="0.6"/>
-      <polygon points="64,38 73,24 78,40" fill="var(--accent2)" opacity="0.6"/>
-      <!-- head -->
-      <ellipse cx="50" cy="55" rx="34" ry="30" fill="var(--accent2)"/>
-      <!-- face shading -->
-      <ellipse cx="50" cy="60" rx="22" ry="18" fill="var(--accent2)" opacity="0.5"/>
-      <!-- eyes -->
-      <ellipse cx="38" cy="50" rx="5" ry="6" fill="#1a1a22"/>
-      <ellipse cx="62" cy="50" rx="5" ry="6" fill="#1a1a22"/>
-      <circle cx="39.5" cy="48.5" r="1.5" fill="white"/>
-      <circle cx="63.5" cy="48.5" r="1.5" fill="white"/>
-      <!-- nose -->
-      <ellipse cx="50" cy="60" rx="3" ry="2" fill="var(--red)"/>
-      <!-- mouth -->
-      <path d="M47 62 Q50 66 53 62" stroke="#1a1a22" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-      <!-- whiskers left -->
-      <line x1="16" y1="57" x2="44" y2="61" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
-      <line x1="16" y1="62" x2="44" y2="63" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
-      <!-- whiskers right -->
-      <line x1="84" y1="57" x2="56" y2="61" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
-      <line x1="84" y1="62" x2="56" y2="63" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
-      <!-- body -->
-      <ellipse cx="50" cy="88" rx="20" ry="12" fill="var(--accent)" opacity="0.6"/>
-    </svg>
-    <div class="hero-title">tangocho</div>
-    <div class="theme-dots">
-      <button class="theme-dot dot-purple" data-theme="dark" onclick="setTheme('purple')" title="パープル"></button>
-      <button class="theme-dot dot-green" data-theme="green" onclick="setTheme('green')" title="グリーン"></button>
-      <button class="theme-dot dot-amber" data-theme="warm" onclick="setTheme('amber')" title="チョコバナナ"></button>
-      <button class="theme-dot dot-blue" data-theme="blue" onclick="setTheme('blue')" title="ライトブルー"></button>
+  <div class="band home-band" id="heroBand">
+    <div class="hero-row">
+      <div class="hero-info">
+        <div class="hero-title"><b>tangocho</b><span class="streak game-only" id="streakTag" hidden></span></div>
+        <div class="bubble game-only" id="bubble">きょうも いっしょに がんばろ！</div>
+        <div class="xprow game-only" title="なかよしポイント"><b class="cat-name" id="nameTag"></b><span class="lv" id="lvText">Lv.1</span><div class="xpbar"><i id="xpFill"></i></div><span id="xpText">0/50</span></div>
+      </div>
+      <button type="button" class="cat-home-wrap" id="catHomeWrap" aria-label="ねこ"></button>
     </div>
+    <div class="invite-bubble" id="invite">あそぼ？</div>
   </div>
   <div class="search-sticky">
     <div class="search-wrap">
@@ -288,51 +429,98 @@ body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; height: 
         <svg viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
     </div>
-    <div class="filter-row">
-      <button class="filter-btn active" onclick="setFilter('all')" id="filter-all">すべて</button>
-      <button class="filter-btn" onclick="setFilter('mywords')" id="filter-mywords">マイ単語</button>
-      <button class="filter-btn" onclick="setFilter('recent')" id="filter-recent">履歴</button>
-    </div>
-    <div class="result-count" id="result-count"></div>
   </div>
+  <div class="filter-row">
+    <button class="filter-btn active" onclick="setFilter('all')" id="filter-all">すべて</button>
+    <button class="filter-btn" onclick="setFilter('mywords')" id="filter-mywords">マイ単語</button>
+    <button class="filter-btn" onclick="setFilter('recent')" id="filter-recent">履歴</button>
+  </div>
+  <div class="result-count" id="result-count"></div>
   <div id="search-results"></div>
 </div>
 
-<!-- Wordbooks Page -->
+<!-- 単語帳 -->
 <div class="page" id="page-books">
-  <div class="page-title">単語帳</div>
-  <button class="btn-primary" onclick="showCreateBook()">＋ 新しい単語帳を作る</button>
-  <div id="books-list"></div>
-  <div class="section-label">テーマカラー</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px" id="theme-btns">
-    <button class="theme-btn setup-opt" data-theme="dark" onclick="applyTheme('dark')">🌙 ダーク</button>
-    <button class="theme-btn setup-opt" data-theme="green" onclick="applyTheme('green')">🌿 グリーン</button>
-    <button class="theme-btn setup-opt" data-theme="warm" onclick="applyTheme('warm')">🍫 チョコバナナ</button>
-    <button class="theme-btn setup-opt" data-theme="blue" onclick="applyTheme('blue')">🌊 ブルー</button>
+  <div class="band"><div class="band-title">単語帳</div></div>
+  <div class="stack" style="gap:0">
+    <button class="btn-outline" onclick="showCreateBook()">＋ 新しい単語帳を作る</button>
+    <button class="btn-secondary" onclick="showAddWord()">＋ 単語を追加</button>
+    <div id="books-list"></div>
   </div>
-  <div class="section-label">アカウント（自動同期）</div>
-  <div id="auth-ui"></div>
-  <button class="btn-secondary" onclick="manualSync()" style="margin-bottom:10px">☁️ 今すぐクラウドに保存</button>
-  <button class="btn-secondary" onclick="copyEmergencySQL()" style="margin-bottom:10px;border-color:#f59e0b;color:#f59e0b">🆘 SQL緊急保存（クラウドに繋がらない時）</button>
-  <div class="section-label">データ管理</div>
-  <button class="btn-secondary" onclick="exportCSV()">📥 CSVでバックアップ</button>
-  <button class="btn-secondary" onclick="exportJSON()">📤 マイ単語をコピー（他の端末へ）</button>
-  <button class="btn-secondary" onclick="showImportJSON()">📥 マイ単語を読み込む（他の端末から）</button>
-  <button class="btn-secondary" onclick="showAddWord()">＋ 単語を追加</button>
-  <div class="section-label">ヘルプ</div>
-  <a href="manual.html" target="_blank" class="btn-secondary" style="display:block;text-align:center;text-decoration:none;padding:14px;border-radius:14px;border:1.5px solid var(--border);color:var(--text2);font-size:15px;margin-bottom:10px">📖 使い方マニュアル</a>
-  <!-- 修正をGitHubに反映するたびに更新する（iPhoneに新しい版が届いたかの確認用） -->
-  <div class="app-version">tangocho v2.5（2026-11-14）</div>
 </div>
 
-<!-- Quiz Page -->
-<div class="page" id="page-quiz">
+<!-- 学習（クイズ＋カード） -->
+<div class="page" id="page-study">
+  <div class="band"><div class="band-title">学習</div></div>
+  <div class="seg2" id="studySeg">
+    <button type="button" id="study-quiz" class="on" onclick="setStudyMode('quiz')">🎯 クイズ</button>
+    <button type="button" id="study-card" onclick="setStudyMode('card')">🃏 カード</button>
+  </div>
   <div id="quiz-content"></div>
+  <div id="flash-content" hidden></div>
 </div>
 
-<!-- Flash Page -->
-<div class="page" id="page-flash">
-  <div id="flash-content"></div>
+<!-- カレンダー -->
+<div class="page" id="page-cal">
+  <div class="band"><div class="band-title">カレンダー</div></div>
+  <div class="stack">
+    <div class="cal-hero game-only" id="calHero">
+      <div class="bubble" id="calBubble"></div>
+      <button type="button" class="cat-cal-wrap" id="catCalWrap" aria-label="ねこ"></button>
+    </div>
+    <div class="label">これまでの勉強</div>
+    <div class="stats" id="stats"></div>
+    <div class="card">
+      <div class="cal-head"><span id="calTitle"></span><span class="cal-nav"><button type="button" id="calPrev" onclick="moveCal(-1)" aria-label="前の月">‹</button><button type="button" id="calNext" onclick="moveCal(1)" aria-label="次の月">›</button></span></div>
+      <div class="cal" id="cal"></div>
+      <div class="cal-legend"><span><i style="background:var(--accent-soft)"></i>勉強した</span><span><i style="background:var(--accent)"></i>たくさん勉強した（20回以上）</span></div>
+    </div>
+    <div class="card game-only">
+      <div class="card-title">今日のミッション</div>
+      <div id="missions"></div>
+    </div>
+    <div class="card game-only">
+      <div class="card-title">つぎのイベントまで</div>
+      <div class="goals" id="goals"></div>
+    </div>
+    <div class="card game-only">
+      <div class="card-title">これまでのイベント</div>
+      <div class="badges" id="badges"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 設定 -->
+<div class="page" id="page-settings">
+  <div class="band"><div class="band-title">設定</div></div>
+  <div class="stack">
+    <div class="label">見た目</div>
+    <div class="group">
+      <div class="pswatches" id="pswatches"></div>
+      <div class="row"><span class="ic">🌗</span><span class="grow">明るさ</span>
+        <div class="mini-seg" id="modeSeg"><button type="button" data-mode="light" onclick="setMode('light')">ライト</button><button type="button" data-mode="dark" onclick="setMode('dark')">ダーク</button><button type="button" data-mode="auto" onclick="setMode('auto')">自動</button></div>
+      </div>
+      <div class="row"><span class="ic">🐱</span><span class="grow">ねこ＆ゲームモード<small>なかよしポイント・ミッション・ねこの動き</small></span><button type="button" class="toggle" id="gameToggle" role="switch" aria-checked="false" aria-label="ねこ＆ゲームモード" onclick="setGame(!game.on)"></button></div>
+      <button type="button" class="row game-only" onclick="openName()"><span class="ic">🏷</span><span class="grow">ねこの名前</span><b id="nameSetting"></b><span class="chev">›</span></button>
+      <div class="row game-only"><span class="ic">🎨</span><span class="grow">ねこの毛色</span>
+        <div class="mini-seg" id="furSeg"><button type="button" data-fur="shiro" onclick="setFur('shiro')">しろ</button><button type="button" data-fur="chatora" onclick="setFur('chatora')">ちゃとら</button><button type="button" data-fur="kuro" onclick="setFur('kuro')">くろ</button></div>
+      </div>
+    </div>
+    <div class="label">アカウント・クラウド</div>
+    <div class="group" id="auth-ui"></div>
+    <div class="label">データ管理</div>
+    <div class="group">
+      <button type="button" class="row" onclick="exportCSV()"><span class="ic">📥</span><span class="grow">CSVでバックアップ</span><span class="chev">›</span></button>
+      <button type="button" class="row" onclick="exportJSON()"><span class="ic">📤</span><span class="grow">マイ単語をコピー（他の端末へ）</span><span class="chev">›</span></button>
+      <button type="button" class="row" onclick="showImportJSON()"><span class="ic">📲</span><span class="grow">マイ単語を読み込む（他の端末から）</span><span class="chev">›</span></button>
+    </div>
+    <div class="label">ヘルプ</div>
+    <div class="group">
+      <a class="row" href="manual.html" target="_blank"><span class="ic">📖</span><span class="grow">使い方マニュアル</span><span class="chev">›</span></a>
+    </div>
+    <!-- 修正をGitHubに反映するたびに更新する（iPhoneに新しい版が届いたかの確認用・自動更新の判定にも使う） -->
+    <div class="app-version">tangocho v3.0（2026-11-14）</div>
+  </div>
 </div>
 
 <!-- Modals -->
@@ -441,6 +629,32 @@ body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; height: 
   </div>
 </div>
 
+<!-- イベント達成 -->
+<div class="modal-overlay" id="eventOv">
+  <div class="modal event-card" id="eventCard">
+    <div class="event-kicker" id="eventKicker">🎊 イベント発生！</div>
+    <div class="event-cat" id="catEventWrap"></div>
+    <b class="event-title" id="eventTitle"></b>
+    <p class="event-text" id="eventText"></p>
+    <div class="event-reward" id="eventReward"></div>
+    <button type="button" class="event-ok" id="eventOk" onclick="closeEvent()">やったね！</button>
+  </div>
+</div>
+
+<!-- ねこの名前 -->
+<div class="modal-overlay" id="nameOv">
+  <div class="modal event-card">
+    <div class="event-kicker">🐱 はじめまして！</div>
+    <div class="event-cat" id="catNameWrap"></div>
+    <b class="event-title">ぼくに 名前をつけてね</b>
+    <input class="name-input" id="nameInput" maxlength="10" placeholder="なまえ（10文字まで）" autocomplete="off">
+    <div class="name-sugg" id="nameSugg"></div>
+    <button type="button" class="event-ok" onclick="saveName()">この名前にする</button>
+    <button type="button" class="event-skip" onclick="skipName()">あとで決める</button>
+  </div>
+</div>
+
+<div class="fx-layer" id="fxLayer" aria-live="polite"></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -738,21 +952,19 @@ async function supaLoad() {
   }
   renderSearch();
   if (document.getElementById('page-books').classList.contains('active')) renderBooks();
+  checkEvents(true); saveGame(); renderGame();
 }
 
 function renderAuthUI() {
   const el = document.getElementById('auth-ui');
-  if (_user) {
-    if (el) el.innerHTML = `
-      <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:10px">
-        <div style="font-size:12px;color:var(--text3);margin-bottom:4px">ログイン中 — 自動同期ON</div>
-        <div style="font-size:14px;color:var(--text)">${_user.email}</div>
-      </div>
-      <button class="btn-secondary" onclick="authLogout()">ログアウト</button>
-    `;
-  } else {
-    if (el) el.innerHTML = `<button class="btn-primary" onclick="document.getElementById('modal-auth').classList.add('show')">ログインして同期する</button>`;
-  }
+  if (!el) return;
+  const top = _user
+    ? `<div class="row"><span class="ic">👤</span><span class="grow">${esc(_user.email)}<small>ログイン中 — 自動同期ON</small></span></div>`
+    : `<button type="button" class="row accent" onclick="document.getElementById('modal-auth').classList.add('show')"><span class="ic">🔑</span><span class="grow">ログインして同期する</span><span class="chev">›</span></button>`;
+  el.innerHTML = top + `
+    <button type="button" class="row" onclick="manualSync()"><span class="ic">☁️</span><span class="grow">今すぐクラウドに保存</span><span class="chev">›</span></button>
+    <button type="button" class="row warn" onclick="copyEmergencySQL()"><span class="ic">🆘</span><span class="grow">SQL緊急保存<small>クラウドに繋がらない時</small></span><span class="chev">›</span></button>
+    ${_user ? '<button type="button" class="row danger" onclick="authLogout()">ログアウト</button>' : ''}`;
 }
 
 async function authLogin() {
@@ -861,11 +1073,6 @@ _sb.auth.getSession().then(({ data: { session } }) => {
   if (_user) supaLoad();
 });
 
-function setTheme(theme) {
-  const normalized = theme === 'purple' ? 'dark' : theme === 'amber' ? 'warm' : theme;
-  applyTheme(normalized);
-}
-
 function getAllWords() {
   const map = new Map();
   BUILTIN.forEach(v => map.set(v.w.toLowerCase(), {w: v.w, m: v.m, builtin: true}));
@@ -900,8 +1107,22 @@ function showPage(name) {
   document.getElementById('page-' + name).classList.add('active');
   document.getElementById('nav-' + name).classList.add('active');
   if (name === 'books') renderBooks();
-  if (name === 'quiz') renderQuizSetup();
-  if (name === 'flash') renderFlashSetup();
+  if (name === 'study') setStudyMode(studyMode);
+  if (name === 'cal') renderCal();
+  if (name === 'settings') renderSettings();
+  window.scrollTo(0, 0);
+  scheduleFlush(300);
+}
+
+// 学習タブ：クイズ／カードの切り替え
+let studyMode = 'quiz';
+function setStudyMode(m) {
+  studyMode = m;
+  document.getElementById('study-quiz').classList.toggle('on', m === 'quiz');
+  document.getElementById('study-card').classList.toggle('on', m === 'card');
+  document.getElementById('quiz-content').hidden = m !== 'quiz';
+  document.getElementById('flash-content').hidden = m !== 'card';
+  if (m === 'quiz') renderQuizSetup(); else renderFlashSetup();
 }
 
 // ========== SEARCH ==========
@@ -1219,6 +1440,7 @@ function saveEdit() {
     closeModal('modal-edit');
     renderSearch();
     showToast('追加しました');
+    onWordAdded();
   } else {
     const oldKey = state.editWord.toLowerCase();
     const newKey = w.toLowerCase();
@@ -1364,6 +1586,7 @@ function createBook() {
   closeModal('modal-book');
   renderBooks();
   showToast('単語帳を作成しました');
+  checkEvents(); saveGame(); scheduleFlush();
 }
 
 function openBook(idx) {
@@ -1431,6 +1654,7 @@ function importJSON() {
     const newWords = imported.filter(v => v.w && v.m && !existing.has(v.w.toLowerCase()));
     state.myWords.push(...newWords);
     save();
+    checkEvents(true); saveGame();
     closeModal('modal-import');
     renderSearch();
     showToast(`${newWords.length}語を追加しました（重複${imported.length - newWords.length}件スキップ）`);
@@ -1440,13 +1664,13 @@ function importJSON() {
 }
 
 // ========== QUIZ ==========
-let quizSetup = {scope:'all', book:'all'};
+let quizSetup = {scope:'all', book:'all', count:10};
 
 function renderQuizSetup() {
+  quizSetup = {scope:'all', book:'all', count:10};
   document.getElementById('quiz-content').innerHTML = `
     <div class="quiz-setup">
-      <h2>🎯 10問クイズ</h2>
-      <p>英単語の日本語の意味を選んでください</p>
+      <p>英単語の日本語の意味を4択で選びます</p>
       <div class="section-label">出題範囲</div>
       <div class="setup-options">
         <button class="setup-opt selected" onclick="setQuizOpt(this,'scope','all')">全単語</button>
@@ -1461,10 +1685,16 @@ function renderQuizSetup() {
       <div class="setup-options">
         ${PRESETS.map(p => `<button class="setup-opt" onclick="setQuizOpt(this,'book','preset:${p.id}')">${esc(p.name)}</button>`).join('')}
       </div>
-      <button class="btn-primary" onclick="startQuiz()">スタート</button>
+      <div class="section-label">問題数</div>
+      <div class="setup-options">
+        <button class="setup-opt selected" onclick="setQuizOpt(this,'count',10)">10問</button>
+        <button class="setup-opt" onclick="setQuizOpt(this,'count',20)">20問</button>
+      </div>
+      <button class="btn-primary" onclick="startQuiz()">▶ クイズをはじめる</button>
+      ${lastResultCard(game.lastQuiz, 'quiz')}
+      <div class="card hint-card game-only">🐱 正解するたびに、${esc(catName())}との なかよしポイントが たまります</div>
     </div>
   `;
-  quizSetup = {scope:'all', book:'all'};
 }
 
 function setQuizOpt(el, key, val) {
@@ -1496,7 +1726,7 @@ function startQuiz() {
 // pool（出題する単語）からクイズを作る。選択肢の誤答は distractor から補う
 function buildQuiz(pool) {
   const distractor = getAllWords();
-  const questions = shuffle(pool).slice(0,10).map(correct => {
+  const questions = shuffle(pool).slice(0, quizSetup.count || 10).map(correct => {
     // 誤答候補：出題プールが4語以上ならその中から、少なければ辞書全体から
     const src = (pool.length >= 4 ? pool : distractor).filter(v => v.w !== correct.w);
     const wrong = shuffle(src).slice(0,3);
@@ -1542,6 +1772,7 @@ function answerQuiz(i) {
   const q = questions[current];
   const correct = q.choices[i].w === q.correct.w;
   if (correct) state.quizState.score++;
+  onQuizAnswer(correct);
   state.quizState.results.push({word: q.correct.w, meaning: q.correct.m, wordObj: q.correct, correct});
   document.querySelectorAll('.quiz-choice').forEach((btn, j) => {
     if (q.choices[j].w === q.correct.w) btn.classList.add('correct');
@@ -1566,6 +1797,7 @@ function answerQuiz(i) {
 function renderQuizResult() {
   const {score, questions, results} = state.quizState;
   const wrongCount = results.filter(r => !r.correct).length;
+  onQuizFinished(score, questions.length);
   document.getElementById('quiz-content').innerHTML = `
     <div class="quiz-result">
       <div class="result-score">${score}<span style="font-size:32px;color:var(--text2)">/${questions.length}</span></div>
@@ -1588,13 +1820,13 @@ function renderQuizResult() {
 }
 
 // ========== FLASH ==========
-let flashSetup = {scope:'all', book:'all'};
+let flashSetup = {scope:'all', book:'all', count:'all'};
 
 function renderFlashSetup() {
+  flashSetup = {scope:'all', book:'all', count:'all'};
   document.getElementById('flash-content').innerHTML = `
     <div class="quiz-setup">
-      <h2>⚡ フラッシュカード</h2>
-      <p>カードをタップして意味を確認</p>
+      <p>カードをタップして意味を確認します</p>
       <div class="section-label">出題範囲</div>
       <div class="setup-options">
         <button class="setup-opt selected" onclick="setFlashOpt(this,'scope','all')">全単語</button>
@@ -1609,10 +1841,17 @@ function renderFlashSetup() {
       <div class="setup-options">
         ${PRESETS.map(p => `<button class="setup-opt" onclick="setFlashOpt(this,'book','preset:${p.id}')">${esc(p.name)}</button>`).join('')}
       </div>
-      <button class="btn-primary" onclick="startFlash()">スタート</button>
+      <div class="section-label">枚数</div>
+      <div class="setup-options three">
+        <button class="setup-opt" onclick="setFlashOpt(this,'count',20)">20枚</button>
+        <button class="setup-opt" onclick="setFlashOpt(this,'count',50)">50枚</button>
+        <button class="setup-opt selected" onclick="setFlashOpt(this,'count','all')">すべて</button>
+      </div>
+      <button class="btn-primary" onclick="startFlash()">▶ カードをめくる</button>
+      ${lastResultCard(game.lastFlash, 'card')}
+      <div class="card hint-card game-only">🐱 「覚えた」の数は、カレンダーの「覚えた単語」に記録されます</div>
     </div>
   `;
-  flashSetup = {scope:'all', book:'all'};
 }
 
 function setFlashOpt(el, key, val) {
@@ -1638,7 +1877,8 @@ function startFlash() {
     pool = recent.length >= 3 ? recent : pool.slice(-50);
   }
   if (pool.length < 1) { showToast('単語がありません'); return; }
-  state.flashState = {cards: shuffle(pool), current:0, score:0};
+  const cards = shuffle(pool);
+  state.flashState = {cards: flashSetup.count === 'all' ? cards : cards.slice(0, flashSetup.count), current:0, score:0};
   renderFlashCard();
 }
 
@@ -1685,6 +1925,8 @@ function flipCard() {
 
 function flashNext(correct) {
   if (correct) state.flashState.score++;
+  const done = state.flashState.cards[state.flashState.current];
+  if (done) onCardDone(done.w, correct);
   state.flashState.current++;
   renderFlashCard();
 }
@@ -1692,6 +1934,7 @@ function flashNext(correct) {
 function renderFlashResult() {
   const {score, cards} = state.flashState;
   const pct = Math.round(score/cards.length*100);
+  onFlashFinished(score, cards.length);
   document.getElementById('flash-content').innerHTML = `
     <div class="quiz-result">
       <div class="result-score">${pct}<span style="font-size:28px;color:var(--text2)">%</span></div>
@@ -1708,6 +1951,7 @@ function closeModal(id) {
   el.classList.remove('show');
   el.querySelectorAll('.modal').forEach(m => m.style.maxHeight = '');
   document.getElementById('edit-word').disabled = false;
+  scheduleFlush(400);
 }
 
 function showToast(msg) {
@@ -1735,84 +1979,536 @@ function jsq(s) {
 }
 
 
-// ========== THEMES ==========
+// ========== THEMES（6色 × ライト／ダーク／自動） ==========
 const THEMES = {
-  dark: {
-    name: '🌙 ダーク（デフォルト）',
-    '--bg': '#0f0f13',
-    '--surface': '#1a1a22',
-    '--surface2': '#26263a',
-    '--border': '#44445a',
-    '--accent': '#7c6cfc',
-    '--accent2': '#a89cff',
-    '--accent-rgb': '124, 108, 252',
-    '--on-accent': '#fff',
-    '--text': '#e8e8f0',
-    '--text2': '#b0b0c8',
-    '--text3': '#7a7a92',
-  },
-  // 箱（surface）は緑みを抑えた黒に近い色、アクセントは鮮やかな緑 → 文字とのメリハリを出す
-  green: {
-    name: '🌿 グリーン',
-    '--bg': '#0a0d0b',
-    '--surface': '#151a17',
-    '--surface2': '#1f2622',
-    '--border': '#38463e',
-    '--accent': '#22c55e',
-    '--accent2': '#4ade80',
-    '--accent-rgb': '34, 197, 94',
-    '--on-accent': '#052e16',
-    '--text': '#f3f7f4',
-    '--text2': '#c6d1ca',
-    '--text3': '#8a998f',
-  },
-  // チョコバナナ: チョコレート色の土台 + バナナの黄色。黄色の上の文字はチョコ色で読みやすく
-  warm: {
-    name: '🍫 チョコバナナ',
-    '--bg': '#170e09',
-    '--surface': '#261811',
-    '--surface2': '#35231a',
-    '--border': '#5c3f2d',
-    '--accent': '#f7d046',
-    '--accent2': '#ffe27a',
-    '--accent-rgb': '247, 208, 70',
-    '--on-accent': '#2b1810',
-    '--text': '#fff8ea',
-    '--text2': '#ead6bc',
-    '--text3': '#ab8c70',
-  },
-  blue: {
-    name: '🌊 淡いブルー',
-    '--bg': '#0a0f18',
-    '--surface': '#121a28',
-    '--surface2': '#1a2438',
-    '--border': '#2a3a58',
-    '--accent': '#4a8cdc',
-    '--accent2': '#80b4f0',
-    '--accent-rgb': '74, 140, 220',
-    '--on-accent': '#fff',
-    '--text': '#e0eaf8',
-    '--text2': '#a0b8d8',
-    '--text3': '#5a78a0',
-  },
+  purple: { name: 'パープル', light: { bg1:'#f4f0fd', bg2:'#e1d6fb', pattern:'#7c5cff', header1:'#9579ff', header2:'#6847ee', surface:'#ffffffd9', border:'#e2d9f7', text:'#251e3a', text2:'#6b6386', accent:'#7051f5', 'accent-soft':'#ece6ff', nav:'#ffffffe6', xp:'#ffb84d' },
+                         dark:  { bg1:'#1a1430', bg2:'#110d20', pattern:'#a58bff', header1:'#5a3fc0', header2:'#3a2690', surface:'#251e40d9', border:'#3a3060', text:'#efeaff', text2:'#aaa0cc', accent:'#a58bff', 'accent-soft':'#342a5c', nav:'#18132bee', xp:'#ffc56b' } },
+  green:  { name: 'グリーン', light: { bg1:'#eef8f0', bg2:'#d3eed9', pattern:'#2f9e5b', header1:'#3fb46f', header2:'#21894c', surface:'#ffffffd9', border:'#d3eadb', text:'#16301f', text2:'#557563', accent:'#23934f', 'accent-soft':'#dcf3e4', nav:'#ffffffe6', xp:'#f5c33b' },
+                         dark:  { bg1:'#16240b', bg2:'#0c1606', pattern:'#b4e84a', header1:'#6aa61c', header2:'#457a0e', surface:'#1f3410d9', border:'#36521c', text:'#f0fbe0', text2:'#b0c98e', accent:'#b4e84a', 'accent-soft':'#2d4615', nav:'#111d08ee', xp:'#f5e05a' } },
+  choco:  { name: 'チョコバナナ', light: { bg1:'#fffbe0', bg2:'#ffe983', pattern:'#8a5a2b', header1:'#8a5a2b', header2:'#5e3a17', surface:'#ffffffd9', border:'#f3e19a', text:'#3a2614', text2:'#7d6338', accent:'#8a5a2b', 'accent-soft':'#fff1a6', nav:'#fffdf0e6', xp:'#ffd60a' },
+                         dark:  { bg1:'#2a1d10', bg2:'#1a1108', pattern:'#ffd93b', header1:'#6b4520', header2:'#45290f', surface:'#36261ad9', border:'#544022', text:'#fff6d6', text2:'#d6bf8a', accent:'#ffd93b', 'accent-soft':'#4d3a14', nav:'#20150bee', xp:'#ffd93b' } },
+  blue:   { name: 'ライトブルー', light: { bg1:'#edf6ff', bg2:'#cfe5ff', pattern:'#2f7fe0', header1:'#4a9bf5', header2:'#2368cc', surface:'#ffffffd9', border:'#d3e5f8', text:'#132640', text2:'#56708f', accent:'#2474dc', 'accent-soft':'#ddecff', nav:'#ffffffe6', xp:'#ffb84d' },
+                         dark:  { bg1:'#17294a', bg2:'#0f1c34', pattern:'#7cc0ff', header1:'#3d8ee8', header2:'#286fc6', surface:'#1e3659d9', border:'#33507a', text:'#eaf4ff', text2:'#a3bcdc', accent:'#7cc0ff', 'accent-soft':'#244470', nav:'#132340ee', xp:'#ffc56b' } },
+  sakura: { name: 'さくら', light: { bg1:'#fff3f6', bg2:'#ffd6e2', pattern:'#e0567f', header1:'#f47a9d', header2:'#d94a75', surface:'#ffffffd9', border:'#f8dbe4', text:'#3b1a26', text2:'#8a5d6c', accent:'#d9467a', 'accent-soft':'#ffe3ec', nav:'#ffffffe6', xp:'#ffb84d' },
+                         dark:  { bg1:'#3a1730', bg2:'#250c1e', pattern:'#ff9cc6', header1:'#d4558e', header2:'#a83470', surface:'#4a1f3ed9', border:'#6c3159', text:'#ffeaf4', text2:'#e0a8c6', accent:'#ff9cc6', 'accent-soft':'#5e2550', nav:'#2a0f22ee', xp:'#ffc56b' } },
+  sunset: { name: 'ゆうやけ', light: { bg1:'#fff4ec', bg2:'#ffd3bd', pattern:'#e8643a', header1:'#ff8a5c', header2:'#e2553a', surface:'#ffffffd9', border:'#f8dccd', text:'#3b1d12', text2:'#8a5e4c', accent:'#dc5430', 'accent-soft':'#ffe4d6', nav:'#ffffffe6', xp:'#ffc23b' },
+                         dark:  { bg1:'#3a1d0c', bg2:'#241005', pattern:'#ffa45c', header1:'#f0782e', header2:'#c4501a', surface:'#4a2812d9', border:'#6e3c1c', text:'#fff0e2', text2:'#e5b48e', accent:'#ffa45c', 'accent-soft':'#5c3214', nav:'#2a1407ee', xp:'#ffd06b' } },
+};
+const $id = id => document.getElementById(id);
+const UI_KEY = 'uiTheme';
+// 保存した「色」と「明るさ」。v2までの 'theme'（dark/green/warm/blue）からは同じ色のダークに引き継ぐ
+const ui = (() => {
+  try {
+    const s = JSON.parse(localStorage.getItem(UI_KEY) || 'null');
+    if (s && THEMES[s.theme]) return { theme: s.theme, mode: ['light','dark','auto'].includes(s.mode) ? s.mode : 'auto' };
+  } catch (e) {}
+  const old = { dark:'purple', green:'green', warm:'choco', blue:'blue' }[localStorage.getItem('theme')];
+  return old ? { theme: old, mode: 'dark' } : { theme: 'purple', mode: 'auto' };
+})();
+const _mql = window.matchMedia('(prefers-color-scheme: dark)');
+const effMode = () => ui.mode === 'auto' ? (_mql.matches ? 'dark' : 'light') : ui.mode;
+const hexRgb = h => { const n = parseInt(h.slice(1, 7), 16); return `${n >> 16 & 255}, ${n >> 8 & 255}, ${n & 255}`; };
+
+function applyTheme() {
+  const m = effMode(), t = THEMES[ui.theme][m], dark = m === 'dark';
+  const vars = {
+    '--bg': t.bg1, '--bg1': t.bg1, '--bg2': t.bg2, '--pattern': t.pattern, '--pattern-op': dark ? '.09' : '.07',
+    '--header1': t.header1, '--header2': t.header2, '--on-header': '#fff',
+    '--surface': t.surface, '--surface2': dark ? t['accent-soft'] : t.bg1, '--modal': dark ? t.bg1 : '#ffffff',
+    '--border': t.border, '--text': t.text, '--text2': t.text2, '--text3': t.text2 + 'bb',
+    '--accent': t.accent, '--accent2': t.accent, '--accent-rgb': hexRgb(t.accent), '--accent-soft': t['accent-soft'],
+    '--on-accent': dark ? '#16121f' : '#ffffff', '--nav': t.nav, '--xp': t.xp,
+    '--green': dark ? '#34d399' : '#16a34a', '--red': dark ? '#f87171' : '#dc2626',
+  };
+  const root = document.documentElement;
+  Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v));
+  root.style.colorScheme = m;
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', t.header1);
+  try { localStorage.setItem(UI_KEY, JSON.stringify(ui)); } catch (e) {}
+  document.querySelectorAll('#pswatches .psw').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.theme === ui.theme)));
+  document.querySelectorAll('#modeSeg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === ui.mode)));
+}
+function buildThemeSwatches() {
+  $id('pswatches').innerHTML = Object.entries(THEMES).map(([k, t]) =>
+    `<button type="button" class="psw" data-theme="${k}" onclick="setTheme('${k}')"><i style="background:linear-gradient(135deg, ${t.light.header1} 0 50%, ${t.dark.header2} 50% 100%)"></i>${t.name}</button>`).join('');
+}
+function setTheme(k) { ui.theme = k; applyTheme(); }
+function setMode(m) { ui.mode = m; applyTheme(); }
+_mql.addEventListener?.('change', () => { if (ui.mode === 'auto') applyTheme(); });
+
+// ========== ねこ＆ゲームモード ==========
+// 記録はこの端末の localStorage('tangochoGame') だけに保存（クラウド同期の対象外）
+const GAME_KEY = 'tangochoGame';
+const dateKey = (d = new Date()) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const game = (() => {
+  const base = { on: false, named: false, name: '', fur: 'shiro', lv: 1, pts: 0, days: {}, quizCount: 0, quizCorrect: 0, cards: 0,
+    learned: [], events: [], pending: [], today: null, lastQuiz: null, lastFlash: null, init: false };
+  try { return Object.assign(base, JSON.parse(localStorage.getItem(GAME_KEY) || '{}')); } catch (e) { return base; }
+})();
+function saveGame() { try { localStorage.setItem(GAME_KEY, JSON.stringify(game)); } catch (e) {} }
+const need = lv => 50 + 30 * (lv - 1);   // 次のレベルまでに必要ななかよしポイント
+const catName = () => game.name || 'ねこ';
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+function today() {
+  const k = dateKey();
+  if (!game.today || game.today.date !== k) game.today = { date: k, added: 0, cards: 0, correct: 0, done: [] };
+  return game.today;
+}
+function logActivity(n = 1) { const k = dateKey(); game.days[k] = (game.days[k] || 0) + n; }
+function streakDays() {
+  const d = new Date();
+  if (!game.days[dateKey(d)]) d.setDate(d.getDate() - 1);   // 今日まだなら昨日から数える
+  let n = 0;
+  while (game.days[dateKey(d)]) { n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+function monthDays(y, m) {
+  const pre = `${y}-${String(m + 1).padStart(2, '0')}-`;
+  return Object.keys(game.days).filter(k => k.startsWith(pre) && game.days[k] > 0).length;
+}
+function gameStats() {
+  return { words: state.myWords.filter(w => !w.del).length, books: state.books.length, learned: game.learned.length,
+    quizCount: game.quizCount, quizCorrect: game.quizCorrect, cards: game.cards, streak: streakDays() };
+}
+
+const MISSIONS = [
+  { id: 'add', t: '単語を3つ登録する', key: 'added', goal: 3, unit: 'つ' },
+  { id: 'cards', t: 'カードを10枚めくる', key: 'cards', goal: 10, unit: '枚' },
+  { id: 'correct', t: 'クイズで10問正解する', key: 'correct', goal: 10, unit: '問' },
+];
+const MISSION_PTS = 10;
+const EV = (id, type, goal, i, n, title, text, pts) => ({ id, type, goal, i, n, title, text, pts });
+const EVENTS = [
+  EV('w1', 'words', 1, '🐣', 'はじめての単語', 'はじめて単語を登録した！', n => `${n}が うれしそうに しっぽを ふっているよ。`, 10),
+  EV('w10', 'words', 10, '🔟', '単語10個', '単語を10個 登録した！', n => `${n}「その調子！ どんどん ふやそう」`, 20),
+  EV('w50', 'words', 50, '💯', '単語50個', '単語を50個 登録した！', n => `${n}に 新しい首輪が 似合いそう…？`, 50),
+  EV('w100', 'words', 100, '🏆', '単語100個', '単語を100個 登録した！', n => `${n}「100個！ ほんとに すごいにゃ」`, 80),
+  EV('w300', 'words', 300, '👑', '単語300個', '単語を300個 登録した！', n => `${n}が 王さまの かんむりを かぶったよ。`, 120),
+  EV('w1000', 'words', 1000, '🌟', '単語1000個', '単語を1000個 登録した！', n => `${n}「伝説の 単語マスターだにゃ…！」`, 300),
+  EV('b1', 'books', 1, '📚', '単語帳デビュー', '新しい単語帳を作った！', n => `${n}が 本棚の上で ごきげんだよ。`, 20),
+  EV('b3', 'books', 3, '🗂', '単語帳3冊', '単語帳を3冊 作った！', n => `${n}「本棚が にぎやかに なってきたね」`, 30),
+  EV('q100', 'quizCorrect', 100, '🎯', 'クイズ100問', 'クイズで100問 正解した！', n => `${n}「てんさいだにゃ！」`, 30),
+  EV('q200', 'quizCorrect', 200, '🏹', 'クイズ200問', 'クイズで200問 正解した！', n => `${n}が 拍手してくれているよ。`, 40),
+  EV('q500', 'quizCorrect', 500, '🎓', 'クイズ500問', 'クイズで500問 正解した！', n => `${n}「もう 先生と よんでいい？」`, 80),
+  EV('s3', 'streak', 3, '🔥', '3日連続', '3日連続で 勉強した！', n => `毎日えらい！ ${n}も 毎日 待ってるよ。`, 30),
+  EV('s7', 'streak', 7, '🗓', '7日連続', '7日連続で 勉強した！', n => `1週間 続いたね！ ${n}も ごきげん。`, 60),
+  EV('s30', 'streak', 30, '🌙', '30日連続', '30日連続で 勉強した！', n => `${n}「ひと月 毎日なんて… 尊敬するにゃ」`, 150),
+  EV('c300', 'cards', 300, '🃏', 'カード300枚', 'カードを300枚 めくった！', n => `${n}「目が回るにゃ〜 でも すごい！」`, 30),
+  EV('c500', 'cards', 500, '🎴', 'カード500枚', 'カードを500枚 めくった！', n => `${n}が カードの山で 遊んでいるよ。`, 50),
+  EV('c1000', 'cards', 1000, '🀄', 'カード1000枚', 'カードを1000枚 めくった！', n => `${n}「カードの達人だにゃ！」`, 100),
+];
+const GOAL_LABEL = {
+  words: ['📝', g => `単語を${g}個 登録する`, '個'], books: ['📚', g => `単語帳を${g}冊 作る`, '冊'],
+  quizCorrect: ['🎯', g => `クイズで${g}問 正解する`, '問'], streak: ['🔥', g => `${g}日連続で 勉強する`, '日'],
+  cards: ['🃏', g => `カードを${g}枚 めくる`, '枚'],
 };
 
-function applyTheme(key) {
-  const theme = THEMES[key];
-  if (!theme) return;
+// 達成したイベントを記録。ゲームモードON＆silentでなければ「イベント発生！」の順番待ちに入れる
+function checkEvents(silent) {
+  const s = gameStats();
+  let changed = false;
+  EVENTS.forEach(e => {
+    if (game.events.includes(e.id) || s[e.type] < e.goal) return;
+    game.events.push(e.id); changed = true;
+    if (!silent && game.on) game.pending.push(e.id);
+  });
+  return changed;
+}
+function checkMissions() {
+  const t = today();
+  MISSIONS.forEach(m => {
+    if (t.done.includes(m.id) || t[m.key] < m.goal) return;
+    t.done.push(m.id);
+    if (game.on) { floatFx(`ミッション達成！ +${MISSION_PTS}`); addPts(MISSION_PTS); }
+  });
+}
+function addPts(n) {
+  if (!game.on) return;
+  game.pts += n;
+  let up = false;
+  while (game.pts >= need(game.lv)) { game.pts -= need(game.lv); game.lv++; up = true; }
+  renderHero();
+  if (up) levelUpFx();
+}
+function afterAction() {
+  checkMissions(); checkEvents(); saveGame(); renderHero();
+  if ($id('page-cal').classList.contains('active')) renderCal();
+  scheduleFlush();
+}
+
+// --- 勉強したときのフック ---
+function onQuizAnswer(correct) {
+  const t = today(); logActivity();
+  if (correct) { game.quizCorrect++; t.correct++; floatFx('なかよし +10'); addPts(10); }
+  else { floatFx('なかよし +2'); addPts(2); }
+  afterAction();
+}
+function onQuizFinished(score, total) {
+  game.quizCount++;
+  game.lastQuiz = { date: Date.now(), score, total };
+  afterAction();
+}
+function onCardDone(w, remembered) {
+  const t = today(); logActivity();
+  game.cards++; t.cards++;
+  if (remembered) { const k = String(w).toLowerCase(); if (!game.learned.includes(k)) game.learned.push(k); }
+  addPts(1);
+  afterAction();
+}
+function onFlashFinished(score, total) {
+  game.lastFlash = { date: Date.now(), score, total };
+  saveGame(); scheduleFlush();
+}
+function onWordAdded() {
+  const t = today(); logActivity();
+  t.added++;
+  floatFx('なかよし +5'); addPts(5);
+  afterAction();
+}
+function lastResultCard(r, kind) {
+  if (!r || !r.total) return '';
+  const d = new Date(r.date), pct = Math.round(r.score / r.total * 100);
+  const body = kind === 'quiz' ? `${r.score} / ${r.total} 問正解` : `${r.total}枚中 ${r.score}枚「覚えた」`;
+  return `<div class="card last-card"><b class="card-title">前回の${kind === 'quiz' ? 'クイズ' : 'カード'}</b><div>${d.getMonth() + 1}月${d.getDate()}日　${body}</div><div class="result-bar"><i style="width:${pct}%"></i></div></div>`;
+}
+
+// --- ねこの絵 ---
+const FURS = {
+  shiro:   { fur:'#fbf8f3', belly:'#ffffff', patch:'#fbf8f3', inner:'#ffc2cf', line:'#5a4a44', eye:'#3a2e2a', blush:'#ff9fb4', whisk:'#b9aaa2' },
+  chatora: { fur:'#f6b56b', belly:'#fff1dc', patch:'#e0843a', inner:'#ffb3a7', line:'#6b4223', eye:'#3a2516', blush:'#ff8f8f', whisk:'#9c6a40' },
+  kuro:    { fur:'#363441', belly:'#4a4757', patch:'#363441', inner:'#e98fa6', line:'#141219', eye:'#e3ec6a', blush:'#ff7f9f', whisk:'#cfcbe0' },
+};
+const CAT_SVG = `
+<svg class="cat" viewBox="0 0 220 200" aria-hidden="true">
+  <g class="whole">
+    <ellipse cx="110" cy="194" rx="58" ry="6" fill="#000" opacity=".1"/>
+    <g class="tail">
+      <path d="M140 165 C 190 166, 206 128, 190 98 C 184 87, 170 90, 175 101 C 186 124, 176 150, 138 150 Z" fill="var(--fur)" stroke="var(--line)" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M186 104 C 190 112, 191 118, 190 124" stroke="var(--patch)" stroke-width="6" fill="none" stroke-linecap="round"/>
+    </g>
+    <g class="body">
+      <ellipse cx="110" cy="150" rx="52" ry="44" fill="var(--fur)" stroke="var(--line)" stroke-width="2.5"/>
+      <ellipse cx="110" cy="160" rx="30" ry="30" fill="var(--belly)"/>
+      <path d="M66 140 C 70 132, 76 130, 80 132" stroke="var(--patch)" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M154 140 C 150 132, 144 130, 140 132" stroke="var(--patch)" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <ellipse cx="92" cy="188" rx="14" ry="8" fill="var(--fur)" stroke="var(--line)" stroke-width="2.5"/>
+      <ellipse cx="128" cy="188" rx="14" ry="8" fill="var(--fur)" stroke="var(--line)" stroke-width="2.5"/>
+    </g>
+    <g class="head">
+      <g class="ear-l"><path d="M60 74 L68 22 L104 52 Z" fill="var(--fur)" stroke="var(--line)" stroke-width="2.5" stroke-linejoin="round"/><path d="M69 64 L73 36 L93 54 Z" fill="var(--inner)"/></g>
+      <g class="ear-r"><path d="M160 74 L152 22 L116 52 Z" fill="var(--fur)" stroke="var(--line)" stroke-width="2.5" stroke-linejoin="round"/><path d="M151 64 L147 36 L127 54 Z" fill="var(--inner)"/></g>
+      <ellipse cx="110" cy="86" rx="58" ry="46" fill="var(--fur)" stroke="var(--line)" stroke-width="2.5"/>
+      <path d="M100 44 L102 58 M110 42 L110 58 M120 44 L118 58" stroke="var(--patch)" stroke-width="5" stroke-linecap="round"/>
+      <path d="M70 122 Q110 140 150 122" stroke="var(--accent)" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <circle cx="110" cy="134" r="6.5" fill="#f6c443" stroke="#c7962a" stroke-width="1.5"/>
+      <ellipse cx="74" cy="100" rx="10" ry="5.5" fill="var(--blush)" opacity=".6"/>
+      <ellipse cx="146" cy="100" rx="10" ry="5.5" fill="var(--blush)" opacity=".6"/>
+      <g class="eyes-normal"><ellipse cx="88" cy="86" rx="7" ry="9" fill="var(--eye)"/><ellipse cx="132" cy="86" rx="7" ry="9" fill="var(--eye)"/><circle cx="90.5" cy="82" r="2.6" fill="#fff"/><circle cx="134.5" cy="82" r="2.6" fill="#fff"/></g>
+      <g class="eyes-happy" stroke="var(--eye)" stroke-width="3.5" fill="none" stroke-linecap="round"><path d="M80 89 Q88 78 96 89"/><path d="M124 89 Q132 78 140 89"/></g>
+      <g class="eyes-sad"><ellipse cx="88" cy="89" rx="6" ry="7" fill="var(--eye)"/><ellipse cx="132" cy="89" rx="6" ry="7" fill="var(--eye)"/><circle cx="90" cy="86" r="2" fill="#fff"/><circle cx="134" cy="86" r="2" fill="#fff"/><path d="M79 76 L95 80 M141 76 L125 80" stroke="var(--line)" stroke-width="2.5" stroke-linecap="round"/></g>
+      <g class="eyes-closed" stroke="var(--eye)" stroke-width="3.5" fill="none" stroke-linecap="round"><path d="M80 86 Q88 93 96 86"/><path d="M124 86 Q132 93 140 86"/></g>
+      <path class="sweat" d="M156 66 C 152 74, 150 78, 154 81 C 158 84, 162 78, 156 66 Z" fill="#8fd3ff" stroke="#4aa8e0" stroke-width="1.2"/>
+      <path d="M105 97 L115 97 L110 102.5 Z" fill="#f08aa0" stroke="var(--line)" stroke-width="1.2" stroke-linejoin="round"/>
+      <g class="mouth-yawn"><ellipse cx="110" cy="113" rx="9" ry="12" fill="#c4475f" stroke="var(--line)" stroke-width="2"/><ellipse cx="110" cy="119" rx="5.5" ry="4" fill="#ff8ea2"/></g>
+      <path class="mouth-closed" d="M101 104 Q105.5 110 110 104 Q114.5 110 119 104" stroke="var(--line)" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      <g class="mouth-open"><path d="M101 104 Q110 120 119 104 Z" fill="#c4475f" stroke="var(--line)" stroke-width="2" stroke-linejoin="round"/><path d="M105 110 Q110 116 115 110" fill="#ff8ea2"/></g>
+      <g stroke="var(--whisk)" stroke-width="1.8" stroke-linecap="round"><path d="M62 96 L44 92"/><path d="M62 102 L44 104"/><path d="M158 96 L176 92"/><path d="M158 102 L176 104"/></g>
+    </g>
+  </g>
+</svg>`;
+let catHomeEl, catCalEl, catEventEl, catNameEl;
+const _poseTimers = new Map();
+function pose(cat, cls, ms) {
+  if (!cat) return;
+  clearTimeout(_poseTimers.get(cat));
+  cat.classList.remove('happy', 'sad', 'levelup', 'purr', 'yawn', 'invite');
+  void cat.getBoundingClientRect();
+  cat.classList.add(cls);
+  _poseTimers.set(cat, setTimeout(() => cat.classList.remove(cls), ms));
+}
+function say(el, text) { el.textContent = text; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+function fxIn(host, text, color, dx) {
+  const s = document.createElement('span');
+  s.className = 'fx-local'; s.textContent = text;
+  s.style.right = (40 + Math.random() * 40) + 'px';
+  s.style.color = color; s.style.setProperty('--dx', (dx || 0) + 'px');
+  host.appendChild(s); setTimeout(() => s.remove(), 1300);
+}
+// 画面中央あたりにふわっと出る文字（ゲームモードONのときだけ）。重ならないよう順番に出す
+const _fxQueue = [];
+let _fxBusy = false;
+function floatFx(text) {
+  if (!game.on) return;
+  _fxQueue.push(() => {
+    const s = document.createElement('span');
+    s.className = 'fx'; s.textContent = text;
+    s.style.setProperty('--dx', (Math.random() * 30 - 15) + 'px');
+    $id('fxLayer').appendChild(s); setTimeout(() => s.remove(), 1400);
+  });
+  runFx();
+}
+function runFx() {
+  if (_fxBusy || !_fxQueue.length) return;
+  _fxBusy = true;
+  _fxQueue.shift()();
+  setTimeout(() => { _fxBusy = false; runFx(); }, 550);
+}
+function confetti(host, count) {
+  const colors = ['#fff', '#ffc23b', '#ff7aa2', '#5fd0ff', '#7ee08a'];
+  for (let i = 0; i < count; i++) {
+    const c = document.createElement('span');
+    c.className = 'confetti';
+    const ang = Math.random() * Math.PI * 2, dist = 60 + Math.random() * 90;
+    c.style.setProperty('--x', Math.cos(ang) * dist + 'px');
+    c.style.setProperty('--y', Math.sin(ang) * dist - 30 + 'px');
+    c.style.setProperty('--r', (Math.random() * 720 - 360) + 'deg');
+    c.style.background = colors[i % colors.length];
+    host.appendChild(c); setTimeout(() => c.remove(), 1400);
+  }
+}
+function levelUpFx() {
+  const lv = game.lv;
+  _fxQueue.push(() => {
+    const layer = $id('fxLayer');
+    const f = document.createElement('div');
+    f.className = 'lvup-flag'; f.textContent = `LEVEL UP! Lv.${lv}`;
+    layer.appendChild(f); setTimeout(() => f.remove(), 1900);
+    confetti(layer, 36);
+  });
+  runFx();
+  if ($id('page-search').classList.contains('active')) {
+    pose(catHomeEl, 'levelup', 1600);
+    say($id('bubble'), pick(['レベルアップ！ なかよくなったね', 'やったー！ もっと なかよし！']));
+  }
+}
+
+// --- 画面の描画 ---
+function renderHero() {
+  const n = need(game.lv);
+  $id('lvText').textContent = 'Lv.' + game.lv;
+  $id('xpFill').style.width = Math.min(100, game.pts / n * 100) + '%';
+  $id('xpText').textContent = `${game.pts}/${n}`;
+  $id('nameTag').textContent = catName();
+  const st = streakDays(), tag = $id('streakTag');
+  tag.textContent = `🔥 ${st}日連続`;
+  tag.hidden = st < 2;
+}
+let calMonth = new Date(); calMonth.setDate(1);
+function moveCal(step) { calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + step, 1); renderCal(); }
+function monthLine() {
+  const now = new Date(), n = monthDays(now.getFullYear(), now.getMonth());
+  return n ? `今月は ${n}日 がんばったね！ えらい！` : 'きょうから いっしょに がんばろ！';
+}
+function renderCal() {
+  const s = gameStats();
+  $id('stats').innerHTML = [[s.words, '登録した単語'], [s.books, '作った単語帳'], [s.learned, '覚えた単語'],
+    [s.quizCount, 'クイズ回数'], [s.quizCorrect, 'クイズ正解'], [s.cards, 'めくったカード']]
+    .map(([v, l]) => `<div class="stat"><b>${v.toLocaleString()}</b><span>${l}</span></div>`).join('');
+
+  const y = calMonth.getFullYear(), mo = calMonth.getMonth(), now = new Date(), tk = dateKey();
+  $id('calTitle').textContent = `${y}年 ${mo + 1}月`;
+  $id('calNext').disabled = y > now.getFullYear() || (y === now.getFullYear() && mo >= now.getMonth());
+  const paw = '<svg viewBox="0 0 24 24"><ellipse cx="12" cy="16" rx="5" ry="4.2"/><circle cx="6" cy="10" r="2.2"/><circle cx="10" cy="6.5" r="2.2"/><circle cx="14" cy="6.5" r="2.2"/><circle cx="18" cy="10" r="2.2"/></svg>';
+  let html = ['日', '月', '火', '水', '木', '金', '土'].map(d => `<div class="dow">${d}</div>`).join('');
+  for (let i = 0, first = new Date(y, mo, 1).getDay(); i < first; i++) html += '<div></div>';
+  for (let d = 1, last = new Date(y, mo + 1, 0).getDate(); d <= last; d++) {
+    const k = dateKey(new Date(y, mo, d)), cnt = game.days[k] || 0;
+    const cls = ['d', cnt ? 'done' : '', cnt >= 20 ? 'lots' : '', k === tk ? 'today' : ''].join(' ');
+    html += `<div class="${cls}" title="${cnt ? cnt + '回' : ''}">${d}${cnt ? paw : ''}</div>`;
+  }
+  $id('cal').innerHTML = html;
+
+  const t = today();
+  $id('missions').innerHTML = MISSIONS.map(m => {
+    const ok = t.done.includes(m.id);
+    return `<div class="mission"><span class="ck${ok ? ' ok' : ''}">${ok ? '✓' : ''}</span>${m.t}<span class="pg">${Math.min(t[m.key], m.goal)}/${m.goal}</span></div>`;
+  }).join('');
+
+  $id('goals').innerHTML = Object.keys(GOAL_LABEL).map(type => {
+    const next = EVENTS.filter(e => e.type === type && !game.events.includes(e.id)).sort((a, b) => a.goal - b.goal)[0];
+    if (!next) return '';
+    const [ic, label, unit] = GOAL_LABEL[type], cur = Math.min(s[type], next.goal);
+    return `<div class="goal"><span class="gi">${ic}</span><span>${label(next.goal)}</span><span class="gr">あと${next.goal - cur}${unit}</span><span class="gb"><i style="width:${cur / next.goal * 100}%"></i></span></div>`;
+  }).join('') || '<div style="font-size:13px;color:var(--text2)">ぜんぶ達成！ すごい！</div>';
+
+  $id('badges').innerHTML = EVENTS.map(e => game.events.includes(e.id)
+    ? `<button type="button" class="badge" onclick="showBadge('${e.id}')"><span>${e.i}</span>${e.n}</button>`
+    : `<div class="badge locked"><span>${e.i}</span>${e.n}</div>`).join('');
+
+  if (catCalEl && catCalEl.classList.length === 1) $id('calBubble').textContent = monthLine();
+}
+function renderSettings() {
+  applyTheme();
+  $id('nameSetting').textContent = catName();
+  document.querySelectorAll('#furSeg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.fur === game.fur)));
+  $id('gameToggle').setAttribute('aria-checked', String(game.on));
+}
+function renderGame() {
+  renderHero();
+  if ($id('page-cal').classList.contains('active')) renderCal();
+  if ($id('page-settings').classList.contains('active')) renderSettings();
+}
+
+// --- 設定 ---
+function setGame(on) {
+  game.on = on;
+  if (on) checkEvents(true);   // OFFの間に達成していたぶんは、ごほうびなしでバッジだけ付ける
+  saveGame(); applyGame();
+  if (on && !game.named) setTimeout(openName, 400);
+}
+function applyGame() {
+  document.body.classList.toggle('game-off', !game.on);
+  $id('gameToggle').setAttribute('aria-checked', String(game.on));
+  renderGame();
+}
+function setFur(f) {
+  if (!FURS[f]) return;
+  game.fur = f; saveGame(); applyFur();
+  document.querySelectorAll('#furSeg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.fur === f)));
+}
+function applyFur() {
   const root = document.documentElement;
-  Object.entries(theme).forEach(([k, v]) => {
-    if (k.startsWith('--')) root.style.setProperty(k, v);
+  Object.entries(FURS[game.fur] || FURS.shiro).forEach(([k, v]) => root.style.setProperty('--' + k, v));
+}
+
+// --- 名前 ---
+const NAME_SUGG = ['モカ', 'きなこ', 'ミケ', 'タマ', 'ココ', 'ムギ'];
+function openName() {
+  $id('nameInput').value = game.name || '';
+  $id('nameOv').classList.add('show');
+  syncModalViewport();
+  pose(catNameEl, 'happy', 1400);
+}
+function saveName() {
+  const v = $id('nameInput').value.trim();
+  if (!v) { $id('nameInput').placeholder = '名前を入れてね'; $id('nameInput').focus(); return; }
+  game.name = v.slice(0, 10); game.named = true; saveGame();
+  closeModal('nameOv');
+  renderGame();
+  if ($id('page-search').classList.contains('active')) {
+    say($id('bubble'), `${game.name}だよ！ よろしくね`);
+    pose(catHomeEl, 'happy', 1400);
+    confetti($id('heroBand'), 24);
+  }
+}
+function skipName() { game.named = true; saveGame(); closeModal('nameOv'); renderGame(); }
+
+// --- イベント発生（順番待ちを1つずつ出す。クイズ・カードの途中や入力中は出さない） ---
+let _flushTimer, _badgeView = false;
+function scheduleFlush(ms = 700) { clearTimeout(_flushTimer); _flushTimer = setTimeout(flushEvents, ms); }
+function canShowOverlay() {
+  if (document.querySelector('.modal-overlay.show')) return false;
+  if ($id('page-study').classList.contains('active') && document.querySelector('#quiz-content .quiz-card, #flash-content .flash-card')) return false;
+  return true;
+}
+function fillEventCard(e, kicker, reward, ok) {
+  $id('eventKicker').textContent = kicker;
+  $id('eventTitle').textContent = e.title;
+  $id('eventText').textContent = e.text(catName());
+  $id('eventReward').textContent = reward;
+  $id('eventOk').textContent = ok;
+  $id('eventOv').classList.add('show');
+  syncModalViewport();
+  pose(catEventEl, 'happy', 1400);
+}
+function flushEvents() {
+  if (!game.on || !game.pending.length || !canShowOverlay()) return;
+  // ふわっと文字やレベルアップの演出中は、終わってから出す
+  if (_fxBusy || _fxQueue.length || $id('fxLayer').childElementCount) { scheduleFlush(500); return; }
+  const e = EVENTS.find(x => x.id === game.pending[0]);
+  if (!e) { game.pending.shift(); saveGame(); return flushEvents(); }
+  _badgeView = false;
+  fillEventCard(e, '🎊 イベント発生！', `ごほうび　なかよしポイント +${e.pts}`, 'やったね！');
+  confetti($id('eventCard'), 30);
+}
+function showBadge(id) {
+  const e = EVENTS.find(x => x.id === id);
+  if (!e) return;
+  _badgeView = true;
+  fillEventCard(e, '🏅 達成したイベント', `なかよしポイント +${e.pts}`, 'とじる');
+}
+function closeEvent() {
+  $id('eventOv').classList.remove('show');
+  if (_badgeView) { _badgeView = false; return; }
+  const e = EVENTS.find(x => x.id === game.pending.shift());
+  if (e) { floatFx(`なかよし +${e.pts}`); addPts(e.pts); }
+  saveGame(); renderGame();
+  if ($id('page-cal').classList.contains('active')) { say($id('calBubble'), 'これからも いっしょに がんばろ！'); pose(catCalEl, 'happy', 1400); }
+  scheduleFlush(600);
+}
+
+// --- ねこのふるまい ---
+function petCat(cat, bub, host) {
+  pose(cat, 'purr', 2700);
+  say(bub, pick(['ゴロゴロ…', 'そこ きもちいい〜', 'ゴロゴロ…♪']));
+  for (let i = 0; i < 5; i++) setTimeout(() => fxIn(host, '♥', '#ff6f96', Math.random() * 60 - 30), i * 220);
+}
+let _inviteTimer;
+function invite() {
+  if (game.on) return;
+  pose(catHomeEl, 'invite', 1700);
+  const el = $id('invite');
+  el.textContent = pick(['あそぼ？', 'ねえねえ、あそぼ？', 'いっしょに やる？', 'ひまだにゃ…']);
+  el.classList.add('show');
+  clearTimeout(_inviteTimer);
+  _inviteTimer = setTimeout(() => el.classList.remove('show'), 3200);
+}
+function turnOnFromCat() {
+  $id('invite').classList.remove('show');
+  setGame(true);
+  confetti($id('heroBand'), 24);
+  pose(catHomeEl, 'happy', 1400);
+  say($id('bubble'), 'やったー！ いっしょに がんばろ！');
+}
+function idleLines() {
+  const t = today(), lines = ['きょうも いっしょに がんばろ！', 'クイズ やってみる？', '新しい単語、ふえるかな？'];
+  const m = MISSIONS.find(x => !t.done.includes(x.id));
+  lines.push(m ? `あと${m.goal - t[m.key]}${m.unit}で ミッション達成だよ` : 'きょうのミッション ぜんぶ達成！ えらい！');
+  const st = streakDays();
+  if (st >= 2) lines.push(`${st}日連続！ このまま続けよ`);
+  return lines;
+}
+let _lastTouch = Date.now();
+['pointerdown', 'keydown'].forEach(ev => document.addEventListener(ev, () => { _lastTouch = Date.now(); }, { passive: true, capture: true }));
+setInterval(() => {
+  if (document.hidden || document.querySelector('.modal-overlay.show')) return;
+  const home = $id('page-search').classList.contains('active') && !$id('page-search').classList.contains('searching') && window.scrollY < 200;
+  const cal = $id('page-cal').classList.contains('active') && window.scrollY < 200;
+  if (!game.on) { if (home && Math.random() < .3) invite(); return; }
+  if (Date.now() - _lastTouch > 45000 && (home || cal)) {
+    _lastTouch = Date.now();
+    if (home) { pose(catHomeEl, 'yawn', 2900); say($id('bubble'), pick(['ふわぁ〜… ひまだにゃ', 'ん〜っ（のび〜）', 'クイズ しないの…？'])); }
+    else { pose(catCalEl, 'yawn', 2900); say($id('calBubble'), 'ふわぁ〜…'); }
+    return;
+  }
+  if (home && catHomeEl.classList.length === 1 && Math.random() < .3) say($id('bubble'), pick(idleLines()));
+  if (cal && catCalEl.classList.length === 1 && Math.random() < .4) say($id('calBubble'), pick([monthLine(), ...idleLines().slice(3)]));
+}, 10000);
+
+function initGame() {
+  $id('catHomeWrap').innerHTML = CAT_SVG;
+  $id('catCalWrap').innerHTML = CAT_SVG;
+  $id('catEventWrap').innerHTML = CAT_SVG;
+  $id('catNameWrap').innerHTML = CAT_SVG;
+  catHomeEl = $id('catHomeWrap').querySelector('.cat');
+  catCalEl = $id('catCalWrap').querySelector('.cat');
+  catEventEl = $id('catEventWrap').querySelector('.cat');
+  catNameEl = $id('catNameWrap').querySelector('.cat');
+  $id('catHomeWrap').addEventListener('click', () => {
+    if (game.on) petCat(catHomeEl, $id('bubble'), $id('heroBand'));
+    else turnOnFromCat();
   });
-  localStorage.setItem('theme', key);
-  // テーマボタンの選択状態更新
-  document.querySelectorAll('.theme-btn').forEach(b => {
-    b.classList.toggle('selected', b.dataset.theme === key);
-  });
-  document.querySelectorAll('.theme-dot').forEach(d => {
-    const themeKey = d.dataset.theme === 'dark' ? 'dark' : d.dataset.theme;
-    d.classList.toggle('active', themeKey === key);
-  });
+  $id('catCalWrap').addEventListener('click', () => petCat(catCalEl, $id('calBubble'), $id('calHero')));
+  $id('nameSugg').innerHTML = NAME_SUGG.map(n => `<button type="button" data-n="${n}">${n}</button>`).join('');
+  $id('nameSugg').addEventListener('click', e => { const b = e.target.closest('button'); if (b) $id('nameInput').value = b.dataset.n; });
+  $id('nameInput').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) saveName(); });
+  applyFur();
+  // 初回（v3にしたとき）は、すでに達成している記録をごほうびなしでバッジにする
+  if (!game.init) { checkEvents(true); game.init = true; }
+  today(); saveGame();
+  applyGame();
+  scheduleFlush(1200);
 }
 
 // iOS キーボード表示時: フォーカス中の入力欄をモーダル内で見える位置へ
@@ -1827,11 +2523,11 @@ if (window.visualViewport) {
   });
 }
 
-// 保存済みテーマを適用
-const savedTheme = localStorage.getItem('theme') || 'dark';
-// DOM読み込み後に適用
+// テーマとねこを先に用意してから描画する
+buildThemeSwatches();
+applyTheme();
+initGame();
 window.addEventListener('DOMContentLoaded', () => {
-  applyTheme(savedTheme);
   renderSearch();
   checkForUpdate();
 });
