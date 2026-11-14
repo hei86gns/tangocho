@@ -5,132 +5,228 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>tangocho 使い方</title>
 <style>
-:root { --bg:#0f0d16; --surface:#1a1820; --surface2:#24213a; --border:#44425a; --accent:#7c6cfc; --accent2:#a89cff; --text:#e8e8f0; --text2:#b0b0c8; --text3:#7a7a92; --green:#34d399; --radius:14px; }
+:root { --bg1:#f4f0fd; --bg2:#e1d6fb; --surface:#ffffffe0; --surface2:#ece6ff; --border:#e2d9f7; --accent:#7051f5; --header1:#9579ff; --header2:#6847ee; --text:#251e3a; --text2:#5d5578; --text3:#857da0; --radius:16px; color-scheme: light; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg1:#1a1430; --bg2:#110d20; --surface:#251e40e6; --surface2:#342a5c; --border:#3a3060; --accent:#a58bff; --header1:#5a3fc0; --header2:#3a2690; --text:#efeaff; --text2:#c4bce0; --text3:#9a90bd; color-scheme: dark; }
+}
 * { box-sizing:border-box; margin:0; padding:0; }
-body { font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif; background:var(--bg); color:var(--text); padding:24px 16px 60px; max-width:680px; margin:0 auto; line-height:1.7; }
-h1 { font-size:28px; font-weight:800; background:linear-gradient(135deg,var(--accent2),var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:6px; }
-.subtitle { color:var(--text3); font-size:14px; margin-bottom:32px; }
-h2 { font-size:18px; font-weight:700; color:var(--accent2); margin:32px 0 12px; display:flex; align-items:center; gap:8px; }
-h2::before { content:''; display:inline-block; width:4px; height:18px; background:var(--accent); border-radius:2px; }
-.card { background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:12px; }
-.step { display:flex; gap:12px; margin-bottom:10px; align-items:flex-start; }
+body { font-family:"Hiragino Maru Gothic ProN","Hiragino Sans",-apple-system,BlinkMacSystemFont,sans-serif; background:linear-gradient(165deg,var(--bg1),var(--bg2)) fixed; color:var(--text); line-height:1.75; min-height:100vh; }
+.band { background:linear-gradient(90deg,var(--header1),var(--header2)); color:#fff; padding:calc(20px + env(safe-area-inset-top)) 20px 22px; border-radius:0 0 26px 26px; }
+.band h1 { font-size:26px; font-weight:800; }
+.band p { font-size:14px; opacity:.9; }
+main { max-width:680px; margin:0 auto; padding:8px 16px 60px; }
+.toc { display:flex; flex-wrap:wrap; gap:6px; margin:16px 0 4px; }
+.toc a { font-size:13px; padding:4px 12px; border-radius:99px; background:var(--surface); border:1.5px solid var(--border); color:var(--text2); text-decoration:none; }
+h2 { font-size:18px; font-weight:800; margin:30px 0 10px; display:flex; align-items:center; gap:8px; scroll-margin-top:16px; }
+h2::before { content:''; width:5px; height:20px; background:var(--accent); border-radius:3px; }
+h3 { font-size:15px; font-weight:800; margin:16px 0 8px; }
+.card { background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); padding:14px 16px; margin-bottom:12px; }
+.step { display:flex; gap:12px; margin-bottom:8px; align-items:flex-start; }
 .step:last-child { margin-bottom:0; }
-.num { background:var(--accent); color:#fff; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; margin-top:2px; }
+.num { background:var(--accent); color:#fff; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; flex-shrink:0; margin-top:3px; }
+@media (prefers-color-scheme: dark) { .num { color:#16121f; } }
 .step-text { font-size:15px; color:var(--text2); }
-.step-text strong { color:var(--text); }
-.tag { display:inline-block; padding:2px 10px; border-radius:20px; font-size:12px; background:rgba(124,108,252,0.15); color:var(--accent2); border:1px solid rgba(124,108,252,0.3); margin-right:4px; }
-.tip { background:var(--surface2); border-left:3px solid var(--accent); border-radius:0 8px 8px 0; padding:12px 14px; margin-bottom:12px; font-size:14px; color:var(--text2); }
-.tip strong { color:var(--accent2); }
-table { width:100%; border-collapse:collapse; font-size:14px; }
-th { text-align:left; padding:8px 12px; color:var(--text3); font-weight:600; border-bottom:1px solid var(--border); }
-td { padding:10px 12px; border-bottom:1px solid var(--border); color:var(--text2); vertical-align:top; }
-td:first-child { color:var(--accent2); font-weight:600; white-space:nowrap; }
+strong { color:var(--text); }
+.tag { display:inline-block; padding:1px 10px; border-radius:99px; font-size:12.5px; background:var(--surface2); color:var(--text); margin:0 2px; white-space:nowrap; }
+.tip { background:var(--surface2); border-left:4px solid var(--accent); border-radius:0 12px 12px 0; padding:11px 14px; margin-bottom:12px; font-size:14px; color:var(--text2); }
+table { width:100%; border-collapse:collapse; font-size:14px; background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:12px; }
+th { text-align:left; padding:8px 12px; color:var(--text3); font-weight:700; border-bottom:1px solid var(--border); font-size:13px; }
+td { padding:9px 12px; border-bottom:1px solid var(--border); color:var(--text2); vertical-align:top; }
+td:first-child { color:var(--text); font-weight:700; white-space:nowrap; }
 tr:last-child td { border-bottom:none; }
-.url { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-family:monospace; font-size:14px; color:var(--accent2); word-break:break-all; margin-bottom:12px; }
-a { color:var(--accent2); }
+.tabbar { display:grid; grid-template-columns:repeat(5,1fr); background:var(--surface); border:1.5px solid var(--border); border-radius:var(--radius); padding:8px 4px; margin-bottom:12px; text-align:center; font-size:11.5px; line-height:1.5; color:var(--text2); }
+.url { background:var(--surface); border:1.5px solid var(--border); border-radius:12px; padding:10px 14px; font-family:ui-monospace,Menlo,monospace; font-size:14px; color:var(--accent); word-break:break-all; margin:14px 0 4px; }
+a { color:var(--accent); }
+.foot { text-align:center; color:var(--text3); font-size:13px; margin-top:40px; }
 </style>
 </head>
 <body>
 
-<h1>📖 tangocho</h1>
-<p class="subtitle">使い方マニュアル</p>
+<div class="band">
+  <h1>📖 tangocho 使い方</h1>
+  <p>v3.0 対応（2026年11月）</p>
+</div>
 
+<main>
 <div class="url">https://hei86gns.github.io/tangocho/</div>
 
+<nav class="toc">
+  <a href="#tabs">画面の見方</a><a href="#login">ログイン</a><a href="#color">色・明るさ</a><a href="#search">検索</a><a href="#add">単語の追加</a><a href="#books">単語帳</a><a href="#quiz">クイズ</a><a href="#card">カード</a><a href="#cal">カレンダー</a><a href="#cat">猫を飼う</a><a href="#data">データ管理</a><a href="#devices">複数の端末</a><a href="#homescreen">ホーム画面に追加</a><a href="#update">アプリの更新</a>
+</nav>
+
+<!-- 画面の見方 -->
+<h2 id="tabs">画面の見方</h2>
+<p class="step-text" style="margin-bottom:10px">画面のいちばん下に、5つのタブ（切り替えボタン）があります。</p>
+<div class="tabbar"><span>🏠<br>ホーム</span><span>📕<br>単語帳</span><span>✅<br>学習</span><span>📅<br>カレンダー</span><span>⚙️<br>設定</span></div>
+<table>
+  <tr><th>タブ</th><th>できること</th></tr>
+  <tr><td>🏠 ホーム</td><td>単語の検索・追加・編集。上の帯に猫がいて、右上で色と明るさを変えられる</td></tr>
+  <tr><td>📕 単語帳</td><td>自分の単語帳を作る・中身を見る。「＋ 単語を追加」もここ</td></tr>
+  <tr><td>✅ 学習</td><td>上の切り替えで「🎯 クイズ」と「🃏 カード」を選ぶ</td></tr>
+  <tr><td>📅 カレンダー</td><td>勉強した日の記録、これまでの成績、今日のミッション、イベント</td></tr>
+  <tr><td>⚙️ 設定</td><td>色・明るさ・猫・ログイン・バックアップ・このマニュアル・バージョン</td></tr>
+</table>
+
 <!-- ログイン -->
-<h2>ログイン・アカウント</h2>
+<h2 id="login">ログイン・アカウント</h2>
 <div class="card">
-  <div class="step"><div class="num">1</div><div class="step-text">アプリを開き、下の <strong>「単語帳」</strong> タブをタップ</div></div>
-  <div class="step"><div class="num">2</div><div class="step-text"><strong>「ログインして同期する」</strong> をタップ</div></div>
+  <div class="step"><div class="num">1</div><div class="step-text">下の <strong>「設定」</strong> タブをタップ</div></div>
+  <div class="step"><div class="num">2</div><div class="step-text">「アカウント・クラウド」の <strong>「ログインして同期する」</strong> をタップ</div></div>
   <div class="step"><div class="num">3</div><div class="step-text">管理者から受け取った <strong>メールアドレスとパスワード</strong> を入力 → <strong>「ログイン」</strong></div></div>
-  <div class="step"><div class="num">4</div><div class="step-text">ログインすると単語が自動的にクラウドに保存・同期されます</div></div>
+  <div class="step"><div class="num">4</div><div class="step-text">ログイン中は、単語と単語帳が自動でクラウドに保存されます</div></div>
 </div>
-<div class="tip"><strong>招待制です。</strong>管理者から連絡を受けた方のみ利用できます。</div>
+<div class="tip"><strong>招待制です。</strong>管理者から連絡を受けた方のみ利用できます。パスワードを忘れたときは、ログイン画面の「パスワードを忘れた場合はこちら」から再設定できます。</div>
 
-<!-- 単語を検索 -->
-<h2>単語を検索する</h2>
+<!-- 色・明るさ -->
+<h2 id="color">色と明るさを変える</h2>
 <div class="card">
-  <div class="step"><div class="num">1</div><div class="step-text">下のタブ <strong>「検索」</strong> をタップ</div></div>
-  <div class="step"><div class="num">2</div><div class="step-text">検索窓に <strong>英語または日本語</strong> を入力</div></div>
-  <div class="step"><div class="num">3</div><div class="step-text">フィルターボタンで絞り込み可能：<span class="tag">すべて</span><span class="tag">マイ単語</span><span class="tag">履歴</span></div></div>
+  <div class="step"><div class="num">1</div><div class="step-text"><strong>ホームの右上</strong> にある色の名前（例：<span class="tag">パープル ▼</span>）をタップ → 一覧から色を選ぶ</div></div>
+  <div class="step"><div class="num">2</div><div class="step-text">その横の <span class="tag">☀️ ライト</span> / <span class="tag">🌙 ダーク</span> をタップすると、明るい画面と暗い画面が入れ替わる</div></div>
+</div>
+<p class="step-text" style="margin-bottom:10px">色は <span class="tag">パープル</span><span class="tag">グリーン</span><span class="tag">チョコバナナ</span><span class="tag">ライトブルー</span><span class="tag">さくら</span><span class="tag">ゆうやけ</span> の6種類です。</p>
+<div class="tip">「設定」タブでも同じことができます。設定の「明るさ」で <strong>「自動」</strong> を選ぶと、iPhoneの画面設定（ライト／ダーク）に合わせて自動で切り替わります。</div>
+
+<!-- 検索 -->
+<h2 id="search">単語を検索する</h2>
+<div class="card">
+  <div class="step"><div class="num">1</div><div class="step-text">下の <strong>「ホーム」</strong> タブをタップ</div></div>
+  <div class="step"><div class="num">2</div><div class="step-text">検索窓に <strong>英語または日本語</strong> を入力（入力中は上の帯が少し小さくなります）</div></div>
+  <div class="step"><div class="num">3</div><div class="step-text">ボタンで絞り込めます：<span class="tag">すべて</span><span class="tag">マイ単語</span><span class="tag">履歴</span></div></div>
 </div>
 <table>
-  <tr><th>フィルター</th><th>表示内容</th></tr>
-  <tr><td>すべて</td><td>全単語（約2,250語＋マイ単語）</td></tr>
-  <tr><td>マイ単語</td><td>自分で追加した単語のみ</td></tr>
-  <tr><td>履歴</td><td>最近追加した単語（新しい順）</td></tr>
+  <tr><th>絞り込み</th><th>表示される単語</th></tr>
+  <tr><td>すべて</td><td>内蔵の単語（約2,270語）＋ マイ単語</td></tr>
+  <tr><td>マイ単語</td><td>自分で追加・編集した単語だけ</td></tr>
+  <tr><td>履歴</td><td>マイ単語を、新しく登録した順に</td></tr>
 </table>
 
-<!-- 単語を追加 -->
-<h2>単語を追加する</h2>
-<div class="card">
-  <div class="step"><div class="num">1</div><div class="step-text">検索窓に追加したい英単語を入力</div></div>
-  <div class="step"><div class="num">2</div><div class="step-text"><strong>「＋ この単語を追加する」</strong> ボタンをタップ</div></div>
-  <div class="step"><div class="num">3</div><div class="step-text">英単語と日本語の意味を入力 → <strong>「保存」</strong></div></div>
-</div>
-<div class="tip">既存の単語カードの <strong>✏️ 編集ボタン</strong> から意味を変更することもできます。</div>
-
-<!-- 単語カードの操作 -->
-<h2>単語カードのボタン</h2>
+<h3>単語カードのボタン</h3>
 <table>
-  <tr><th>ボタン</th><th>機能</th></tr>
-  <tr><td>🔊 音声</td><td>英語の発音を読み上げる</td></tr>
-  <tr><td>✏️ 編集</td><td>意味を編集する</td></tr>
-  <tr><td>📚 単語帳追加</td><td>単語帳に追加する</td></tr>
-  <tr><td>🌐 Web検索</td><td>Google・Weblio等で検索する</td></tr>
+  <tr><th>ボタン</th><th>できること</th></tr>
+  <tr><td>🔊</td><td>英語の発音を読み上げる</td></tr>
+  <tr><td>✏️ 編集</td><td>意味・つづりの変更、入れる単語帳の変更、単語の削除</td></tr>
+  <tr><td>📚 単語帳</td><td>入れる単語帳を選ぶ（複数OK）。カードの <span class="tag">📚 単語帳名</span> のタグをタップしても同じ</td></tr>
+  <tr><td>🌐</td><td>Googleでその単語を調べる</td></tr>
 </table>
 
-<!-- フラッシュカード -->
-<h2>フラッシュカードで暗記する</h2>
+<!-- 単語の追加 -->
+<h2 id="add">単語を追加する</h2>
 <div class="card">
-  <div class="step"><div class="num">1</div><div class="step-text">下のタブ <strong>「カード」</strong> をタップ</div></div>
-  <div class="step"><div class="num">2</div><div class="step-text">対象の単語帳・範囲を選択 → <strong>「スタート」</strong></div></div>
-  <div class="step"><div class="num">3</div><div class="step-text">カードをタップすると <strong>日本語の意味が表示</strong> される</div></div>
-  <div class="step"><div class="num">4</div><div class="step-text"><strong>「✓ 覚えた」</strong> または <strong>「✗ もう一度」</strong> を選択して次へ</div></div>
+  <div class="step"><div class="num">1</div><div class="step-text">ホームの検索窓に追加したい単語を入力</div></div>
+  <div class="step"><div class="num">2</div><div class="step-text">表示される <strong>「＋ この単語を追加する」</strong> をタップ（Weblio・英辞郎・Googleで意味を調べるボタンも出ます）</div></div>
+  <div class="step"><div class="num">3</div><div class="step-text">英単語と日本語の意味を入力。入れたい単語帳があればチェック → <strong>「保存」</strong></div></div>
+</div>
+<div class="tip">「単語帳」タブの <strong>「＋ 単語を追加」</strong> からも追加できます。単語帳にチェックしなければ、「マイ単語」としてだけ登録されます。</div>
+
+<!-- 単語帳 -->
+<h2 id="books">単語帳を使う</h2>
+<div class="card">
+  <div class="step"><div class="num">1</div><div class="step-text">「単語帳」タブ → <strong>「＋ 新しい単語帳を作る」</strong> → 名前を入れて作成</div></div>
+  <div class="step"><div class="num">2</div><div class="step-text">単語カードの <strong>📚 単語帳</strong> ボタンから、単語を単語帳に入れる</div></div>
+  <div class="step"><div class="num">3</div><div class="step-text">単語帳をタップすると中身が見られます。<span class="tag">✏️ 編集</span><span class="tag">↪ 移動</span><span class="tag">✕ 外す</span> で整理できます（「外す」は単語帳から抜くだけで、単語は消えません）</div></div>
+  <div class="step"><div class="num">4</div><div class="step-text">クイズ・カードで、その単語帳だけを練習できます</div></div>
 </div>
 
 <!-- クイズ -->
-<h2>クイズに挑戦する</h2>
+<h2 id="quiz">クイズに挑戦する</h2>
 <div class="card">
-  <div class="step"><div class="num">1</div><div class="step-text">下のタブ <strong>「クイズ」</strong> をタップ</div></div>
-  <div class="step"><div class="num">2</div><div class="step-text">範囲・出題方向（英→日 / 日→英）を選択 → <strong>「スタート」</strong></div></div>
-  <div class="step"><div class="num">3</div><div class="step-text">4択から正しい意味を選ぶ。10問終了後に結果が表示される</div></div>
+  <div class="step"><div class="num">1</div><div class="step-text">「学習」タブ → 上の <strong>「🎯 クイズ」</strong> を選ぶ</div></div>
+  <div class="step"><div class="num">2</div><div class="step-text">出題範囲（全単語／最近登録）、単語帳、<strong>問題数（10問／20問）</strong> を選ぶ → <strong>「▶ クイズをはじめる」</strong></div></div>
+  <div class="step"><div class="num">3</div><div class="step-text">英単語の日本語の意味を4択で選ぶ。まちがえると正しい意味が表示されます</div></div>
+  <div class="step"><div class="num">4</div><div class="step-text">結果画面の <strong>「❌ 間違えた○語をもう一度」</strong> で、まちがえた単語だけを復習できます</div></div>
+</div>
+<div class="tip">クイズの条件を選ぶ画面の下に、<strong>前回のクイズの結果</strong>が表示されます（カードも同じです）。</div>
+
+<!-- カード -->
+<h2 id="card">カードで暗記する</h2>
+<div class="card">
+  <div class="step"><div class="num">1</div><div class="step-text">「学習」タブ → 上の <strong>「🃏 カード」</strong> を選ぶ</div></div>
+  <div class="step"><div class="num">2</div><div class="step-text">範囲・単語帳・<strong>枚数（20枚／50枚／すべて）</strong> を選ぶ → <strong>「▶ カードをめくる」</strong></div></div>
+  <div class="step"><div class="num">3</div><div class="step-text">カードをタップすると裏返って、日本語の意味が出ます</div></div>
+  <div class="step"><div class="num">4</div><div class="step-text"><strong>「✓ 覚えた」</strong> か <strong>「✗ もう一度」</strong> を押して次へ。「覚えた」単語の数はカレンダーに記録されます</div></div>
 </div>
 
-<!-- 単語帳 -->
-<h2>単語帳を使う</h2>
+<!-- カレンダー -->
+<h2 id="cal">カレンダーで記録を見る</h2>
+<table>
+  <tr><th>項目</th><th>内容</th></tr>
+  <tr><td>これまでの勉強</td><td>登録した単語・作った単語帳・覚えた単語・クイズ回数・クイズ正解・めくったカード</td></tr>
+  <tr><td>カレンダー</td><td>勉強した日に🐾肉球スタンプ。1日に20回以上（クイズの回答・カード・単語登録の合計）勉強した日は色が濃くなります。‹ › で前の月も見られます</td></tr>
+  <tr><td>今日のミッション</td><td>猫を飼っているときだけ表示（下の「猫を飼う」を参照）</td></tr>
+  <tr><td>イベント</td><td>猫を飼っているときだけ表示。次のイベントまでの残りと、達成したバッジ</td></tr>
+</table>
+
+<!-- 猫を飼う -->
+<h2 id="cat">猫を飼う</h2>
+<p class="step-text" style="margin-bottom:10px">勉強するほど猫と仲良くなる、ゲームのような機能です。最初は「飼っていない」状態です。</p>
 <div class="card">
-  <div class="step"><div class="num">1</div><div class="step-text">下のタブ <strong>「単語帳」</strong> → <strong>「＋ 新しい単語帳を作る」</strong></div></div>
-  <div class="step"><div class="num">2</div><div class="step-text">単語帳の名前を入力して作成</div></div>
-  <div class="step"><div class="num">3</div><div class="step-text">単語カードの <strong>📚 ボタン</strong> から単語帳に追加できる</div></div>
-  <div class="step"><div class="num">4</div><div class="step-text">クイズ・フラッシュカードで特定の単語帳だけ練習できる</div></div>
+  <div class="step"><div class="num">1</div><div class="step-text">ホームの猫が、ときどき <strong>「あそぼ？」</strong> と誘ってきます。その猫をタップすると飼いはじめます（「設定」タブの <strong>「猫を飼う」</strong> スイッチでもON/OFFできます）</div></div>
+  <div class="step"><div class="num">2</div><div class="step-text">はじめて飼うときに、<strong>名前</strong> をつけます（あとで設定から変えられます）</div></div>
+  <div class="step"><div class="num">3</div><div class="step-text">勉強すると <strong>なかよしポイント</strong> がたまり、いっぱいになると <strong>レベルアップ</strong> します</div></div>
 </div>
 
-<!-- 複数デバイス同期 -->
-<h2>複数の端末で使う</h2>
-<div class="tip"><strong>ログインすれば自動同期されます。</strong>iPhone・Mac・その他どの端末でも同じURLにアクセスしてログインするだけです。</div>
+<h3>なかよしポイントがもらえること</h3>
+<table>
+  <tr><th>したこと</th><th>ポイント</th></tr>
+  <tr><td>クイズで正解</td><td>+10</td></tr>
+  <tr><td>クイズでまちがえた</td><td>+2（参加賞）</td></tr>
+  <tr><td>カードを1枚めくった</td><td>+1</td></tr>
+  <tr><td>単語を追加した</td><td>+5</td></tr>
+  <tr><td>今日のミッションを1つ達成</td><td>+10</td></tr>
+  <tr><td>イベントを達成</td><td>+10〜300（イベントごとに違う）</td></tr>
+</table>
+<div class="tip">Lv.1 → 2 は50ポイント、そこから1レベル上がるごとに必要なポイントが30ずつ増えます。</div>
+
+<h3>今日のミッション（毎日リセット）</h3>
+<p class="step-text" style="margin-bottom:10px"><span class="tag">単語を3つ登録</span><span class="tag">カードを10枚めくる</span><span class="tag">クイズで10問正解</span></p>
+
+<h3>イベント</h3>
+<p class="step-text" style="margin-bottom:10px">単語の数・単語帳の数・クイズの正解数・連続で勉強した日数・めくったカードの数が節目に届くと、「🎊 イベント発生！」の画面が出て、ごほうびのポイントがもらえます。達成したイベントはカレンダーにバッジとして並び、タップすると内容をもう一度見られます。</p>
+
+<h3>猫とのふれあい</h3>
+<table>
+  <tr><th>こんなとき</th><th>猫のようす</th></tr>
+  <tr><td>猫をタップ</td><td>なでると、ゴロゴロ喜びます（ホームとカレンダーの猫）</td></tr>
+  <tr><td>しばらく何もしない</td><td>背伸びして、あくびをします</td></tr>
+  <tr><td>レベルアップ</td><td>高くジャンプして喜びます</td></tr>
+</table>
+<div class="tip"><strong>毛色</strong>は「設定」で <span class="tag">しろ</span><span class="tag">ちゃとら</span><span class="tag">くろ</span> から選べます。<br>猫の記録（ポイント・レベル・ミッション・カレンダーの記録）は <strong>端末ごとに別々</strong> に保存されます。iPhoneとMacでは別の猫になります。</div>
+
+<!-- データ管理 -->
+<h2 id="data">データの保存・バックアップ</h2>
+<table>
+  <tr><th>設定タブのボタン</th><th>できること</th></tr>
+  <tr><td>☁️ 今すぐクラウドに保存</td><td>ふだんは自動で保存されますが、すぐに保存したいときに</td></tr>
+  <tr><td>🆘 SQL緊急保存</td><td>クラウドに繋がらないときの非常用。管理者向けの保存用テキストをコピーします</td></tr>
+  <tr><td>📥 CSVでバックアップ</td><td>全単語を表計算ソフトで開けるファイルに保存</td></tr>
+  <tr><td>📤 マイ単語をコピー</td><td>自分の単語を、ほかの端末に貼り付けられる形でコピー</td></tr>
+  <tr><td>📲 マイ単語を読み込む</td><td>コピーした単語を貼り付けて取り込む（同じ単語は飛ばします）</td></tr>
+</table>
+
+<!-- 複数の端末 -->
+<h2 id="devices">複数の端末で使う</h2>
 <div class="card">
   <div class="step"><div class="num">1</div><div class="step-text">新しい端末で同じURLを開く</div></div>
-  <div class="step"><div class="num">2</div><div class="step-text">同じメールアドレスとパスワードでログイン</div></div>
-  <div class="step"><div class="num">3</div><div class="step-text">自動的に単語データが同期される</div></div>
+  <div class="step"><div class="num">2</div><div class="step-text">「設定」タブから、同じメールアドレスとパスワードでログイン</div></div>
+  <div class="step"><div class="num">3</div><div class="step-text">単語と単語帳が自動で同期されます</div></div>
 </div>
 
 <!-- ホーム画面に追加 -->
-<h2>iPhoneのホーム画面に追加する</h2>
+<h2 id="homescreen">iPhoneのホーム画面に追加する</h2>
 <div class="tip"><strong>Safariで操作します。</strong>（BraveではなくSafariで追加してください）</div>
 <div class="card">
-  <div class="step"><div class="num">1</div><div class="step-text"><strong>Safari</strong> で以下のURLを開く<br><span style="font-family:monospace;font-size:13px;color:var(--accent2)">https://hei86gns.github.io/tangocho/</span></div></div>
-  <div class="step"><div class="num">2</div><div class="step-text">画面下中央の <strong>共有ボタン（□↑）</strong> をタップ</div></div>
-  <div class="step"><div class="num">3</div><div class="step-text"><strong>「ホーム画面に追加」</strong> をタップ → <strong>「追加」</strong></div></div>
-  <div class="step"><div class="num">4</div><div class="step-text">ホーム画面にアイコンが作成され、タップするだけで開けるようになる</div></div>
+  <div class="step"><div class="num">1</div><div class="step-text"><strong>Safari</strong> で上のURLを開く</div></div>
+  <div class="step"><div class="num">2</div><div class="step-text">画面下の <strong>共有ボタン（□↑）</strong> をタップ</div></div>
+  <div class="step"><div class="num">3</div><div class="step-text"><strong>「ホーム画面に追加」</strong> → <strong>「追加」</strong></div></div>
+  <div class="step"><div class="num">4</div><div class="step-text">ホーム画面のアイコンから、すぐ開けるようになります</div></div>
 </div>
-<div class="tip">追加後はSafariを経由せず直接開きます。普段はBraveで使っていても、このショートカット追加だけSafariで行ってください。</div>
 
-<!-- アップデート -->
-<h2>アプリの更新について</h2>
-<div class="tip">アップデートは自動的に反映されます。<br>最新版を使うには <strong>アプリを開いて画面を上から引っ張って更新</strong>（プルリフレッシュ）するだけです。</div>
+<!-- アプリの更新 -->
+<h2 id="update">アプリの更新について</h2>
+<div class="tip">新しい版が出ると、<strong>アプリを開いたとき（またはアプリに戻ったとき）に自動で切り替わります</strong>。「新しいバージョンに更新します」と表示されたら、少し待つだけでOKです。<br>今の版は「設定」タブのいちばん下で確認できます。</div>
 
-<p style="text-align:center;color:var(--text3);font-size:13px;margin-top:40px">tangocho — <a href="https://hei86gns.github.io/tangocho/">アプリを開く</a></p>
+<p class="foot">tangocho — <a href="https://hei86gns.github.io/tangocho/">アプリを開く</a></p>
+</main>
 
 </body>
 </html>

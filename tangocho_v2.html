@@ -52,12 +52,13 @@ body { font-family: var(--font-ui); background: var(--bg1); color: var(--text); 
 body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; height: env(safe-area-inset-top); background: linear-gradient(90deg, var(--header1), var(--header2)); z-index: 150; pointer-events: none; }
 /* 検索中（フォーカス or 入力あり）は上の帯を小さく畳む。
    完全に消すと検索窓が画面最上部（時刻の真下）に張り付き、カーソル移動の拡大鏡が時刻と重なるため、タイトル行だけ残して余白を確保 */
-#page-search.searching .cat-home-wrap,
+#page-search.searching .hero-tools,
 #page-search.searching .hero-info .game-only,
 #page-search.searching .invite-bubble { display: none !important; }
-#page-search.searching .hero-row { min-height: 0; flex-direction: row; }
+#page-search.searching .hero-row { min-height: 0; flex-direction: row; align-items: center; }
+#page-search.searching .cat-home-wrap { width: 72px; order: 0; }
 #page-search.searching .hero-info { padding-bottom: 0; }
-#page-search.searching .hero-title b { font-size: 20px; text-align: left; }
+#page-search.searching .hero-title b { font-size: 22px; text-align: left; }
 .search-wrap { position: relative; }
 .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text3); width: 18px; height: 18px; pointer-events: none; }
 #search-input { width: 100%; padding: 13px 46px 13px 44px; background: var(--modal); border: 1.5px solid transparent; border-radius: var(--radius); color: var(--text); font-size: 16px; outline: none; transition: border-color .2s; -webkit-appearance: none; }
@@ -205,6 +206,16 @@ button, input, textarea, select { font-family: inherit; }
 .lv { background: rgba(255,255,255,.95); color: var(--header2); font-weight: 800; border-radius: 8px; padding: 0 7px; font-size: 12px; }
 .xpbar { flex: 1; height: 8px; background: rgba(255,255,255,.28); border-radius: 99px; overflow: hidden; }
 .xpbar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--xp), #fff); border-radius: 99px; transition: width .6s cubic-bezier(.3,1.4,.5,1); }
+/* ホーム右上：色（ドロップダウン）と明るさ */
+.hero-tools { display: flex; justify-content: flex-end; gap: 6px; }
+.tool-btn { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 11px; border-radius: 99px; border: 1px solid rgba(255,255,255,.4); background: rgba(255,255,255,.18); color: var(--on-header); font-size: 12.5px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.tool-btn .caret { font-size: 10px; opacity: .85; }
+.sw-dot { display: inline-block; width: 16px; height: 16px; border-radius: 50%; box-shadow: 0 0 0 1.5px rgba(255,255,255,.8); flex-shrink: 0; }
+.theme-menu { position: fixed; z-index: 120; min-width: 184px; background: var(--modal); border: 1.5px solid var(--border); border-radius: 14px; padding: 6px; box-shadow: 0 12px 30px rgba(0,0,0,.25); }
+.theme-menu button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 10px; border: 0; background: none; border-radius: 10px; color: var(--text); font-size: 14.5px; cursor: pointer; text-align: left; }
+.theme-menu button[aria-selected="true"] { background: var(--accent-soft); font-weight: 700; }
+.theme-menu .sw-dot { width: 22px; height: 22px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.1); }
+.theme-menu .ck { margin-left: auto; color: var(--accent); font-weight: 800; }
 .cat-home-wrap, .cat-cal-wrap { border: 0; background: none; padding: 0; cursor: pointer; flex-shrink: 0; display: block; }
 .cat-home-wrap { width: 120px; }
 .cat-cal-wrap { width: 96px; }
@@ -411,6 +422,13 @@ button.row, a.row { cursor: pointer; }
 <!-- ホーム（検索） -->
 <div class="page active" id="page-search">
   <div class="band home-band" id="heroBand">
+    <div class="hero-tools">
+      <div class="theme-pick">
+        <button type="button" class="tool-btn" id="themePickBtn" onclick="toggleThemeMenu()" aria-haspopup="listbox" aria-expanded="false" aria-label="色を選ぶ"><i class="sw-dot" id="themePickDot"></i><span id="themePickName"></span><span class="caret">▼</span></button>
+        <div class="theme-menu" id="themeMenu" role="listbox" hidden></div>
+      </div>
+      <button type="button" class="tool-btn" id="modeBtn" onclick="toggleLightDark()" aria-label="ライトとダークを切り替え"></button>
+    </div>
     <div class="hero-row">
       <div class="hero-info">
         <div class="hero-title"><b>tangocho</b><span class="streak game-only" id="streakTag" hidden></span></div>
@@ -500,7 +518,7 @@ button.row, a.row { cursor: pointer; }
       <div class="row"><span class="ic">🌗</span><span class="grow">明るさ</span>
         <div class="mini-seg" id="modeSeg"><button type="button" data-mode="light" onclick="setMode('light')">ライト</button><button type="button" data-mode="dark" onclick="setMode('dark')">ダーク</button><button type="button" data-mode="auto" onclick="setMode('auto')">自動</button></div>
       </div>
-      <div class="row"><span class="ic">🐱</span><span class="grow">ねこ＆ゲームモード<small>なかよしポイント・ミッション・ねこの動き</small></span><button type="button" class="toggle" id="gameToggle" role="switch" aria-checked="false" aria-label="ねこ＆ゲームモード" onclick="setGame(!game.on)"></button></div>
+      <div class="row"><span class="ic">🐱</span><span class="grow">猫を飼う<small>なかよしポイント・ミッション・ねこの動き</small></span><button type="button" class="toggle" id="gameToggle" role="switch" aria-checked="false" aria-label="猫を飼う" onclick="setGame(!game.on)"></button></div>
       <button type="button" class="row game-only" onclick="openName()"><span class="ic">🏷</span><span class="grow">ねこの名前</span><b id="nameSetting"></b><span class="chev">›</span></button>
       <div class="row game-only"><span class="ic">🎨</span><span class="grow">ねこの毛色</span>
         <div class="mini-seg" id="furSeg"><button type="button" data-fur="shiro" onclick="setFur('shiro')">しろ</button><button type="button" data-fur="chatora" onclick="setFur('chatora')">ちゃとら</button><button type="button" data-fur="kuro" onclick="setFur('kuro')">くろ</button></div>
@@ -519,7 +537,7 @@ button.row, a.row { cursor: pointer; }
       <a class="row" href="manual.html" target="_blank"><span class="ic">📖</span><span class="grow">使い方マニュアル</span><span class="chev">›</span></a>
     </div>
     <!-- 修正をGitHubに反映するたびに更新する（iPhoneに新しい版が届いたかの確認用・自動更新の判定にも使う） -->
-    <div class="app-version">tangocho v3.0（2026-11-14）</div>
+    <div class="app-version">tangocho v3.0（2026-11-15）</div>
   </div>
 </div>
 
@@ -2027,10 +2045,41 @@ function applyTheme() {
   try { localStorage.setItem(UI_KEY, JSON.stringify(ui)); } catch (e) {}
   document.querySelectorAll('#pswatches .psw').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.theme === ui.theme)));
   document.querySelectorAll('#modeSeg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === ui.mode)));
+  renderHeroTools();
 }
+const themeDot = t => `linear-gradient(135deg, ${t.light.header1} 0 50%, ${t.dark.header2} 50% 100%)`;
+// ホーム右上：今の色と明るさを表示
+function renderHeroTools() {
+  const t = THEMES[ui.theme];
+  $id('themePickDot').style.background = themeDot(t);
+  $id('themePickName').textContent = t.name;
+  $id('modeBtn').textContent = effMode() === 'dark' ? '🌙 ダーク' : '☀️ ライト';
+  if (!$id('themeMenu').hidden) buildThemeMenu();
+}
+function buildThemeMenu() {
+  $id('themeMenu').innerHTML = Object.entries(THEMES).map(([k, t]) =>
+    `<button type="button" role="option" aria-selected="${k === ui.theme}" onclick="pickTheme('${k}')"><i class="sw-dot" style="background:${themeDot(t)}"></i>${t.name}${k === ui.theme ? '<span class="ck">✓</span>' : ''}</button>`).join('');
+}
+function toggleThemeMenu(open) {
+  const m = $id('themeMenu'), btn = $id('themePickBtn');
+  if (open === undefined) open = m.hidden;
+  if (open) {
+    buildThemeMenu();
+    const r = btn.getBoundingClientRect();
+    m.style.top = (r.bottom + 6) + 'px';
+    m.style.right = Math.max(8, window.innerWidth - r.right) + 'px';
+  }
+  m.hidden = !open;
+  btn.setAttribute('aria-expanded', String(open));
+}
+function pickTheme(k) { setTheme(k); toggleThemeMenu(false); }
+// ライト⇔ダークを切り替え（「自動」だった場合も、押した時点で今と逆の明るさに固定）
+function toggleLightDark() { ui.mode = effMode() === 'dark' ? 'light' : 'dark'; applyTheme(); }
+document.addEventListener('click', e => { if (!e.target.closest('.theme-pick')) toggleThemeMenu(false); });
+window.addEventListener('scroll', () => { if (!$id('themeMenu').hidden) toggleThemeMenu(false); }, { passive: true });
 function buildThemeSwatches() {
   $id('pswatches').innerHTML = Object.entries(THEMES).map(([k, t]) =>
-    `<button type="button" class="psw" data-theme="${k}" onclick="setTheme('${k}')"><i style="background:linear-gradient(135deg, ${t.light.header1} 0 50%, ${t.dark.header2} 50% 100%)"></i>${t.name}</button>`).join('');
+    `<button type="button" class="psw" data-theme="${k}" onclick="setTheme('${k}')"><i style="background:${themeDot(t)}"></i>${t.name}</button>`).join('');
 }
 function setTheme(k) { ui.theme = k; applyTheme(); }
 function setMode(m) { ui.mode = m; applyTheme(); }
