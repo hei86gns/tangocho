@@ -322,7 +322,7 @@ body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; height: 
   <div class="section-label">ヘルプ</div>
   <a href="manual.html" target="_blank" class="btn-secondary" style="display:block;text-align:center;text-decoration:none;padding:14px;border-radius:14px;border:1.5px solid var(--border);color:var(--text2);font-size:15px;margin-bottom:10px">📖 使い方マニュアル</a>
   <!-- 修正をGitHubに反映するたびに更新する（iPhoneに新しい版が届いたかの確認用） -->
-  <div class="app-version">tangocho v2.4（2026-11-14）</div>
+  <div class="app-version">tangocho v2.5（2026-11-14）</div>
 </div>
 
 <!-- Quiz Page -->
@@ -1833,6 +1833,41 @@ const savedTheme = localStorage.getItem('theme') || 'dark';
 window.addEventListener('DOMContentLoaded', () => {
   applyTheme(savedTheme);
   renderSearch();
+  checkForUpdate();
+});
+
+// ========== 自動アップデート ==========
+// 公開ページ(GitHub Pages)は端末に最大10分キャッシュされるため、
+// 起動時・アプリに戻った時に最新版のバージョン表記を取りに行き、違えば読み込み直す。
+function versionOf(text) {
+  const m = /tangocho (v[\d.]+)/.exec(text || '');
+  return m ? m[1] : null;
+}
+let _updateChecking = false;
+async function checkForUpdate() {
+  if (_updateChecking || !navigator.onLine || location.protocol === 'file:') return;
+  const current = versionOf(document.querySelector('.app-version')?.textContent);
+  if (!current) return;
+  _updateChecking = true;
+  try {
+    const res = await fetch(location.pathname + '?check=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) return;
+    const latest = versionOf(await res.text());
+    if (!latest || latest === current) return;
+    // 同じ版への読み込み直しは1回だけ（何度もループしないための安全装置）
+    if (new URLSearchParams(location.search).get('v') === latest) return;
+    // 入力中は邪魔しない（モーダルが閉じてから次回のチェックで更新）
+    if (document.querySelector('.modal-overlay.show')) return;
+    showToast('新しいバージョン（' + latest + '）に更新します');
+    setTimeout(() => location.replace(location.pathname + '?v=' + encodeURIComponent(latest)), 800);
+  } catch (e) {
+    // オフライン等は無視
+  } finally {
+    _updateChecking = false;
+  }
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') checkForUpdate();
 });
 </script>
 </body>
