@@ -539,7 +539,7 @@ button.row, a.row { cursor: pointer; }
       <a class="row" href="manual.html" target="_blank"><span class="ic">📖</span><span class="grow">使い方マニュアル</span><span class="chev">›</span></a>
     </div>
     <!-- 修正をGitHubに反映するたびに更新する（iPhoneに新しい版が届いたかの確認用・自動更新の判定にも使う） -->
-    <div class="app-version">tangocho v3.0（2026-11-15）</div>
+    <div class="app-version">tangocho v3.1（2026-11-18）</div>
   </div>
 </div>
 
@@ -884,15 +884,30 @@ const _SB_URL = 'https://disfgytjjflnlowywess.supabase.co';
 const _SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpc2ZneXRqamZsbmxvd3l3ZXNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwMzIwNTUsImV4cCI6MjA5NzYwODA1NX0.E87A1J1BtMK9FHzYTjTZhy2QgjXW8WzzTMp1yNP0g1w';
 const _sb = window.supabase.createClient(_SB_URL, _SB_KEY);
 let _user = null;
+// 猫の記録（game列）のクラウド同期用
+let _gameSynced = false;     // クラウドの記録と合わせ終わるまでは、猫の記録をアップロードしない（古い記録で上書きしないため）
+let _gameColMissing = false; // Supabaseに game 列がまだ無い場合は、単語だけ保存する
+let _gameSaveTimer = null;
+const isGameColError = e => e && (e.code === 'PGRST204' || /\bgame\b/.test(e.message || ''));
 
 async function supaSave() {
   if (!_user) return;
-  const { error } = await _sb.from('user_data').upsert({
+  clearTimeout(_gameSaveTimer); _gameSaveTimer = null;
+  const row = {
     user_id: _user.id,
     my_words: state.myWords,
     books: state.books,
     updated_at: new Date().toISOString()
-  }, { onConflict: 'user_id' });
+  };
+  if (_gameSynced && !_gameColMissing) row.game = gamePayload();
+  let { error } = await _sb.from('user_data').upsert(row, { onConflict: 'user_id' });
+  if (error && row.game && isGameColError(error)) {
+    // game 列が未作成 → 単語だけ保存し直す（単語の同期を止めない）
+    _gameColMissing = true;
+    delete row.game;
+    ({ error } = await _sb.from('user_data').upsert(row, { onConflict: 'user_id' }));
+    console.warn('user_data に game 列がないため、猫の記録はクラウドに保存されません');
+  }
   if (error) {
     console.error('supaSave error:', error);
     showToast('⚠️ クラウド保存失敗: ' + (error.message || error.code || JSON.stringify(error)));
@@ -949,6 +964,9 @@ async function supaLoad() {
     showToast('⚠️ 同期できませんでした。ローカルデータを使用中。');
     return;
   }
+  // 猫の記録は「両方の良いとこ取り」で合わせる（どちらかで消えることはない）
+  if (data?.game) mergeGame(data.game);
+  _gameSynced = true;
   if (data && (data.my_words?.length || data.books?.length)) {
     const cloudWords = data.my_words || [];
     const localWords = state.myWords || [];
@@ -972,7 +990,15 @@ async function supaLoad() {
   }
   renderSearch();
   if (document.getElementById('page-books').classList.contains('active')) renderBooks();
-  checkEvents(true); saveGame(); renderGame();
+  checkEvents(true); saveGame(); applyFur(); applyGame();
+}
+
+// アプリに戻ってきた時、別の端末で増えた猫の記録だけ取り込む（トーストは出さない）
+async function supaPullGame() {
+  if (!_user || !_gameSynced || _gameColMissing) return;
+  const { data, error } = await _sb.from('user_data').select('game').eq('user_id', _user.id).maybeSingle();
+  if (error || !data?.game) return;
+  if (mergeGame(data.game)) { checkEvents(true); saveGame(); applyFur(); applyGame(); }
 }
 
 function renderAuthUI() {
@@ -1073,6 +1099,7 @@ async function setNewPassword() {
 async function authLogout() {
   await _sb.auth.signOut();
   _user = null;
+  _gameSynced = false;
   renderAuthUI();
   showToast('ログアウトしました');
 }
@@ -2088,16 +2115,49 @@ function setMode(m) { ui.mode = m; applyTheme(); }
 _mql.addEventListener?.('change', () => { if (ui.mode === 'auto') applyTheme(); });
 
 // ========== ねこ＆ゲームモード ==========
-// 記録はこの端末の localStorage('tangochoGame') だけに保存（クラウド同期の対象外）
+// 記録は localStorage('tangochoGame') に保存し、ログイン中はSupabase user_data.game にも同期する
 const GAME_KEY = 'tangochoGame';
 const dateKey = (d = new Date()) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 const game = (() => {
   const base = { on: false, named: false, name: '', fur: 'shiro', lv: 1, pts: 0, days: {}, quizCount: 0, quizCorrect: 0, cards: 0,
-    learned: [], events: [], pending: [], today: null, lastQuiz: null, lastFlash: null, init: false };
+    learned: [], events: [], pending: [], today: null, lastQuiz: null, lastFlash: null, init: false, cfgAt: 0 };
   try { return Object.assign(base, JSON.parse(localStorage.getItem(GAME_KEY) || '{}')); } catch (e) { return base; }
 })();
-function saveGame() { try { localStorage.setItem(GAME_KEY, JSON.stringify(game)); } catch (e) {} }
+function saveGame() {
+  try { localStorage.setItem(GAME_KEY, JSON.stringify(game)); } catch (e) {}
+  // クラウドへは3秒まとめて送る（クイズ1問ごとに送らない）。クラウドと合わせる前は送らない
+  if (_user && _gameSynced && !_gameColMissing) { clearTimeout(_gameSaveTimer); _gameSaveTimer = setTimeout(supaSave, 3000); }
+}
+const touchCfg = () => { game.cfgAt = Date.now(); };   // ON/OFF・名前・毛色を変えた時刻（新しい方を採用するため）
+// クラウドに送る中身（「イベント発生！」の順番待ちは端末ごとなので送らない）
+function gamePayload() { const { pending, ...g } = game; return g; }
 const need = lv => 50 + 30 * (lv - 1);   // 次のレベルまでに必要ななかよしポイント
+const totalPts = g => { let t = g.pts || 0; for (let l = 1; l < (g.lv || 1); l++) t += need(l); return t; };
+
+// クラウドの記録(c)を手元の記録に合わせ込む。数字は大きい方、リストは合体。変化があれば true
+function mergeGame(c) {
+  if (!c || typeof c !== 'object') return false;
+  const before = JSON.stringify(game);
+  // 設定は新しく変えた方。どちらも未記録（この機能を入れる前）なら、名前を付けてある方
+  const cfgNewer = (c.cfgAt || 0) > (game.cfgAt || 0) || (!game.cfgAt && !c.cfgAt && c.named && !game.named);
+  if (cfgNewer) ['on', 'named', 'name', 'fur', 'cfgAt'].forEach(k => { if (k in c) game[k] = c[k]; });
+  if (totalPts(c) > totalPts(game)) { game.lv = c.lv || 1; game.pts = c.pts || 0; }
+  Object.entries(c.days || {}).forEach(([k, v]) => { game.days[k] = Math.max(game.days[k] || 0, v || 0); });
+  ['quizCount', 'quizCorrect', 'cards'].forEach(k => { game[k] = Math.max(game[k] || 0, c[k] || 0); });
+  game.learned = [...new Set([...game.learned, ...(c.learned || [])])];
+  game.events = [...new Set([...game.events, ...(c.events || [])])];
+  const t = c.today, mine = game.today;
+  if (t?.date) {
+    if (!mine || mine.date < t.date) game.today = { added: 0, cards: 0, correct: 0, ...t, done: [...(t.done || [])] };
+    else if (mine.date === t.date) {
+      ['added', 'cards', 'correct'].forEach(k => { mine[k] = Math.max(mine[k] || 0, t[k] || 0); });
+      mine.done = [...new Set([...mine.done, ...(t.done || [])])];
+    }
+  }
+  ['lastQuiz', 'lastFlash'].forEach(k => { if (c[k]?.date && (!game[k] || c[k].date > game[k].date)) game[k] = c[k]; });
+  if (c.init) game.init = true;
+  return JSON.stringify(game) !== before;
+}
 const catName = () => game.name || 'ねこ';
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 
@@ -2403,7 +2463,7 @@ function renderGame() {
 
 // --- 設定 ---
 function setGame(on) {
-  game.on = on;
+  game.on = on; touchCfg();
   if (on) checkEvents(true);   // OFFの間に達成していたぶんは、ごほうびなしでバッジだけ付ける
   saveGame(); applyGame();
   if (on && !game.named) setTimeout(openName, 400);
@@ -2415,7 +2475,7 @@ function applyGame() {
 }
 function setFur(f) {
   if (!FURS[f]) return;
-  game.fur = f; saveGame(); applyFur();
+  game.fur = f; touchCfg(); saveGame(); applyFur();
   document.querySelectorAll('#furSeg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.fur === f)));
 }
 function applyFur() {
@@ -2434,7 +2494,7 @@ function openName() {
 function saveName() {
   const v = $id('nameInput').value.trim();
   if (!v) { $id('nameInput').placeholder = '名前を入れてね'; $id('nameInput').focus(); return; }
-  game.name = v.slice(0, 10); game.named = true; saveGame();
+  game.name = v.slice(0, 10); game.named = true; touchCfg(); saveGame();
   closeModal('nameOv');
   renderGame();
   if ($id('page-search').classList.contains('active')) {
@@ -2443,7 +2503,7 @@ function saveName() {
     confetti($id('heroBand'), 24);
   }
 }
-function skipName() { game.named = true; saveGame(); closeModal('nameOv'); renderGame(); }
+function skipName() { game.named = true; touchCfg(); saveGame(); closeModal('nameOv'); renderGame(); }
 
 // --- イベント発生（順番待ちを1つずつ出す。クイズ・カードの途中や入力中は出さない） ---
 let _flushTimer, _badgeView = false;
@@ -2614,7 +2674,9 @@ async function checkForUpdate() {
   }
 }
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') checkForUpdate();
+  if (document.visibilityState === 'visible') { checkForUpdate(); supaPullGame(); }
+  // アプリを閉じる・切り替える時は、送りそびれている猫の記録をすぐ送る
+  else if (_gameSaveTimer) supaSave();
 });
 </script>
 </body>
